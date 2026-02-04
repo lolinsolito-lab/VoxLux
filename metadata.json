@@ -1,0 +1,8 @@
+{
+  "name": "Vox Lux Strategy",
+  "description": "An experiential portal for generative mastery, featuring Live Audio, Veo Video, and Gemini Intelligence.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ]
+}
