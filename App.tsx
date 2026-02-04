@@ -15,19 +15,44 @@ import { CourseView } from './components/CourseView';
 import { AscensionView } from './components/AscensionView';
 
 
-// 🌌 VOX LUX STRATEGY - CONSOLE SIGNATURE
+// 🌌 VOX LUX STRATEGY - ELITE CONSOLE SIGNATURE
 console.log(
-  "%c VOX LUX %c STRATEGY ",
-  "background: linear-gradient(135deg, #E4C572 0%, #C8AA6E 100%); color: #00040A; padding: 8px 12px; font-size: 18px; font-weight: bold; border-radius: 4px 0 0 4px; text-shadow: 0 1px 2px rgba(0,0,0,0.3);",
-  "background: #00040A; color: #E4C572; padding: 8px 12px; font-size: 18px; font-weight: bold; border-radius: 0 4px 4px 0; border: 2px solid #E4C572; border-left: none;"
+  "%c╔═══════════════════════════════════════════════════════╗",
+  "color: #E4C572; font-family: monospace; font-size: 12px;"
 );
 console.log(
-  "%c🎙️ Storytelling Mastermind • Neuro-Narrativa • AI Voice Tools",
-  "color: #4FD4D0; font-size: 12px; font-style: italic; margin-top: 4px;"
+  "%c║ %c   VOX LUX STRATEGY   %c                              ║",
+  "color: #E4C572; font-family: monospace; font-size: 12px;",
+  "background: linear-gradient(135deg, #E4C572 0%, #FFD700 100%); color: #00040A; padding: 4px 16px; font-size: 20px; font-weight: 900; letter-spacing: 3px; text-shadow: 0 2px 4px rgba(0,0,0,0.5);",
+  "color: #E4C572; font-family: monospace; font-size: 12px;"
 );
 console.log(
-  "%cDeveloped with ⚡ by Insolito Lab • 2026",
-  "color: #8B7355; font-size: 10px; margin-top: 2px;"
+  "%c║                                                       ║",
+  "color: #E4C572; font-family: monospace; font-size: 12px;"
+);
+console.log(
+  "%c║  🎙️  Storytelling Mastermind                          ║",
+  "color: #E4C572; font-family: monospace; font-size: 12px;"
+);
+console.log(
+  "%c║  🧠  Neuro-Narrativa & Strategic Voice               ║",
+  "color: #4FD4D0; font-family: monospace; font-size: 12px;"
+);
+console.log(
+  "%c║  ✨  The Art of Influence Through Story              ║",
+  "color: #C8AA6E; font-family: monospace; font-size: 12px; font-style: italic;"
+);
+console.log(
+  "%c║                                                       ║",
+  "color: #E4C572; font-family: monospace; font-size: 12px;"
+);
+console.log(
+  "%c╚═══════════════════════════════════════════════════════╝",
+  "color: #E4C572; font-family: monospace; font-size: 12px;"
+);
+console.log(
+  "%c⚡ Developed by Insolito Lab © 2026 • Elite Storytelling Platform",
+  "color: #8B7355; font-size: 9px; font-style: italic; margin-top: 8px;"
 );
 
 const App: React.FC = () => {
