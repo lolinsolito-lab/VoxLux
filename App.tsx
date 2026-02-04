@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { View } from './types';
 import { Navigation } from './components/Navigation';
 import { LiveAudio } from './components/LiveAudio';
@@ -13,6 +14,10 @@ import { Splash } from './components/Splash';
 import { Hero } from './components/Hero';
 import { CourseView } from './components/CourseView';
 import { AscensionView } from './components/AscensionView';
+import { LoginPage } from './components/LoginPage';
+import { SignupPage } from './components/SignupPage';
+import { ResetPasswordPage } from './components/ResetPasswordPage';
+import { AuthProvider } from './contexts/AuthContext';
 
 
 // 🌌 VOX LUX STRATEGY - ELITE CONSOLE SIGNATURE
@@ -56,6 +61,24 @@ console.log(
 );
 
 const App: React.FC = () => {
+  return (
+    <AuthProvider>
+      <BrowserRouter>
+        <Routes>
+          {/* Auth Routes */}
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/signup" element={<SignupPage />} />
+          <Route path="/reset-password" element={<ResetPasswordPage />} />
+
+          {/* Main App */}
+          <Route path="/*" element={<MainApp />} />
+        </Routes>
+      </BrowserRouter>
+    </AuthProvider>
+  );
+};
+
+const MainApp: React.FC = () => {
   // Start with SPLASH view
   const [currentView, setCurrentView] = useState<View>(View.SPLASH);
 
