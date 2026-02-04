@@ -1,15 +1,17 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { User as SupabaseUser } from '@supabase/supabase-js';
+import { supabase } from '../services/supabase';
 import { User, CourseProgress } from '../types';
 
 interface AuthContextType {
     user: User | null;
-    progress: CourseProgress[];
-    login: (email: string, password: string) => Promise<boolean>;
-    register: (name: string, email: string, password: string, courseId: string) => Promise<boolean>;
-    logout: () => void;
-    updateProgress: (courseId: string, moduleId: string) => void;
-    getCourseProgress: (courseId: string) => CourseProgress | undefined;
-    isModuleCompleted: (moduleId: string) => boolean;
+    supabaseUser: SupabaseUser | null;
+    loading: boolean;
+    login: (email: string, password: string) => Promise<{ success: boolean; error?: string }>;
+    signup: (email: string, password: string, fullName: string) => Promise<{ success: boolean; error?: string }>;
+    logout: () => Promise<void>;
+    resetPassword: (email: string) => Promise<{ success: boolean; error?: string }>;
+    hasCourse: (courseId: string) => boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -28,170 +30,171 @@ interface AuthProviderProps {
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const [user, setUser] = useState<User | null>(null);
-    const [progress, setProgress] = useState<CourseProgress[]>([]);
+    const [supabaseUser, setSupabaseUser] = useState<SupabaseUser | null>(null);
+    const [loading, setLoading] = useState(true);
 
-    // Load user from localStorage on mount
+    // Initialize auth state from Supabase
     useEffect(() => {
-        const storedUser = localStorage.getItem('voxlux_user');
-        const storedProgress = localStorage.getItem('voxlux_progress');
+        // Get initial session
+        supabase.auth.getSession().then(({ data: { session } }) => {
+            if (session?.user) {
+                setSupabaseUser(session.user);
+                loadUserProfile(session.user.id);
+            } else {
+                setLoading(false);
+            }
+        });
 
-        if (storedUser) {
-            setUser(JSON.parse(storedUser));
-        }
-        if (storedProgress) {
-            setProgress(JSON.parse(storedProgress));
-        }
+        // Listen for auth changes
+        const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+            if (session?.user) {
+                setSupabaseUser(session.user);
+                loadUserProfile(session.user.id);
+            } else {
+                setSupabaseUser(null);
+                setUser(null);
+                setLoading(false);
+            }
+        });
+
+        return () => subscription.unsubscribe();
     }, []);
 
-    const login = async (email: string, password: string): Promise<boolean> => {
-        // Simple local auth - look up user in localStorage
-        const usersData = localStorage.getItem('voxlux_users');
-        if (!usersData) return false;
+    const loadUserProfile = async (userId: string) => {
+        try {
+            // Fetch user profile from Supabase
+            const { data: profile, error: profileError } = await supabase
+                .from('profiles')
+                .select('*')
+                .eq('id', userId)
+                .single();
 
-        const users: (User & { password: string })[] = JSON.parse(usersData);
-        const foundUser = users.find(u => u.email === email && u.password === password);
-
-        if (foundUser) {
-            const { password: _, ...userWithoutPassword } = foundUser;
-            setUser(userWithoutPassword);
-            localStorage.setItem('voxlux_user', JSON.stringify(userWithoutPassword));
-
-            // Load user's progress
-            const userProgress = localStorage.getItem(`voxlux_progress_${foundUser.id}`);
-            if (userProgress) {
-                const loadedProgress = JSON.parse(userProgress);
-                setProgress(loadedProgress);
-                localStorage.setItem('voxlux_progress', JSON.stringify(loadedProgress));
+            if (profileError) {
+                console.error('Error loading profile:', profileError);
+                setLoading(false);
+                return;
             }
 
-            return true;
+            // Fetch user purchases
+            const { data: purchases } = await supabase
+                .from('purchases')
+                .select('course_id')
+                .eq('user_id', userId)
+                .eq('status', 'active');
+
+            // Fetch user stats
+            const { data: stats } = await supabase
+                .from('user_stats')
+                .select('*')
+                .eq('user_id', userId)
+                .single();
+
+            const mappedUser: User = {
+                id: profile.id,
+                name: profile.full_name || profile.email,
+                email: profile.email,
+                enrolledCourses: purchases?.map(p => p.course_id) || [],
+                level: stats?.level_name || 'Novizio',
+                xp: stats?.total_xp || 0,
+                createdAt: profile.created_at
+            };
+
+            setUser(mappedUser);
+        } catch (error) {
+            console.error('Error loading user:', error);
+        } finally {
+            setLoading(false);
         }
-        return false;
     };
 
-    const register = async (
-        name: string,
+    const login = async (email: string, password: string): Promise<{ success: boolean; error?: string }> => {
+        try {
+            const { data, error } = await supabase.auth.signInWithPassword({
+                email,
+                password
+            });
+
+            if (error) {
+                return { success: false, error: error.message };
+            }
+
+            if (data.user) {
+                await loadUserProfile(data.user.id);
+            }
+
+            return { success: true };
+        } catch (error) {
+            return { success: false, error: 'An unexpected error occurred' };
+        }
+    };
+
+    const signup = async (
         email: string,
         password: string,
-        courseId: string
-    ): Promise<boolean> => {
-        // Check if user already exists
-        const usersData = localStorage.getItem('voxlux_users');
-        const users: (User & { password: string })[] = usersData ? JSON.parse(usersData) : [];
+        fullName: string
+    ): Promise<{ success: boolean; error?: string }> => {
+        try {
+            const { data, error } = await supabase.auth.signUp({
+                email,
+                password,
+                options: {
+                    data: {
+                        full_name: fullName
+                    }
+                }
+            });
 
-        if (users.find(u => u.email === email)) {
-            return false; // Email already exists
+            if (error) {
+                return { success: false, error: error.message };
+            }
+
+            if (data.user) {
+                await loadUserProfile(data.user.id);
+            }
+
+            return { success: true };
+        } catch (error) {
+            return { success: false, error: 'An unexpected error occurred' };
         }
-
-        // Create new user
-        const newUser: User & { password: string } = {
-            id: `user_${Date.now()}`,
-            name,
-            email,
-            password,
-            enrolledCourses: [courseId],
-            level: 'Acolyte',
-            xp: 0,
-            createdAt: new Date().toISOString()
-        };
-
-        users.push(newUser);
-        localStorage.setItem('voxlux_users', JSON.stringify(users));
-
-        // Auto-login after registration
-        const { password: _, ...userWithoutPassword } = newUser;
-        setUser(userWithoutPassword);
-        localStorage.setItem('voxlux_user', JSON.stringify(userWithoutPassword));
-
-        // Initialize progress for enrolled course
-        const initialProgress: CourseProgress = {
-            courseId,
-            modules: [],
-            startedAt: new Date().toISOString()
-        };
-        setProgress([initialProgress]);
-        localStorage.setItem('voxlux_progress', JSON.stringify([initialProgress]));
-        localStorage.setItem(`voxlux_progress_${newUser.id}`, JSON.stringify([initialProgress]));
-
-        return true;
     };
 
-    const logout = () => {
+    const logout = async (): Promise<void> => {
+        await supabase.auth.signOut();
         setUser(null);
-        setProgress([]);
-        localStorage.removeItem('voxlux_user');
-        localStorage.removeItem('voxlux_progress');
+        setSupabaseUser(null);
     };
 
-    const updateProgress = (courseId: string, moduleId: string) => {
-        if (!user) return;
+    const resetPassword = async (email: string): Promise<{ success: boolean; error?: string }> => {
+        try {
+            const { error } = await supabase.auth.resetPasswordForEmail(email, {
+                redirectTo: `${window.location.origin}/reset-password`
+            });
 
-        setProgress(prev => {
-            const updatedProgress = [...prev];
-            let courseProgress = updatedProgress.find(cp => cp.courseId === courseId);
-
-            if (!courseProgress) {
-                courseProgress = {
-                    courseId,
-                    modules: [],
-                    startedAt: new Date().toISOString()
-                };
-                updatedProgress.push(courseProgress);
+            if (error) {
+                return { success: false, error: error.message };
             }
 
-            // Check if module already completed
-            const existingModule = courseProgress.modules.find(m => m.moduleId === moduleId);
-            if (existingModule && existingModule.completed) {
-                return prev; // Already completed, no change
-            }
-
-            if (existingModule) {
-                existingModule.completed = true;
-                existingModule.completedAt = new Date().toISOString();
-            } else {
-                courseProgress.modules.push({
-                    moduleId,
-                    completed: true,
-                    completedAt: new Date().toISOString()
-                });
-            }
-
-            // Save to localStorage
-            localStorage.setItem('voxlux_progress', JSON.stringify(updatedProgress));
-            localStorage.setItem(`voxlux_progress_${user.id}`, JSON.stringify(updatedProgress));
-
-            // Update XP
-            const updatedUser = { ...user, xp: user.xp + 100 };
-            setUser(updatedUser);
-            localStorage.setItem('voxlux_user', JSON.stringify(updatedUser));
-
-            return updatedProgress;
-        });
-    };
-
-    const getCourseProgress = (courseId: string): CourseProgress | undefined => {
-        return progress.find(cp => cp.courseId === courseId);
-    };
-
-    const isModuleCompleted = (moduleId: string): boolean => {
-        for (const courseProgress of progress) {
-            const module = courseProgress.modules.find(m => m.moduleId === moduleId);
-            if (module?.completed) return true;
+            return { success: true };
+        } catch (error) {
+            return { success: false, error: 'An unexpected error occurred' };
         }
-        return false;
+    };
+
+    const hasCourse = (courseId: string): boolean => {
+        return user?.enrolledCourses.includes(courseId) || false;
     };
 
     return (
         <AuthContext.Provider
             value={{
                 user,
-                progress,
+                supabaseUser,
+                loading,
                 login,
-                register,
+                signup,
                 logout,
-                updateProgress,
-                getCourseProgress,
-                isModuleCompleted
+                resetPassword,
+                hasCourse
             }}
         >
             {children}
