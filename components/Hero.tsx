@@ -247,8 +247,11 @@ export const Hero: React.FC<HeroProps> = ({ onEnter }) => {
         </div>
 
         {/* Desktop Footer (Verified Placement) */}
-        <div className="w-full py-12 relative z-50">
-          <Footer />
+        <div className="w-full py-8 mt-12 relative z-50 border-t border-white/5 bg-black/40 backdrop-blur-sm">
+          <div className="max-w-7xl mx-auto px-6 text-center">
+            <p className="text-stone-500 text-xs tracking-[0.2em] mb-4">GARANZIA DI QUALITÀ VOX LUX • PAGAMENTI SICURI STRIPE • ACCESSO IMMEDIATO</p>
+            <Footer />
+          </div>
         </div>
 
       </div>
