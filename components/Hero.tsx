@@ -1,5 +1,6 @@
-import React, { useCallback } from 'react';
-import { Sparkles, Mic, Box, ArrowRight, Crown, Zap, Unlock, ChevronDown } from 'lucide-react';
+import React, { useState, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Sparkles, Mic, Box, ArrowRight, Crown, Zap, Unlock, ChevronDown, Lock, X, LogIn } from 'lucide-react';
 import { useAudioSystem } from '../hooks/useAudioSystem';
 
 interface HeroProps {
@@ -7,6 +8,8 @@ interface HeroProps {
 }
 
 export const Hero: React.FC<HeroProps> = ({ onEnter }) => {
+  const navigate = useNavigate();
+  const [showRegisterModal, setShowRegisterModal] = useState(false);
 
   const { playSound } = useAudioSystem();
 
