@@ -1,34 +1,65 @@
 import Stripe from 'stripe';
 import { createClient } from '@supabase/supabase-js';
+import type { VercelRequest, VercelResponse } from '@vercel/node';
+
+// Force dynamic execution (no caching)
+export const config = {
+    api: {
+        bodyParser: true,
+    },
+};
 
 const supabaseUrl = process.env.VITE_SUPABASE_URL || '';
 const supabaseKey = process.env.VITE_SUPABASE_ANON_KEY || ''; // Or service role if needed
-const supabase = createClient(supabaseUrl, supabaseKey);
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
-    // @ts-ignore
-    apiVersion: '2024-12-18.acacia',
-});
+// Initialize clients safely inside handler or locally if possible, but global is fine for cold starts
+// if env vars are present. 
+// However, to be safe against missing env vars crashing the module, we verify them.
 
-export interface CreateCheckoutRequest {
-    priceId: string;
-    courseId: string;
-    userEmail?: string;
-    upsellIds?: string[]; // Optional upsell product IDs
-    promoCode?: string; // Optional promo code
-}
+export default async function handler(req: VercelRequest, res: VercelResponse) {
+    // Enable CORS
+    res.setHeader('Access-Control-Allow-Credentials', 'true');
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
+    res.setHeader(
+        'Access-Control-Allow-Headers',
+        'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version'
+    );
 
-export async function POST(req: Request) {
+    if (req.method === 'OPTIONS') {
+        res.status(200).end();
+        return;
+    }
+
+    if (req.method !== 'POST') {
+        res.status(405).json({ error: 'Method Not Allowed' });
+        return;
+    }
+
     try {
-        const { priceId, courseId, userEmail, upsellIds = [], promoCode }: CreateCheckoutRequest =
-            await req.json();
+        if (!process.env.STRIPE_SECRET_KEY) {
+            throw new Error('Missing STRIPE_SECRET_KEY');
+        }
+        if (!supabaseUrl || !supabaseKey) {
+            throw new Error('Missing Supabase Env Vars');
+        }
+
+        const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
+            // @ts-ignore
+            apiVersion: '2024-12-18.acacia',
+        });
+
+        const supabase = createClient(supabaseUrl, supabaseKey);
+
+        const { priceId, courseId, userEmail, upsellIds = [], promoCode } = req.body;
 
         if (!priceId || !courseId) {
-            return new Response('Missing priceId or courseId', { status: 400 });
+            res.status(400).json({ error: 'Missing priceId or courseId' });
+            return;
         }
 
         // Build line items (main product + upsells)
-        const lineItems: Stripe.Checkout.SessionCreateParams.LineItem[] = [
+        const lineItems = [
             {
                 price: priceId,
                 quantity: 1,
@@ -56,7 +87,7 @@ export async function POST(req: Request) {
         }
 
         // Validate promo code if provided
-        let discounts: Stripe.Checkout.SessionCreateParams.Discount[] | undefined;
+        let discounts = undefined;
 
         if (promoCode) {
             const { data: promo } = await supabase
@@ -79,12 +110,14 @@ export async function POST(req: Request) {
             }
         }
 
+        const origin = req.headers.origin || 'https://vox-lux.vercel.app';
+
         // Create Stripe Checkout Session
         const session = await stripe.checkout.sessions.create({
             mode: 'payment',
             line_items: lineItems,
-            success_url: `${req.headers.get('origin')}/thank-you?session_id={CHECKOUT_SESSION_ID}`,
-            cancel_url: `${req.headers.get('origin')}/pricing`,
+            success_url: `${origin}/thank-you?session_id={CHECKOUT_SESSION_ID}`,
+            cancel_url: `${origin}/`,
             customer_email: userEmail,
             discounts,
             metadata: {
@@ -96,12 +129,10 @@ export async function POST(req: Request) {
             allow_promotion_codes: true,
         });
 
-        return new Response(JSON.stringify({ sessionId: session.id, url: session.url }), {
-            headers: { 'Content-Type': 'application/json' },
-            status: 200,
-        });
+        res.status(200).json({ sessionId: session.id, url: session.url });
+
     } catch (error: any) {
         console.error('Error creating checkout session:', error);
-        return new Response(`Error: ${error.message}`, { status: 500 });
+        res.status(500).json({ error: error.message });
     }
 }
