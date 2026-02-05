@@ -2,7 +2,7 @@ import Stripe from 'stripe';
 import { createClient } from '@supabase/supabase-js';
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 
-// Force dynamic execution (no caching) - Deploy Trigger v2
+// Force dynamic execution (no caching) - Deploy Trigger v3
 export const config = {
     api: {
         bodyParser: true,
