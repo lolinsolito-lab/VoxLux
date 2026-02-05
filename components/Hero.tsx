@@ -182,7 +182,7 @@ export const Hero: React.FC<HeroProps> = ({ onEnter }) => {
       {/* =====================================================================================
           DESKTOP VIEW (>= 1024px)
          ===================================================================================== */}
-      <div className="hidden lg:flex w-full min-h-screen flex-col justify-start items-center relative z-10 pt-20 pb-4">
+      <div className="hidden lg:flex w-full min-h-screen flex-col justify-start items-center relative z-10 pt-20 pb-4 scale-90 origin-top">
 
         {/* Header */}
         <div className="text-center mb-4 animate-[fadeIn_1s_ease-out]">
