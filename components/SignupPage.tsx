@@ -11,6 +11,7 @@ export const SignupPage: React.FC = () => {
     const prefilledEmail = searchParams.get('email') || '';
 
     const [fullName, setFullName] = useState('');
+    const [phone, setPhone] = useState('');
     const [email, setEmail] = useState(prefilledEmail);
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
@@ -34,7 +35,7 @@ export const SignupPage: React.FC = () => {
 
         setLoading(true);
 
-        const result = await signup(email, password, fullName);
+        const result = await signup(email, password, fullName, phone);
 
         if (result.success) {
             // Call activate-purchase Edge Function to link any pending purchases
@@ -61,7 +62,7 @@ export const SignupPage: React.FC = () => {
                 // Don't block signup if activation fails
             }
 
-            navigate('/dashboard');
+            navigate('/onboarding');
         } else {
             setError(result.error || 'Registrazione fallita');
         }
@@ -104,6 +105,21 @@ export const SignupPage: React.FC = () => {
                                 required
                                 className="w-full px-4 py-3 bg-black/40 border border-white/20 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-yellow-500/50 focus:ring-2 focus:ring-yellow-500/20 transition-all"
                                 placeholder="Mario Rossi"
+                            />
+                        </div>
+
+                        {/* Phone Number */}
+                        <div>
+                            <label className="block text-sm font-medium text-gray-300 mb-2">
+                                Telefono (WhatsApp)
+                            </label>
+                            <input
+                                type="tel"
+                                value={phone}
+                                onChange={(e) => setPhone(e.target.value)}
+                                required
+                                className="w-full px-4 py-3 bg-black/40 border border-white/20 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-yellow-500/50 focus:ring-2 focus:ring-yellow-500/20 transition-all"
+                                placeholder="+39 333 1234567"
                             />
                         </div>
 

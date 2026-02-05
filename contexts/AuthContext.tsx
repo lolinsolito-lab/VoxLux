@@ -8,7 +8,7 @@ interface AuthContextType {
     supabaseUser: SupabaseUser | null;
     loading: boolean;
     login: (email: string, password: string) => Promise<{ success: boolean; error?: string }>;
-    signup: (email: string, password: string, fullName: string) => Promise<{ success: boolean; error?: string; userId?: string }>;
+    signup: (email: string, password: string, fullName: string, phoneNumber?: string) => Promise<{ success: boolean; error?: string; userId?: string }>;
     logout: () => Promise<void>;
     resetPassword: (email: string) => Promise<{ success: boolean; error?: string }>;
     hasCourse: (courseId: string) => boolean;
@@ -131,7 +131,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const signup = async (
         email: string,
         password: string,
-        fullName: string
+        fullName: string,
+        phoneNumber?: string
     ): Promise<{ success: boolean; error?: string; userId?: string }> => {
         try {
             const { data, error } = await supabase.auth.signUp({
@@ -139,7 +140,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
                 password,
                 options: {
                     data: {
-                        full_name: fullName
+                        full_name: fullName,
+                        phone_number: phoneNumber
                     }
                 }
             });

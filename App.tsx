@@ -16,6 +16,7 @@ import { CourseView } from './components/CourseView';
 import { AscensionView } from './components/AscensionView';
 import { LoginPage } from './components/LoginPage';
 import { SignupPage } from './components/SignupPage';
+import { OnboardingPage } from './components/OnboardingPage';
 import { ResetPasswordPage } from './components/ResetPasswordPage';
 import { DashboardPage } from './components/DashboardPage';
 import { ProtectedRoute } from './components/ProtectedRoute';
@@ -75,6 +76,11 @@ const App: React.FC = () => {
           {/* Auth Routes */}
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<SignupPage />} />
+          <Route path="/onboarding" element={
+            <ProtectedRoute>
+              <OnboardingPage />
+            </ProtectedRoute>
+          } />
           <Route path="/reset-password" element={<ResetPasswordPage />} />
           <Route path="/thank-you" element={<ThankYouPage />} />
           <Route path="/terms" element={<TermsPage />} />
