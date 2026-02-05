@@ -29,6 +29,92 @@ export const Hero: React.FC<HeroProps> = ({ onEnter }) => {
   return (
     <div className="min-h-screen w-full bg-lux-black text-gray-200 relative">
 
+      {/* =====================================================================================
+          NAVIGATION BAR (Fixed Top)
+         ===================================================================================== */}
+      <nav className="fixed top-0 left-0 right-0 z-50 px-6 py-4 flex justify-between items-center bg-gradient-to-b from-black/90 to-transparent backdrop-blur-sm">
+        {/* Logo / Brand (Mobile Only - Desktop has big title centered) */}
+        <div className="flex items-center gap-2 lg:hidden">
+          <Crown className="w-6 h-6 text-lux-gold" />
+          <span className="text-lux-gold font-display font-bold tracking-widest text-sm">VOX LUX</span>
+        </div>
+
+        {/* Desktop Placeholder (Invisible) to balance flex */}
+        <div className="hidden lg:block w-20"></div>
+
+        {/* Action Buttons */}
+        <div className="flex items-center gap-4">
+          <button
+            onClick={() => navigate('/login')}
+            className="flex items-center gap-2 text-xs uppercase tracking-widest text-gray-400 hover:text-lux-gold transition-colors font-bold"
+          >
+            <LogIn className="w-4 h-4" /> <span className="hidden sm:inline">Accedi</span>
+          </button>
+          <button
+            onClick={() => setShowRegisterModal(true)}
+            className="px-4 py-2 bg-lux-gold/10 border border-lux-gold/30 text-lux-gold text-xs uppercase tracking-widest font-bold rounded hover:bg-lux-gold/20 hover:border-lux-gold transition-all shadow-[0_0_15px_rgba(250,204,21,0.1)]"
+          >
+            Inizia Ora
+          </button>
+        </div>
+      </nav>
+
+      {/* =====================================================================================
+          REGISTER MODAL (Purchase Required)
+         ===================================================================================== */}
+      {showRegisterModal && (
+        <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
+          {/* Backdrop */}
+          <div
+            className="absolute inset-0 bg-black/80 backdrop-blur-md transition-opacity"
+            onClick={() => setShowRegisterModal(false)}
+          ></div>
+
+          {/* Modal Content */}
+          <div className="relative bg-lux-black border border-lux-gold/30 rounded-2xl p-8 max-w-md w-full shadow-[0_0_50px_rgba(250,204,21,0.2)] animate-[zoomIn_0.3s_ease-out]">
+            <button
+              onClick={() => setShowRegisterModal(false)}
+              className="absolute top-4 right-4 text-gray-500 hover:text-white transition-colors"
+            >
+              <X className="w-6 h-6" />
+            </button>
+
+            <div className="text-center">
+              <div className="w-16 h-16 rounded-full bg-lux-gold/10 flex items-center justify-center mx-auto mb-6 border border-lux-gold/30">
+                <Lock className="w-8 h-8 text-lux-gold" />
+              </div>
+
+              <h3 className="text-2xl font-display font-bold text-white mb-2">Accesso Riservato</h3>
+              <p className="text-gray-400 text-sm mb-8 leading-relaxed">
+                L'iscrizione a Vox Lux è possibile solo tramite <strong>Invito</strong> o <strong>Chiave di Accesso</strong> (acquisto di una Matrice).
+              </p>
+
+              <div className="space-y-3">
+                <button
+                  onClick={() => {
+                    setShowRegisterModal(false);
+                    scrollToContent(); // Scroll to pricing
+                  }}
+                  className="w-full py-3 bg-lux-gold text-black font-bold uppercase tracking-widest text-sm rounded hover:bg-yellow-400 transition-colors shadow-[0_0_20px_rgba(250,204,21,0.4)]"
+                >
+                  Acquista una Chiave
+                </button>
+
+                <button
+                  onClick={() => {
+                    setShowRegisterModal(false);
+                    navigate('/login');
+                  }}
+                  className="w-full py-3 bg-transparent border border-gray-700 text-gray-400 font-bold uppercase tracking-widest text-sm rounded hover:border-white hover:text-white transition-colors"
+                >
+                  Ho già un account
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Cinematic Background - "The Alive Void" */}
       <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
         <div className="absolute inset-0 bg-black"></div>
