@@ -293,7 +293,7 @@ export const Hero: React.FC<HeroProps> = ({ onEnter }) => {
                 <div className="mb-6 flex flex-col items-center">
                   <span className="text-white text-4xl font-bold drop-shadow-[0_0_10px_rgba(255,255,255,0.5)]">€997</span>
                   <span className="text-indigo-300 text-sm line-through mt-1">€1.194</span>
-                  <span className="text-emerald-400 text-xs font-bold mt-2 uppercase tracking-wide animate-pulse">Risparmi €197</span>
+                  <span className="text-emerald-400 text-xs font-bold mt-2 uppercase tracking-wide animate-pulse">RISPARMIO 20%</span>
                 </div>
 
                 <button className="w-full py-5 bg-white text-black text-sm tracking-[0.2em] font-bold uppercase flex items-center justify-center gap-3 hover:bg-indigo-100 transition-all rounded-sm shadow-[0_0_30px_white] hover:shadow-[0_0_60px_white]">
