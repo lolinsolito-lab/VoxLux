@@ -1,7 +1,12 @@
 import Stripe from 'stripe';
-import { supabase } from '../services/supabase';
+import { createClient } from '@supabase/supabase-js';
 
-const stripe = new Stripe(import.meta.env.STRIPE_SECRET_KEY || '', {
+const supabaseUrl = process.env.VITE_SUPABASE_URL || '';
+const supabaseKey = process.env.VITE_SUPABASE_ANON_KEY || ''; // Or service role if needed
+const supabase = createClient(supabaseUrl, supabaseKey);
+
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
+    // @ts-ignore
     apiVersion: '2024-12-18.acacia',
 });
 
