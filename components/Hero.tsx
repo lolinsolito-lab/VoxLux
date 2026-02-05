@@ -216,6 +216,7 @@ export const Hero: React.FC<HeroProps> = ({ onEnter }) => {
               ]}
               price="€597"
               priceFull="€997"
+              savings="RISPARMIO 40%"
               onEnter={onEnter}
               onHover={playHoverSound}
               isDesktop
@@ -238,6 +239,7 @@ export const Hero: React.FC<HeroProps> = ({ onEnter }) => {
               ]}
               price="€597"
               priceFull="€997"
+              savings="RISPARMIO 40%"
               onEnter={onEnter}
               onHover={playHoverSound}
               isDesktop
