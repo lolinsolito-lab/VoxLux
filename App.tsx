@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { BrowserRouter, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import { View } from './types';
 import { Navigation } from './components/Navigation';
 import { LiveAudio } from './components/LiveAudio';
@@ -121,6 +121,18 @@ const MainApp: React.FC = () => {
   const [portalView, setPortalView] = useState<View>(View.LIVE_AUDIO);
   const [selectedCourseId, setSelectedCourseId] = useState<string>('matrice-1');
 
+  const { user, loading } = useAuth();
+  const navigate = useNavigate();
+
+  // Redirect to dashboard if user is already logged in
+  useEffect(() => {
+    if (!loading && user) {
+      // Optional: Check if onboarding is complete to decide destination
+      // For now, dashboard is safe
+      navigate('/dashboard');
+    }
+  }, [user, loading, navigate]);
+
   const handleNavigate = (view: View) => {
     setCurrentView(view);
     // If it's a tool view, save it as the active portal view
@@ -133,7 +145,7 @@ const MainApp: React.FC = () => {
     setCurrentView(View.HERO);
   };
 
-  const { user } = useAuth();
+
 
   const handleEnterCourse = async (courseId: string) => {
     try {

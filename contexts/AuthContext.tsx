@@ -139,6 +139,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
                 email,
                 password,
                 options: {
+                    emailRedirectTo: `${window.location.origin}/onboarding`,
                     data: {
                         full_name: fullName,
                         phone_number: phoneNumber
