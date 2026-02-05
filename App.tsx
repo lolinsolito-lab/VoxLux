@@ -22,7 +22,8 @@ import { ProtectedRoute } from './components/ProtectedRoute';
 import { CourseViewWrapper } from './components/CourseViewWrapper';
 import { AscensionViewWrapper } from './components/AscensionViewWrapper';
 import { ThankYouPage } from './components/ThankYouPage';
-import { AuthProvider } from './contexts/AuthContext';
+import { AuthProvider, useAuth } from './contexts/AuthContext';
+import { createCheckoutSession, CourseId } from './services/stripe';
 
 
 // 🌌 VOX LUX STRATEGY - ELITE CONSOLE SIGNATURE
@@ -124,9 +125,16 @@ const MainApp: React.FC = () => {
     setCurrentView(View.HERO);
   };
 
-  const handleEnterCourse = (courseId: string) => {
-    setSelectedCourseId(courseId);
-    setCurrentView(View.COURSE);
+  const { user } = useAuth();
+
+  const handleEnterCourse = async (courseId: string) => {
+    try {
+      // Trigger Stripe Checkout
+      await createCheckoutSession(courseId as CourseId, user?.email);
+    } catch (error) {
+      console.error('Checkout error:', error);
+      alert('Impossibile avviare il checkout. Riprova.');
+    }
   };
 
   const handleBackToHero = () => {
