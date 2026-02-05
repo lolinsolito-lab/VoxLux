@@ -6,7 +6,7 @@ import { BRANDING } from '../config/branding';
 
 interface Purchase {
     course_id: string;
-    purchased_at: string;
+    purchase_timestamp: string;
 }
 
 interface CourseProgress {
@@ -34,7 +34,7 @@ export const DashboardPage: React.FC = () => {
             // Fetch user purchases
             const { data: purchasesData } = await supabase
                 .from('purchases')
-                .select('course_id, purchased_at')
+                .select('course_id, purchase_timestamp')
                 .eq('user_id', user.id)
                 .eq('status', 'active');
 
