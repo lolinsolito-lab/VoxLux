@@ -218,8 +218,8 @@ export const Hero: React.FC<HeroProps> = ({ onEnter }) => {
           </div>
         </div>
 
-        {/* Desktop Footer (Optional placement, user asked for it) */}
-        <div className="mt-16 w-full">
+        {/* Desktop Footer (Verified Placement) */}
+        <div className="w-full py-12 relative z-50">
           <Footer />
         </div>
 

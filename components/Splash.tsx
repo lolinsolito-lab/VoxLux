@@ -6,10 +6,14 @@ interface SplashProps {
 }
 
 export const Splash: React.FC<SplashProps> = ({ onComplete }) => {
+  const [started, setStarted] = useState(false);
   const [phase, setPhase] = useState(0); // 0: Init, 1: Implode, 2: Explode, 3: Reveal, 4: Exit
 
-  useEffect(() => {
-    // CINEMATIC TIMELINE
+  const handleStart = () => {
+    if (started) return;
+    setStarted(true);
+
+    // CINEMATIC TIMELINE START
     // 0s: Start Implosion
     setTimeout(() => setPhase(1), 100);
 
@@ -24,10 +28,13 @@ export const Splash: React.FC<SplashProps> = ({ onComplete }) => {
 
     // 6s: Unmount
     setTimeout(onComplete, 6000);
-  }, [onComplete]);
+  };
 
   return (
-    <div className={`fixed inset-0 z-50 flex flex-col items-center justify-center bg-black overflow-hidden transition-all duration-1000 ${phase === 4 ? 'opacity-0 scale-110 pointer-events-none' : 'opacity-100'}`}>
+    <div
+      onClick={handleStart}
+      className={`fixed inset-0 z-50 flex flex-col items-center justify-center bg-black overflow-hidden transition-all duration-1000 cursor-pointer ${phase === 4 ? 'opacity-0 scale-110 pointer-events-none' : 'opacity-100'}`}
+    >
 
       {/* 1. DEEP SPACE BACKGROUND */}
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-indigo-950/20 via-black to-black"></div>
@@ -36,9 +43,38 @@ export const Splash: React.FC<SplashProps> = ({ onComplete }) => {
       <div className={`absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-40 transition-transform duration-[5s] ease-in ${phase >= 2 ? 'scale-150' : 'scale-100'}`}></div>
 
       {/* ==================================================================================
+          PHASE 0: WAITING FOR USER (Immersive Entry)
+         ================================================================================== */}
+      {!started && (
+        <div className="absolute inset-0 flex flex-col items-center justify-center z-50 bg-black/40 backdrop-blur-sm transition-all duration-700">
+
+          {/* Pulsing Border Container */}
+          <div className="relative group cursor-pointer" onClick={handleStart}>
+
+            {/* Animated Rings */}
+            <div className="absolute -inset-8 bg-gradient-to-r from-lux-gold/0 via-lux-gold/30 to-lux-gold/0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 duration-500 animate-[spin_4s_linear_infinite]"></div>
+
+            <button
+              className="relative px-12 py-4 bg-black/80 border border-lux-gold/30 text-lux-gold font-display font-bold tracking-[0.3em] uppercase text-sm hover:bg-lux-gold hover:text-black transition-all duration-500 shadow-[0_0_30px_rgba(250,204,21,0.1)] group-hover:shadow-[0_0_50px_rgba(250,204,21,0.4)] group-hover:scale-105"
+            >
+              Enter Experience
+            </button>
+
+            {/* Decorative Lines */}
+            <div className="absolute top-1/2 left-0 w-8 h-[1px] bg-lux-gold/50 -translate-x-full transition-all group-hover:-translate-x-[150%]"></div>
+            <div className="absolute top-1/2 right-0 w-8 h-[1px] bg-lux-gold/50 translate-x-full transition-all group-hover:translate-x-[150%]"></div>
+          </div>
+
+          <p className="mt-8 text-[10px] text-gray-500 uppercase tracking-[0.2em] animate-pulse">
+            Audio & Visual Immersion
+          </p>
+        </div>
+      )}
+
+      {/* ==================================================================================
           PHASE 1: THE IMPLOSION (Gathering Energy)
          ================================================================================== */}
-      <div className={`absolute transition-all duration-500 ${phase >= 2 ? 'opacity-0 scale-0' : 'opacity-100 scale-100'}`}>
+      <div className={`absolute transition-all duration-500 ${phase >= 2 || !started ? 'opacity-0 scale-0' : 'opacity-100 scale-100'}`}>
         <div className="w-[600px] h-[600px] rounded-full border border-indigo-500/10 animate-[spin_4s_linear_infinite]"></div>
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] rounded-full border border-indigo-500/20 animate-[spin_3s_linear_infinite_reverse]"></div>
         {/* Particles sucking in */}
