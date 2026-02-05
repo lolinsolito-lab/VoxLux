@@ -90,15 +90,28 @@ export const BackgroundMusic: React.FC<BackgroundMusicProps> = ({ src }) => {
     useEffect(() => {
         const handleFirstInteraction = () => {
             if (!userInteracted && audioRef.current && shouldPlay) {
-                setUserInteracted(true);
-                audioRef.current.play()
-                    .then(() => fadeVolume(audioRef.current!, 0.4))
-                    .catch(e => console.log("Autoplay prevented:", e));
+                // Try to play
+                const playPromise = audioRef.current.play();
 
-                // Remove all listeners once triggered
-                ['click', 'mousemove', 'keydown', 'touchstart', 'scroll'].forEach(event =>
-                    window.removeEventListener(event, handleFirstInteraction)
-                );
+                if (playPromise !== undefined) {
+                    playPromise
+                        .then(() => {
+                            // SUCCESS: Interaction accepted
+                            console.log("Audio started successfully");
+                            setUserInteracted(true);
+                            fadeVolume(audioRef.current!, 0.4);
+
+                            // Only remove listeners if it ACTUALLY worked
+                            ['click', 'mousemove', 'keydown', 'touchstart', 'scroll'].forEach(event =>
+                                window.removeEventListener(event, handleFirstInteraction)
+                            );
+                        })
+                        .catch(error => {
+                            // FAIL: Browser blocked it (likely "interaction required")
+                            // We do NOT remove listeners, so we try again on the next event (e.g. the actual click)
+                            console.log("Autoplay deferred (waiting for gesture):", error);
+                        });
+                }
             }
         };
 
