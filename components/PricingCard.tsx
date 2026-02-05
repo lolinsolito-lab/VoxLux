@@ -25,6 +25,7 @@ export const PricingCard: React.FC<PricingCardProps> = ({
     features,
     price,
     priceFull,
+    savings,
     onEnter,
     onHover,
     isDesktop = false
