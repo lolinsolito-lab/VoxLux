@@ -22,6 +22,7 @@ import { ProtectedRoute } from './components/ProtectedRoute';
 import { CourseViewWrapper } from './components/CourseViewWrapper';
 import { AscensionViewWrapper } from './components/AscensionViewWrapper';
 import { ThankYouPage } from './components/ThankYouPage';
+import { TermsPage } from './components/TermsPage';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { createCheckoutSession, CourseId } from './services/stripe';
 
@@ -76,6 +77,7 @@ const App: React.FC = () => {
           <Route path="/signup" element={<SignupPage />} />
           <Route path="/reset-password" element={<ResetPasswordPage />} />
           <Route path="/thank-you" element={<ThankYouPage />} />
+          <Route path="/terms" element={<TermsPage />} />
 
           {/* Protected Dashboard */}
           <Route path="/dashboard" element={

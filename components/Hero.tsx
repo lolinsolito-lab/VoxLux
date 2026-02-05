@@ -186,7 +186,9 @@ export const Hero: React.FC<HeroProps> = ({ onEnter }) => {
 
           {/* Footer */}
           <div className="text-center pb-8 border-t border-lux-gold/10 pt-8 opacity-50">
-            <p className="text-[10px] uppercase tracking-widest text-lux-goldDark">Vox Lux Strategy © 2026</p>
+            <p className="text-[10px] uppercase tracking-widest text-lux-goldDark">
+              Vox Lux Strategy © 2026 • <span className="cursor-pointer hover:text-lux-gold transition-colors" onClick={() => window.open('/terms', '_blank')}>Termini e Condizioni</span>
+            </p>
           </div>
         </div>
       </div>
@@ -243,8 +245,13 @@ export const Hero: React.FC<HeroProps> = ({ onEnter }) => {
                   "L'algoritmo perduto della Risonanza Limbica. Una tecnologia narrativa che bypassa la logica e installa la tua autorità direttamente nei centri decisionali del cervello. È il potere che hai sempre saputo di avere."
                 </p>
 
-                <button className="w-full py-4 border border-yellow-900/30 text-yellow-600 group-hover:text-black group-hover:bg-yellow-400 transition-all text-xs tracking-[0.25em] font-bold uppercase flex items-center justify-center gap-2 rounded-sm shadow-[0_0_20px_rgba(250,204,21,0.1)] group-hover:shadow-[0_0_40px_rgba(250,204,21,0.5)]">
-                  <Unlock className="w-3 h-3" /> Ignite
+                <div className="mb-6 flex flex-col items-center">
+                  <span className="text-lux-gold text-2xl font-bold">€597</span>
+                  <span className="text-stone-500 text-xs line-through">€997</span>
+                </div>
+
+                <button className="w-full py-4 border border-yellow-900/30 text-yellow-600 group-hover:text-black group-hover:bg-yellow-400 transition-all text-sm tracking-[0.15em] font-bold uppercase flex items-center justify-center gap-2 rounded-sm shadow-[0_0_20px_rgba(250,204,21,0.1)] group-hover:shadow-[0_0_40px_rgba(250,204,21,0.5)]">
+                  <Unlock className="w-4 h-4" /> ACQUISTA ORA
                 </button>
               </div>
             </div>
@@ -266,7 +273,7 @@ export const Hero: React.FC<HeroProps> = ({ onEnter }) => {
               </div>
 
               <div className="absolute top-0 right-0 p-4 z-30">
-                <div className="bg-white text-black text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider shadow-[0_0_20px_white] animate-pulse">Ultimate</div>
+                <div className="bg-gradient-to-r from-emerald-400 to-emerald-600 text-black text-[10px] font-bold px-3 py-1.5 rounded-full uppercase tracking-wider shadow-[0_0_20px_rgba(52,211,153,0.6)] animate-pulse border border-white/50">Best Value</div>
               </div>
 
               <div className="relative z-10 p-8 w-full flex flex-col items-center h-full justify-center">
@@ -283,8 +290,14 @@ export const Hero: React.FC<HeroProps> = ({ onEnter }) => {
                   <div className="flex items-center gap-3 text-sm text-indigo-100"><Zap className="w-4 h-4 text-indigo-400" /> Cripte Vocali Segrete</div>
                 </div>
 
-                <button className="w-full py-5 bg-white text-black text-sm tracking-[0.3em] font-bold uppercase flex items-center justify-center gap-3 hover:bg-indigo-100 transition-all rounded-sm shadow-[0_0_30px_white] hover:shadow-[0_0_60px_white]">
-                  Enter Vortex <ArrowRight className="w-4 h-4" />
+                <div className="mb-6 flex flex-col items-center">
+                  <span className="text-white text-4xl font-bold drop-shadow-[0_0_10px_rgba(255,255,255,0.5)]">€997</span>
+                  <span className="text-indigo-300 text-sm line-through mt-1">€1.194</span>
+                  <span className="text-emerald-400 text-xs font-bold mt-2 uppercase tracking-wide animate-pulse">Risparmi €197</span>
+                </div>
+
+                <button className="w-full py-5 bg-white text-black text-sm tracking-[0.2em] font-bold uppercase flex items-center justify-center gap-3 hover:bg-indigo-100 transition-all rounded-sm shadow-[0_0_30px_white] hover:shadow-[0_0_60px_white]">
+                  ACCEDI ALL'ASCENSIONE <ArrowRight className="w-5 h-5" />
                 </button>
               </div>
             </div>
@@ -319,8 +332,13 @@ export const Hero: React.FC<HeroProps> = ({ onEnter }) => {
                   "Psico-acustica pura. Crea un legame ossitocinico indissolubile con la tua audience. Diventa la voce interiore che li guida, il segreto che volevano custodire."
                 </p>
 
-                <button className="w-full py-4 border border-stone-800 text-stone-500 group-hover:text-white group-hover:border-white/80 group-hover:bg-white/5 transition-all text-xs tracking-[0.25em] font-bold uppercase flex items-center justify-center gap-2 rounded-sm shadow-[0_0_20px_rgba(255,255,255,0.05)] group-hover:shadow-[0_0_30px_rgba(255,255,255,0.4)]">
-                  <Unlock className="w-3 h-3" /> Materialize
+                <div className="mb-6 flex flex-col items-center">
+                  <span className="text-stone-300 text-2xl font-bold">€597</span>
+                  <span className="text-stone-600 text-xs line-through">€997</span>
+                </div>
+
+                <button className="w-full py-4 border border-stone-800 text-stone-500 group-hover:text-white group-hover:border-white/80 group-hover:bg-white/5 transition-all text-sm tracking-[0.15em] font-bold uppercase flex items-center justify-center gap-2 rounded-sm shadow-[0_0_20px_rgba(255,255,255,0.05)] group-hover:shadow-[0_0_30px_rgba(255,255,255,0.4)]">
+                  <Unlock className="w-4 h-4" /> ACQUISTA ORA
                 </button>
               </div>
             </div>
