@@ -18,14 +18,17 @@ export const useAudioSystem = () => {
             }
         }
         if (audioCtxRef.current?.state === 'suspended') {
-            audioCtxRef.current.resume();
+            audioCtxRef.current.resume().catch(() => {
+                // Ignore autoplay errors - user hasn't interacted yet
+            });
         }
         return audioCtxRef.current;
     };
 
     const playSound = useCallback((type: SoundType) => {
         const ctx = initAudio();
-        if (!ctx || !masterGainRef.current) return;
+        // If context is still suspended (autoplay blocked) and it's just a hover, don't try to force it
+        if (!ctx || !masterGainRef.current || (ctx.state === 'suspended' && type === 'hover')) return;
 
         const now = ctx.currentTime;
         const osc = ctx.createOscillator();
