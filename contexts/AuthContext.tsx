@@ -132,7 +132,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         email: string,
         password: string,
         fullName: string
-    ): Promise<{ success: boolean; error?: string }> => {
+    ): Promise<{ success: boolean; error?: string; userId?: string }> => {
         try {
             const { data, error } = await supabase.auth.signUp({
                 email,
@@ -150,6 +150,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
             if (data.user) {
                 await loadUserProfile(data.user.id);
+                return { success: true, userId: data.user.id };
             }
 
             return { success: true };

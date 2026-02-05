@@ -1,17 +1,21 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { BRANDING } from '../config/branding';
 
 export const SignupPage: React.FC = () => {
+    const [searchParams] = useSearchParams();
+    const navigate = useNavigate();
+    const { signup } = useAuth();
+
+    const prefilledEmail = searchParams.get('email') || '';
+
     const [fullName, setFullName] = useState('');
-    const [email, setEmail] = useState('');
+    const [email, setEmail] = useState(prefilledEmail);
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
-    const { signup } = useAuth();
-    const navigate = useNavigate();
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -33,6 +37,31 @@ export const SignupPage: React.FC = () => {
         const result = await signup(email, password, fullName);
 
         if (result.success) {
+            // Call activate-purchase Edge Function to link any pending purchases
+            try {
+                const response = await fetch(
+                    `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/activate-purchase`,
+                    {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`
+                        },
+                        body: JSON.stringify({
+                            email: email.toLowerCase(),
+                            userId: result.userId
+                        })
+                    }
+                );
+
+                if (!response.ok) {
+                    console.error('Failed to activate purchases:', await response.text());
+                }
+            } catch (error) {
+                console.error('Error activating purchases:', error);
+                // Don't block signup if activation fails
+            }
+
             navigate('/dashboard');
         } else {
             setError(result.error || 'Registrazione fallita');

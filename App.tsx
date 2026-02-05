@@ -17,6 +17,11 @@ import { AscensionView } from './components/AscensionView';
 import { LoginPage } from './components/LoginPage';
 import { SignupPage } from './components/SignupPage';
 import { ResetPasswordPage } from './components/ResetPasswordPage';
+import { DashboardPage } from './components/DashboardPage';
+import { ProtectedRoute } from './components/ProtectedRoute';
+import { CourseViewWrapper } from './components/CourseViewWrapper';
+import { AscensionViewWrapper } from './components/AscensionViewWrapper';
+import { ThankYouPage } from './components/ThankYouPage';
 import { AuthProvider } from './contexts/AuthContext';
 
 
@@ -69,8 +74,29 @@ const App: React.FC = () => {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<SignupPage />} />
           <Route path="/reset-password" element={<ResetPasswordPage />} />
+          <Route path="/thank-you" element={<ThankYouPage />} />
 
-          {/* Main App */}
+          {/* Protected Dashboard */}
+          <Route path="/dashboard" element={
+            <ProtectedRoute>
+              <DashboardPage />
+            </ProtectedRoute>
+          } />
+
+          {/* Protected Course Routes */}
+          <Route path="/course/:courseId" element={
+            <ProtectedRoute>
+              <CourseViewWrapper />
+            </ProtectedRoute>
+          } />
+
+          <Route path="/ascension" element={
+            <ProtectedRoute requiredCourse="ascension-box">
+              <AscensionViewWrapper />
+            </ProtectedRoute>
+          } />
+
+          {/* Main App (Public) */}
           <Route path="/*" element={<MainApp />} />
         </Routes>
       </BrowserRouter>
