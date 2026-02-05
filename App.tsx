@@ -26,6 +26,7 @@ import { ThankYouPage } from './components/ThankYouPage';
 import { TermsPage } from './components/TermsPage';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { createCheckoutSession, CourseId } from './services/stripe';
+import { BackgroundMusic } from './components/BackgroundMusic';
 
 
 // 🌌 VOX LUX STRATEGY - ELITE CONSOLE SIGNATURE
@@ -72,6 +73,7 @@ const App: React.FC = () => {
   return (
     <AuthProvider>
       <BrowserRouter>
+        <BackgroundMusic src="/audio/hero_theme.mp3" />
         <Routes>
           {/* Auth Routes */}
           <Route path="/login" element={<LoginPage />} />
