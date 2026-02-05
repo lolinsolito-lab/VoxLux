@@ -10,6 +10,7 @@ interface PricingCardProps {
     features: string[];
     price: string;
     priceFull: string;
+    savings?: string;
     onEnter: (id: string) => void;
     onHover?: () => void;
     isDesktop?: boolean;
@@ -115,69 +116,69 @@ export const PricingCard: React.FC<PricingCardProps> = ({
                     <FeatureList />
 
                     <div className="mt-auto w-full">
-                        <div className="mb-4 flex flex-col items-center">
-                            <span className={`${isSun ? 'text-lux-gold' : 'text-stone-300'} text-3xl font-bold`}>{price}</span>
-                            <span className="text-stone-500 text-xs line-through">{priceFull}</span>
-                        </div>
-
-                        <button className={`w-full py-3 border ${theme.buttonBorder} transition-all text-xs tracking-[0.15em] font-bold uppercase flex items-center justify-center gap-2 rounded-sm ${theme.buttonShadow}`}>
-                            <Unlock className="w-3 h-3" /> ACQUISTA ORA
-                        </button>
-                    </div>
-                </div>
-            </div>
-        );
-    }
-
-    // Mobile View
-    return (
-        <div
-            onClick={() => onEnter(id)}
-            className={`relative w-full max-w-[340px] mx-auto min-h-[520px] rounded-2xl overflow-hidden flex flex-col border ${theme.mobileBorder} bg-lux-navy/80 backdrop-blur-xl ${theme.mobileShadow}`}
-        >
-            {/* Background Effects */}
-            <div className="absolute inset-0 opacity-100 pointer-events-none">
-                {isSun ? (
-                    <>
-                        <div className="absolute inset-[-50%] bg-[conic-gradient(from_0deg,transparent_0_340deg,#facc15_360deg)] animate-[spin_10s_linear_infinite] blur-3xl opacity-40"></div>
-                        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-yellow-900/40 via-black/80 to-black"></div>
-                        <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-80 animate-pulse text-yellow-200"></div>
-                    </>
-                ) : (
-                    <>
-                        <div className="absolute top-[5%] left-[5%] w-[90%] h-[90%] border-t-2 border-r-2 border-white/40 rounded-full animate-[spin_10s_linear_infinite] shadow-[0_0_30px_rgba(255,255,255,0.2)]"></div>
-                        <div className="absolute top-[10%] left-[10%] w-[80%] h-[80%] border-b-2 border-l-2 border-white/30 rounded-full animate-[spin_15s_linear_infinite_reverse]"></div>
-                        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_var(--tw-gradient-stops))] from-stone-800/70 via-black to-black"></div>
-                    </>
-                )}
-            </div>
-
-            <div className="relative z-10 flex flex-col h-full items-center py-8 px-6">
-                {/* Icon */}
-                <div className={`w-20 h-20 rounded-full border ${isSun ? 'border-yellow-500/80 bg-yellow-500/10' : 'border-stone-400/80 bg-white/5'} flex items-center justify-center mb-4 ${theme.mobileIconShadow} relative overflow-visible mt-2`}>
-                    {isSun ? <div className="absolute inset-0 bg-yellow-400/30 blur-2xl animate-[pulse_2s_infinite]"></div> : <div className="absolute inset-0 rounded-full bg-white/20 animate-[ping_3s_infinite]"></div>}
-                    <Icon className={`w-10 h-10 ${isSun ? 'text-yellow-300 animate-[spin_4s_linear_infinite]' : 'text-white animate-[pulse_2s_infinite]'} relative z-10`} />
-                </div>
-
-                <div className="flex flex-col items-center w-full">
-                    <h3 className={`text-2xl font-display font-bold text-transparent bg-clip-text bg-gradient-to-b ${isSun ? 'from-yellow-50 to-yellow-500' : 'from-stone-100 to-stone-500'} mb-2 drop-shadow-xl leading-tight text-center`}>{title}</h3>
-                    <p className={`text-[10px] uppercase tracking-[0.4em] ${isSun ? 'text-yellow-500' : 'text-stone-300'} mb-6 font-bold border-b ${isSun ? 'border-yellow-500/30' : 'border-stone-500/50'} pb-2`}>{subtitle}</p>
-
-                    {/* Features List Mobile */}
-                    <FeatureList />
-                </div>
-
-                <div className="mt-auto w-full">
-                    <div className="mb-4 flex flex-col items-center">
                         <span className={`${isSun ? 'text-lux-gold' : 'text-stone-300'} text-3xl font-bold`}>{price}</span>
                         <span className="text-stone-500 text-xs line-through">{priceFull}</span>
+                        {savings && <span className={`${isSun ? 'text-yellow-400' : 'text-emerald-400'} text-[10px] font-bold mt-1 uppercase tracking-wide`}>{savings}</span>}
                     </div>
 
-                    <button className={`w-full py-4 border ${isSun ? 'border-yellow-500/50 text-yellow-500 bg-yellow-500/10 hover:bg-yellow-500/20' : 'border-stone-600/50 text-stone-300 bg-white/10 hover:bg-white/20'} transition-all text-xs tracking-[0.25em] font-bold uppercase flex items-center justify-center gap-2 rounded-sm shadow-[0_0_20px_rgba(255,255,255,0.2)]`}>
-                        <Unlock className="w-3 h-3" /> {isSun ? 'Ignite' : 'Materialize'}
+                    <button className={`w-full py-3 border ${theme.buttonBorder} transition-all text-xs tracking-[0.15em] font-bold uppercase flex items-center justify-center gap-2 rounded-sm ${theme.buttonShadow}`}>
+                        <Unlock className="w-3 h-3" /> ACQUISTA ORA
                     </button>
                 </div>
             </div>
+            </div >
+        );
+    }
+
+// Mobile View
+return (
+    <div
+        onClick={() => onEnter(id)}
+        className={`relative w-full max-w-[340px] mx-auto min-h-[520px] rounded-2xl overflow-hidden flex flex-col border ${theme.mobileBorder} bg-lux-navy/80 backdrop-blur-xl ${theme.mobileShadow}`}
+    >
+        {/* Background Effects */}
+        <div className="absolute inset-0 opacity-100 pointer-events-none">
+            {isSun ? (
+                <>
+                    <div className="absolute inset-[-50%] bg-[conic-gradient(from_0deg,transparent_0_340deg,#facc15_360deg)] animate-[spin_10s_linear_infinite] blur-3xl opacity-40"></div>
+                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-yellow-900/40 via-black/80 to-black"></div>
+                    <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-80 animate-pulse text-yellow-200"></div>
+                </>
+            ) : (
+                <>
+                    <div className="absolute top-[5%] left-[5%] w-[90%] h-[90%] border-t-2 border-r-2 border-white/40 rounded-full animate-[spin_10s_linear_infinite] shadow-[0_0_30px_rgba(255,255,255,0.2)]"></div>
+                    <div className="absolute top-[10%] left-[10%] w-[80%] h-[80%] border-b-2 border-l-2 border-white/30 rounded-full animate-[spin_15s_linear_infinite_reverse]"></div>
+                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_var(--tw-gradient-stops))] from-stone-800/70 via-black to-black"></div>
+                </>
+            )}
         </div>
-    );
+
+        <div className="relative z-10 flex flex-col h-full items-center py-8 px-6">
+            {/* Icon */}
+            <div className={`w-20 h-20 rounded-full border ${isSun ? 'border-yellow-500/80 bg-yellow-500/10' : 'border-stone-400/80 bg-white/5'} flex items-center justify-center mb-4 ${theme.mobileIconShadow} relative overflow-visible mt-2`}>
+                {isSun ? <div className="absolute inset-0 bg-yellow-400/30 blur-2xl animate-[pulse_2s_infinite]"></div> : <div className="absolute inset-0 rounded-full bg-white/20 animate-[ping_3s_infinite]"></div>}
+                <Icon className={`w-10 h-10 ${isSun ? 'text-yellow-300 animate-[spin_4s_linear_infinite]' : 'text-white animate-[pulse_2s_infinite]'} relative z-10`} />
+            </div>
+
+            <div className="flex flex-col items-center w-full">
+                <h3 className={`text-2xl font-display font-bold text-transparent bg-clip-text bg-gradient-to-b ${isSun ? 'from-yellow-50 to-yellow-500' : 'from-stone-100 to-stone-500'} mb-2 drop-shadow-xl leading-tight text-center`}>{title}</h3>
+                <p className={`text-[10px] uppercase tracking-[0.4em] ${isSun ? 'text-yellow-500' : 'text-stone-300'} mb-6 font-bold border-b ${isSun ? 'border-yellow-500/30' : 'border-stone-500/50'} pb-2`}>{subtitle}</p>
+
+                {/* Features List Mobile */}
+                <FeatureList />
+            </div>
+
+            <div className="mt-auto w-full">
+                <div className="mb-4 flex flex-col items-center">
+                    <span className={`${isSun ? 'text-lux-gold' : 'text-stone-300'} text-3xl font-bold`}>{price}</span>
+                    <span className="text-stone-500 text-xs line-through">{priceFull}</span>
+                </div>
+
+                <button className={`w-full py-4 border ${isSun ? 'border-yellow-500/50 text-yellow-500 bg-yellow-500/10 hover:bg-yellow-500/20' : 'border-stone-600/50 text-stone-300 bg-white/10 hover:bg-white/20'} transition-all text-xs tracking-[0.25em] font-bold uppercase flex items-center justify-center gap-2 rounded-sm shadow-[0_0_20px_rgba(255,255,255,0.2)]`}>
+                    <Unlock className="w-3 h-3" /> {isSun ? 'Ignite' : 'Materialize'}
+                </button>
+            </div>
+        </div>
+    </div>
+);
 };
