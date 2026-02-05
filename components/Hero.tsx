@@ -182,10 +182,10 @@ export const Hero: React.FC<HeroProps> = ({ onEnter }) => {
       {/* =====================================================================================
           DESKTOP VIEW (>= 1024px)
          ===================================================================================== */}
-      <div className="hidden lg:flex w-full min-h-screen flex-col justify-start items-center relative z-10 pt-32 pb-10">
+      <div className="hidden lg:flex w-full min-h-screen flex-col justify-start items-center relative z-10 pt-12 pb-10">
 
         {/* Header */}
-        <div className="text-center mb-24 animate-[fadeIn_1s_ease-out]">
+        <div className="text-center mb-8 animate-[fadeIn_1s_ease-out]">
           <div className="inline-block mb-4 animate-float">
             <Crown className="w-12 h-12 text-lux-gold drop-shadow-[0_0_15px_rgba(228,197,114,0.6)]" />
           </div>
