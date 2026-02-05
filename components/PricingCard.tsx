@@ -70,8 +70,7 @@ export const PricingCard: React.FC<PricingCardProps> = ({
         <ul className="w-full text-left space-y-3 mb-8 px-4">
             {features.map((feature, i) => (
                 <li key={i} className={`flex items-start gap-2 text-xs ${isSun ? 'text-yellow-100/80' : 'text-stone-300'} font-medium`}>
-                    <CheckCircle className={`w-4 h-4 min-w-[16px] ${theme.featureIcon}`} />
-                    <span>{feature}</span>
+                    <span className="leading-relaxed">{feature}</span>
                 </li>
             ))}
         </ul>

@@ -18,11 +18,11 @@ export const AscensionCard: React.FC<AscensionCardProps> = ({ onEnter, onHover, 
             <p className="text-xs uppercase tracking-[0.5em] text-indigo-300 mb-10 font-bold border-b border-indigo-500/50 pb-2">The Singularity</p>
 
             <div className={`space-y-3 w-full text-left pl-8 mb-4 flex-grow ${isDesktop ? 'opacity-80 group-hover:opacity-100 transition-opacity' : 'opacity-100'} border-l-2 border-indigo-500/50 ml-6`}>
-                <div className="flex items-center gap-3 text-xs text-indigo-100 font-medium"><Zap className="w-4 h-4 text-indigo-400" /> ⚛️ ACCESSO SINGOLARITÀ (Tutto)</div>
-                <div className="flex items-center gap-3 text-xs text-indigo-100 font-medium"><Crown className="w-4 h-4 text-indigo-400" /> 🔱 Doppia Maestria (Sole + Luna)</div>
-                <div className="flex items-center gap-3 text-xs text-indigo-100 font-medium"><Zap className="w-4 h-4 text-indigo-400" /> 🗝️ LE CRIPTE VOCALI (File Segreti)</div>
-                <div className="flex items-center gap-3 text-xs text-indigo-100 font-medium"><Crown className="w-4 h-4 text-indigo-400" /> 💎 2x Diplomi Blockchain</div>
-                <div className="flex items-center gap-3 text-xs text-indigo-100 font-medium"><Zap className="w-4 h-4 text-indigo-400" /> ⚔️ Accesso War Room (Vita)</div>
+                <div className="flex items-center gap-3 text-xs text-indigo-100 font-medium">⚛️ ACCESSO SINGOLARITÀ (Tutto)</div>
+                <div className="flex items-center gap-3 text-xs text-indigo-100 font-medium">🔱 Doppia Maestria (Sole + Luna)</div>
+                <div className="flex items-center gap-3 text-xs text-indigo-100 font-medium">🗝️ LE CRIPTE VOCALI (File Segreti)</div>
+                <div className="flex items-center gap-3 text-xs text-indigo-100 font-medium">💎 2x Diplomi Blockchain</div>
+                <div className="flex items-center gap-3 text-xs text-indigo-100 font-medium">⚔️ Accesso War Room (Vita)</div>
             </div>
 
             <div className="mb-6 flex flex-col items-center">

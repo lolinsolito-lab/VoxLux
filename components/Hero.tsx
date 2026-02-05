@@ -143,11 +143,11 @@ export const Hero: React.FC<HeroProps> = ({ onEnter }) => {
             subtitle="The Sun Archetype"
             description="Il Protocollo Definitivo di Neuro-Narrativa."
             features={[
-              "10 Mondi (30 Moduli)",
-              "Analisi Archetipale",
-              "Template 'Hero's Journey'",
-              "Diploma Storytelling NFT",
-              "Accesso a Vita"
+              "🧬 10 Mondi Neuro-Narrativi",
+              "🧠 Hacking dell'Amigdala",
+              "📜 'Hero's Journey' Protocol",
+              "🦁 Analisi Archetipale Estrema",
+              "🏆 Diploma 'Sun Walker' NFT"
             ]}
             price="€597"
             priceFull="€997"
@@ -163,11 +163,11 @@ export const Hero: React.FC<HeroProps> = ({ onEnter }) => {
             subtitle="The Moon Archetype"
             description="Ingegneria Acustica e Design Immersivo."
             features={[
-              "10 Mondi (30 Moduli)",
-              "Ingegneria Acustica",
-              "Sound Design Epico",
-              "Diploma Podcast NFT",
-              "Distribuzione Globale"
+              "🌑 10 Mondi Psico-Acustici",
+              "🎧 Audio-Engineering Ipnotico",
+              "🌊 Onde Cerebrali & Ritmo",
+              "🎙️ Setup da Studio Hollywood",
+              "🏆 Diploma 'Moon Walker' NFT"
             ]}
             price="€597"
             priceFull="€997"
@@ -208,11 +208,11 @@ export const Hero: React.FC<HeroProps> = ({ onEnter }) => {
               subtitle="The Sun Archetype"
               description="Il Protocollo Definitivo di Neuro-Narrativa per installare la tua autorità."
               features={[
-                "10 Mondi (30 Moduli)",
-                "Analisi Archetipale",
-                "Template 'Hero's Journey'",
-                "Diploma Storytelling NFT",
-                "Accesso a Vita"
+                "🧬 10 Mondi Neuro-Narrativi",
+                "🧠 Hacking dell'Amigdala",
+                "📜 'Hero's Journey' Protocol",
+                "🦁 Analisi Archetipale Estrema",
+                "🏆 Diploma 'Sun Walker' NFT"
               ]}
               price="€597"
               priceFull="€997"
@@ -230,11 +230,11 @@ export const Hero: React.FC<HeroProps> = ({ onEnter }) => {
               subtitle="The Moon Archetype"
               description="Ingegneria Acustica e Design di Esperienze Immersive per creare legami ossitocinici."
               features={[
-                "10 Mondi (30 Moduli)",
-                "Ingegneria Acustica",
-                "Sound Design Epico",
-                "Diploma Podcast NFT",
-                "Distribuzione Globale"
+                "🌑 10 Mondi Psico-Acustici",
+                "🎧 Audio-Engineering Ipnotico",
+                "🌊 Onde Cerebrali & Ritmo",
+                "🎙️ Setup da Studio Hollywood",
+                "🏆 Diploma 'Moon Walker' NFT"
               ]}
               price="€597"
               priceFull="€997"
