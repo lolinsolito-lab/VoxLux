@@ -141,7 +141,14 @@ export const Hero: React.FC<HeroProps> = ({ onEnter }) => {
             type="sun"
             title={<>STORYTELLING<br />MASTERMIND</>}
             subtitle="The Sun Archetype"
-            description={storyDescription}
+            description="Il Protocollo Definitivo di Neuro-Narrativa."
+            features={[
+              "10 Mondi (30 Moduli)",
+              "Analisi Archetipale",
+              "Template 'Hero's Journey'",
+              "Diploma Storytelling NFT",
+              "Accesso a Vita"
+            ]}
             price="€597"
             priceFull="€997"
             onEnter={onEnter}
@@ -154,7 +161,14 @@ export const Hero: React.FC<HeroProps> = ({ onEnter }) => {
             type="moon"
             title={<>PODCAST<br />MASTERMIND</>}
             subtitle="The Moon Archetype"
-            description={podcastDescription}
+            description="Ingegneria Acustica e Design Immersivo."
+            features={[
+              "10 Mondi (30 Moduli)",
+              "Ingegneria Acustica",
+              "Sound Design Epico",
+              "Diploma Podcast NFT",
+              "Distribuzione Globale"
+            ]}
             price="€597"
             priceFull="€997"
             onEnter={onEnter}
@@ -192,7 +206,14 @@ export const Hero: React.FC<HeroProps> = ({ onEnter }) => {
               type="sun"
               title="STORYTELLING MASTERMIND"
               subtitle="The Sun Archetype"
-              description={storyDescription}
+              description="Il Protocollo Definitivo di Neuro-Narrativa per installare la tua autorità."
+              features={[
+                "10 Mondi (30 Moduli)",
+                "Analisi Archetipale",
+                "Template 'Hero's Journey'",
+                "Diploma Storytelling NFT",
+                "Accesso a Vita"
+              ]}
               price="€597"
               priceFull="€997"
               onEnter={onEnter}
@@ -207,7 +228,14 @@ export const Hero: React.FC<HeroProps> = ({ onEnter }) => {
               type="moon"
               title="PODCAST MASTERMIND"
               subtitle="The Moon Archetype"
-              description={podcastDescription}
+              description="Ingegneria Acustica e Design di Esperienze Immersive per creare legami ossitocinici."
+              features={[
+                "10 Mondi (30 Moduli)",
+                "Ingegneria Acustica",
+                "Sound Design Epico",
+                "Diploma Podcast NFT",
+                "Distribuzione Globale"
+              ]}
               price="€597"
               priceFull="€997"
               onEnter={onEnter}
