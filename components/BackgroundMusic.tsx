@@ -91,13 +91,27 @@ export const BackgroundMusic: React.FC<BackgroundMusicProps> = ({ src }) => {
         const handleFirstInteraction = () => {
             if (!userInteracted && audioRef.current && shouldPlay) {
                 setUserInteracted(true);
-                audioRef.current.play().catch(e => console.log("Play failed", e));
-                fadeVolume(audioRef.current, 0.4);
+                audioRef.current.play()
+                    .then(() => fadeVolume(audioRef.current!, 0.4))
+                    .catch(e => console.log("Autoplay prevented:", e));
+
+                // Remove all listeners once triggered
+                ['click', 'mousemove', 'keydown', 'touchstart', 'scroll'].forEach(event =>
+                    window.removeEventListener(event, handleFirstInteraction)
+                );
             }
         };
 
-        window.addEventListener('click', handleFirstInteraction);
-        return () => window.removeEventListener('click', handleFirstInteraction);
+        // Listen for ANY interaction to start music asap
+        ['click', 'mousemove', 'keydown', 'touchstart', 'scroll'].forEach(event =>
+            window.addEventListener(event, handleFirstInteraction)
+        );
+
+        return () => {
+            ['click', 'mousemove', 'keydown', 'touchstart', 'scroll'].forEach(event =>
+                window.removeEventListener(event, handleFirstInteraction)
+            );
+        };
     }, [userInteracted, shouldPlay]);
 
     if (!shouldPlay && audioRef.current?.paused) return null;
