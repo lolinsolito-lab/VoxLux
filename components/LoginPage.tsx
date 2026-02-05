@@ -107,13 +107,7 @@ export const LoginPage: React.FC = () => {
                         </button>
 
                         <div className="text-sm text-gray-500">
-                            Non hai un account?{' '}
-                            <button
-                                onClick={() => navigate('/signup')}
-                                className="text-yellow-500 hover:text-yellow-400 font-semibold transition-colors"
-                            >
-                                Registrati
-                            </button>
+                            Accesso riservato ai membri.
                         </div>
                     </div>
                 </div>

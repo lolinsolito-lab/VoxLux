@@ -99,7 +99,7 @@ export const Hero: React.FC<HeroProps> = ({ onEnter }) => {
 
               <h3 className="text-2xl font-display font-bold text-white mb-2">Accesso Riservato</h3>
               <p className="text-gray-400 text-sm mb-8 leading-relaxed">
-                L'iscrizione a Vox Lux è possibile solo tramite <strong>Invito</strong> o <strong>Chiave di Accesso</strong> (acquisto di una Matrice).
+                L'accesso a Vox Lux è un privilegio riservato. Non ci sono iscrizioni aperte.<br /><br />L'unico modo per entrare è possedere una <strong>Matrice</strong>.
               </p>
 
               <div className="space-y-3">
@@ -108,20 +108,12 @@ export const Hero: React.FC<HeroProps> = ({ onEnter }) => {
                     setShowRegisterModal(false);
                     scrollToContent(); // Scroll to pricing
                   }}
-                  className="w-full py-3 bg-lux-gold text-black font-bold uppercase tracking-widest text-sm rounded hover:bg-yellow-400 transition-colors shadow-[0_0_20px_rgba(250,204,21,0.4)]"
+                  className="w-full py-4 bg-lux-gold text-black font-bold uppercase tracking-widest text-sm rounded hover:bg-yellow-400 transition-colors shadow-[0_0_20px_rgba(250,204,21,0.4)]"
                 >
-                  Acquista una Chiave
+                  VISUALIZZA LE MATRICI
                 </button>
 
-                <button
-                  onClick={() => {
-                    setShowRegisterModal(false);
-                    navigate('/login');
-                  }}
-                  className="w-full py-3 bg-transparent border border-gray-700 text-gray-400 font-bold uppercase tracking-widest text-sm rounded hover:border-white hover:text-white transition-colors"
-                >
-                  Ho già un account
-                </button>
+
               </div>
             </div>
           </div>
@@ -204,7 +196,7 @@ export const Hero: React.FC<HeroProps> = ({ onEnter }) => {
                 <p className="text-[10px] uppercase tracking-[0.4em] text-yellow-500 mb-8 font-bold border-b border-yellow-500/30 pb-2">The Sun Archetype</p>
 
                 <p className="text-stone-300 text-sm leading-relaxed mb-8 px-2 font-light">
-                  "L'algoritmo perduto della Risonanza Limbica. Una tecnologia narrativa che bypassa la logica e installa la tua autorità direttamente nei centri decisionali del cervello."
+                  "Il Protocollo Definitivo di Neuro-Narrativa. 10 Mondi e 30 Moduli per installare la tua autorità nei centri decisionali del cervello. Bypassa la logica e diventa la guida che il mercato sta disperatamente cercando."
                 </p>
               </div>
 
@@ -240,7 +232,7 @@ export const Hero: React.FC<HeroProps> = ({ onEnter }) => {
 
               <div className="space-y-4 w-full text-left pl-8 mb-10 flex-grow opacity-100 border-l-2 border-indigo-500/50 ml-6">
                 <div className="flex items-center gap-3 text-sm text-indigo-100 font-medium"><Zap className="w-5 h-5 text-indigo-400" /> Accesso Totale (60 Moduli)</div>
-                <div className="flex items-center gap-3 text-sm text-indigo-100 font-medium"><Crown className="w-5 h-5 text-indigo-400" /> 12 Mastermind Esclusive</div>
+                <div className="flex items-center gap-3 text-sm text-indigo-100 font-medium"><Crown className="w-5 h-5 text-indigo-400" /> Podcast Mastery + Storytelling</div>
                 <div className="flex items-center gap-3 text-sm text-indigo-100 font-medium"><Zap className="w-5 h-5 text-indigo-400" /> Cripte Vocali Segrete</div>
               </div>
 
@@ -276,7 +268,7 @@ export const Hero: React.FC<HeroProps> = ({ onEnter }) => {
                 <p className="text-[10px] uppercase tracking-[0.4em] text-stone-300 mb-8 font-bold border-b border-stone-500/50 pb-2">The Moon Archetype</p>
 
                 <p className="text-stone-300 text-sm leading-relaxed mb-8 px-2 font-light">
-                  "Psico-acustica pura. Crea un legame ossitocinico indissolubile con la tua audience. Diventa la voce interiore che li guida."
+                  "Ingegneria Acustica e Design di Esperienze Immersive. Non un semplice podcast, ma un'arma di influenza. 10 Mondi per creare legami ossitocinici indissolubili."
                 </p>
               </div>
 
@@ -289,7 +281,7 @@ export const Hero: React.FC<HeroProps> = ({ onEnter }) => {
           {/* Footer */}
           <div className="text-center pb-8 border-t border-lux-gold/10 pt-8 opacity-50">
             <p className="text-[10px] uppercase tracking-widest text-lux-goldDark">
-              Vox Lux Strategy © 2026 • <span className="cursor-pointer hover:text-lux-gold transition-colors" onClick={() => window.open('/terms', '_blank')}>Termini e Condizioni</span>
+              Vox Lux Strategy © 2026 • <a href="/privacy" className="hover:text-lux-gold transition-colors">Privacy</a> • <a href="/terms" className="hover:text-lux-gold transition-colors">Termini e Condizioni</a>
             </p>
           </div>
         </div>
@@ -344,7 +336,7 @@ export const Hero: React.FC<HeroProps> = ({ onEnter }) => {
                 <p className="text-[10px] uppercase tracking-[0.4em] text-yellow-600 group-hover:text-yellow-300 mb-6 transition-colors font-bold">The Sun Archetype</p>
 
                 <p className="text-stone-400 text-sm leading-relaxed mb-6 flex-grow px-4 group-hover:text-yellow-100/90 transition-colors">
-                  "L'algoritmo perduto della Risonanza Limbica. Una tecnologia narrativa che bypassa la logica e installa la tua autorità direttamente nei centri decisionali del cervello. È il potere che hai sempre saputo di avere."
+                  "Il Protocollo Definitivo di Neuro-Narrativa. 10 Mondi e 30 Moduli per installare la tua autorità nei centri decisionali del cervello. Bypassa la logica e diventa la guida che il mercato sta disperatamente cercando."
                 </p>
 
                 <div className="mb-6 flex flex-col items-center">
@@ -388,7 +380,7 @@ export const Hero: React.FC<HeroProps> = ({ onEnter }) => {
 
                 <div className="space-y-4 w-full text-left pl-8 mb-8 flex-grow opacity-80 group-hover:opacity-100 transition-opacity border-l border-indigo-500/30 ml-4">
                   <div className="flex items-center gap-3 text-sm text-indigo-100"><Zap className="w-4 h-4 text-indigo-400" /> Accesso Totale (60 Moduli)</div>
-                  <div className="flex items-center gap-3 text-sm text-indigo-100"><Crown className="w-4 h-4 text-indigo-400" /> 12 Mastermind Esclusive</div>
+                  <div className="flex items-center gap-3 text-sm text-indigo-100"><Crown className="w-4 h-4 text-indigo-400" /> Podcast Mastery + Storytelling</div>
                   <div className="flex items-center gap-3 text-sm text-indigo-100"><Zap className="w-4 h-4 text-indigo-400" /> Cripte Vocali Segrete</div>
                 </div>
 
@@ -431,7 +423,7 @@ export const Hero: React.FC<HeroProps> = ({ onEnter }) => {
                 <p className="text-[10px] uppercase tracking-[0.4em] text-stone-500 group-hover:text-white mb-6 transition-colors font-bold">The Moon Archetype</p>
 
                 <p className="text-stone-500 text-sm leading-relaxed mb-6 flex-grow px-4 group-hover:text-stone-300 transition-colors">
-                  "Psico-acustica pura. Crea un legame ossitocinico indissolubile con la tua audience. Diventa la voce interiore che li guida, il segreto che volevano custodire."
+                  "Ingegneria Acustica e Design di Esperienze Immersive. Non un semplice podcast, ma un'arma di influenza. 10 Mondi per creare legami ossitocinici indissolubili."
                 </p>
 
                 <div className="mb-6 flex flex-col items-center">
