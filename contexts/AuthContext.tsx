@@ -8,7 +8,7 @@ interface AuthContextType {
     supabaseUser: SupabaseUser | null;
     loading: boolean;
     login: (email: string, password: string) => Promise<{ success: boolean; error?: string }>;
-    signup: (email: string, password: string, fullName: string) => Promise<{ success: boolean; error?: string }>;
+    signup: (email: string, password: string, fullName: string) => Promise<{ success: boolean; error?: string; userId?: string }>;
     logout: () => Promise<void>;
     resetPassword: (email: string) => Promise<{ success: boolean; error?: string }>;
     hasCourse: (courseId: string) => boolean;
