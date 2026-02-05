@@ -199,7 +199,7 @@ export const Hero: React.FC<HeroProps> = ({ onEnter }) => {
 
         {/* 3-Card Grid */}
         <div className="w-full max-w-7xl mx-auto px-8">
-          <div className="grid grid-cols-3 gap-8 items-stretch h-[550px]">
+          <div className="grid grid-cols-3 gap-8 items-stretch">
 
             <PricingCard
               id="matrice-1"

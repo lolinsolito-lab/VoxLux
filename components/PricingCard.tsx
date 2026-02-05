@@ -116,10 +116,10 @@ export const PricingCard: React.FC<PricingCardProps> = ({
                     {/* Features List */}
                     <FeatureList />
 
-                    <div className="mt-auto w-full">
+                    <div className="mt-auto w-full flex flex-col items-center gap-1 mb-4">
                         <span className={`${isSun ? 'text-lux-gold' : 'text-stone-300'} text-3xl font-bold`}>{price}</span>
                         <span className="text-stone-500 text-xs line-through">{priceFull}</span>
-                        {savings && <span className={`${isSun ? 'text-yellow-400' : 'text-emerald-400'} text-[10px] font-bold mt-1 uppercase tracking-wide`}>{savings}</span>}
+                        {savings && <span className={`${isSun ? 'text-yellow-400' : 'text-emerald-400'} text-[10px] font-bold uppercase tracking-wide`}>{savings}</span>}
                     </div>
 
                     <button className={`w-full py-3 border ${theme.buttonBorder} transition-all text-xs tracking-[0.15em] font-bold uppercase flex items-center justify-center gap-2 rounded-sm ${theme.buttonShadow}`}>
