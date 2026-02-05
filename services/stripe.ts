@@ -63,11 +63,14 @@ export const createCheckoutSession = async (courseId: CourseId, userEmail?: stri
             }),
         });
 
-        const { sessionId } = await response.json();
+        const { url } = await response.json();
 
-        // Redirect to Stripe Checkout
-        const stripe = await getStripe();
-        await stripe?.redirectToCheckout({ sessionId });
+        if (url) {
+            window.location.href = url;
+        } else {
+            console.error('No checkout URL returned from API');
+            throw new Error('No checkout URL returned');
+        }
     } catch (error) {
         console.error('Error creating checkout session:', error);
         throw error;
