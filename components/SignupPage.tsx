@@ -39,23 +39,22 @@ export const SignupPage: React.FC = () => {
         if (result.success) {
             // Call activate-purchase Edge Function to link any pending purchases
             try {
-                const response = await fetch(
-                    `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/activate-purchase`,
-                    {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`
-                        },
-                        body: JSON.stringify({
-                            email: email.toLowerCase(),
-                            userId: result.userId
-                        })
-                    }
-                );
+                // Call local Vercel API (avoids CORS issues)
+                const response = await fetch('/api/activate-purchase', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        email: email.toLowerCase(),
+                        userId: result.userId
+                    })
+                });
 
                 if (!response.ok) {
                     console.error('Failed to activate purchases:', await response.text());
+                } else {
+                    console.log('Purchases activated successfully');
                 }
             } catch (error) {
                 console.error('Error activating purchases:', error);
