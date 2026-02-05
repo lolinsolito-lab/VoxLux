@@ -48,21 +48,23 @@ export const Splash: React.FC<SplashProps> = ({ onComplete }) => {
       {!started && (
         <div className="absolute inset-0 flex flex-col items-center justify-center z-50 bg-black/40 backdrop-blur-sm transition-all duration-700">
 
+          {/* Brand Header */}
+          <div className="mb-12 text-center animate-[fadeIn_1s_ease-out]">
+            <h2 className="text-3xl md:text-5xl font-display font-bold text-transparent bg-clip-text bg-gradient-to-b from-lux-gold via-lux-goldDim to-lux-goldDark drop-shadow-2xl mb-4 tracking-widest">
+              VOX LUX STRATEGY
+            </h2>
+            <p className="text-xs md:text-sm text-blue-200/60 font-serif italic tracking-[0.2em]">
+              "HUMAN VOICE MASTERY & AI STORYTELLING"
+            </p>
+          </div>
+
           {/* Pulsing Border Container */}
           <div className="relative group cursor-pointer" onClick={handleStart}>
 
             {/* Animated Rings */}
             <div className="absolute -inset-8 bg-gradient-to-r from-lux-gold/0 via-lux-gold/30 to-lux-gold/0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 duration-500 animate-[spin_4s_linear_infinite]"></div>
 
-            {/* Brand Header */}
-            <div className="mb-12 text-center transform transition-all duration-700 group-hover:-translate-y-2">
-              <h2 className="text-3xl md:text-5xl font-display font-bold text-transparent bg-clip-text bg-gradient-to-b from-lux-gold via-lux-goldDim to-lux-goldDark drop-shadow-2xl mb-4 tracking-widest">
-                VOX LUX STRATEGY
-              </h2>
-              <p className="text-xs md:text-sm text-blue-200/60 font-serif italic tracking-[0.2em]">
-                "Ascensione Neuro-Digitale"
-              </p>
-            </div>
+
 
             <button
               className="relative px-12 py-4 bg-black/80 border border-lux-gold/30 text-lux-gold font-display font-bold tracking-[0.3em] uppercase text-sm hover:bg-lux-gold hover:text-black transition-all duration-500 shadow-[0_0_30px_rgba(250,204,21,0.1)] group-hover:shadow-[0_0_50px_rgba(250,204,21,0.4)] group-hover:scale-105"
