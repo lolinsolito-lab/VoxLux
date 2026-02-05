@@ -2,6 +2,7 @@ import React, { useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Sparkles, Mic, Box, ArrowRight, Crown, Zap, Unlock, ChevronDown, Lock, X, LogIn } from 'lucide-react';
 import { useAudioSystem } from '../hooks/useAudioSystem';
+import { useAuth } from '../contexts/AuthContext';
 
 interface HeroProps {
   onEnter: (courseId: string) => void;
@@ -9,6 +10,7 @@ interface HeroProps {
 
 export const Hero: React.FC<HeroProps> = ({ onEnter }) => {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [showRegisterModal, setShowRegisterModal] = useState(false);
 
   const { playSound } = useAudioSystem();
@@ -44,18 +46,29 @@ export const Hero: React.FC<HeroProps> = ({ onEnter }) => {
 
         {/* Action Buttons */}
         <div className="flex items-center gap-4">
-          <button
-            onClick={() => navigate('/login')}
-            className="flex items-center gap-2 text-xs uppercase tracking-widest text-gray-400 hover:text-lux-gold transition-colors font-bold"
-          >
-            <LogIn className="w-4 h-4" /> <span className="hidden sm:inline">Accedi</span>
-          </button>
-          <button
-            onClick={() => setShowRegisterModal(true)}
-            className="px-4 py-2 bg-lux-gold/10 border border-lux-gold/30 text-lux-gold text-xs uppercase tracking-widest font-bold rounded hover:bg-lux-gold/20 hover:border-lux-gold transition-all shadow-[0_0_15px_rgba(250,204,21,0.1)]"
-          >
-            Inizia Ora
-          </button>
+          {user ? (
+            <button
+              onClick={() => navigate('/dashboard')}
+              className="flex items-center gap-2 px-6 py-2 bg-lux-gold text-lux-black text-xs uppercase tracking-widest font-bold rounded hover:bg-white transition-all shadow-[0_0_20px_rgba(250,204,21,0.4)]"
+            >
+              <Crown className="w-4 h-4" /> Vai alla Dashboard
+            </button>
+          ) : (
+            <>
+              <button
+                onClick={() => navigate('/login')}
+                className="flex items-center gap-2 text-xs uppercase tracking-widest text-gray-400 hover:text-lux-gold transition-colors font-bold"
+              >
+                <LogIn className="w-4 h-4" /> <span className="hidden sm:inline">Accedi</span>
+              </button>
+              <button
+                onClick={() => setShowRegisterModal(true)}
+                className="px-4 py-2 bg-lux-gold/10 border border-lux-gold/30 text-lux-gold text-xs uppercase tracking-widest font-bold rounded hover:bg-lux-gold/20 hover:border-lux-gold transition-all shadow-[0_0_15px_rgba(250,204,21,0.1)]"
+              >
+                Inizia Ora
+              </button>
+            </>
+          )}
         </div>
       </nav>
 
