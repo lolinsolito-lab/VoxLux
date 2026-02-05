@@ -182,7 +182,7 @@ export const Hero: React.FC<HeroProps> = ({ onEnter }) => {
       {/* =====================================================================================
           DESKTOP VIEW (>= 1024px)
          ===================================================================================== */}
-      <div className="hidden lg:flex w-full min-h-screen flex-col justify-start items-center relative z-10 pt-20 pb-4 scale-90 origin-top">
+      <div className="hidden lg:flex w-full min-h-screen flex-col justify-start items-center relative z-10 pt-36 pb-4 scale-90 origin-top">
 
         {/* Header */}
         <div className="text-center mb-8 animate-[fadeIn_1s_ease-out]">
@@ -251,7 +251,7 @@ export const Hero: React.FC<HeroProps> = ({ onEnter }) => {
         {/* Desktop Footer (Verified Placement) */}
         <div className="w-full py-2 mt-4 relative z-50 border-t border-white/5 bg-black/40 backdrop-blur-sm">
           <div className="max-w-7xl mx-auto px-6 text-center">
-            <p className="text-stone-500 text-xs tracking-[0.2em] mb-2">GARANZIA DI QUALITÀ VOX LUX • PAGAMENTI SICURI STRIPE • ACCESSO IMMEDIATO</p>
+            <p className="text-stone-400 text-xs tracking-[0.2em] mb-2">GARANZIA DI QUALITÀ VOX LUX • PAGAMENTI SICURI STRIPE • ACCESSO IMMEDIATO</p>
             <Footer />
           </div>
         </div>

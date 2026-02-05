@@ -22,7 +22,7 @@ export const AscensionCard: React.FC<AscensionCardProps> = ({ onEnter, onHover, 
                 <div className="flex items-center gap-3 text-xs text-indigo-100 font-medium">🔱 Doppia Maestria (Sole + Luna)</div>
                 <div className="flex items-center gap-3 text-xs text-indigo-100 font-medium">🗝️ LE CRIPTE VOCALI (File Segreti)</div>
                 <div className="flex items-center gap-3 text-xs text-indigo-100 font-medium">💎 2x Diplomi Blockchain</div>
-                <div className="flex items-center gap-3 text-xs text-indigo-100 font-medium">⚔️ Accesso War Room (Vita)</div>
+                <div className="flex items-center gap-3 text-xs text-indigo-100 font-medium">👑 Accesso War Room (Vita)</div>
             </div>
 
             <div className="mb-6 flex flex-col items-center">
