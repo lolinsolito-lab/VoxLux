@@ -102,107 +102,134 @@ export const ThankYouPage: React.FC = () => {
     }, [countdown, navigate, email]);
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-black flex items-center justify-center p-4 relative overflow-hidden">
-            {/* Background Effects */}
-            <div className="absolute inset-0 opacity-20">
-                <div className="absolute top-20 left-20 w-96 h-96 bg-gradient-to-r from-yellow-500/30 to-orange-500/30 rounded-full blur-3xl animate-pulse"></div>
-                <div className="absolute bottom-20 right-20 w-96 h-96 bg-gradient-to-r from-green-500/20 to-emerald-500/20 rounded-full blur-3xl animate-pulse delay-1000"></div>
+        <div className="min-h-screen bg-[#00040A] text-white flex flex-col items-center justify-center p-4 relative overflow-hidden font-sans selection:bg-yellow-500/30">
+            {/* 🌌 Cinematic Background */}
+            <div className="absolute inset-0 z-0">
+                <div className="absolute top-[-20%] left-[-10%] w-[800px] h-[800px] bg-purple-900/10 rounded-full blur-[120px] animate-pulse-slow"></div>
+                <div className="absolute bottom-[-20%] right-[-10%] w-[600px] h-[600px] bg-yellow-600/10 rounded-full blur-[100px] animate-pulse-slow delay-1000"></div>
+                <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 brightness-100 contrast-150"></div>
             </div>
 
-            {/* Success Card */}
-            <div className="relative z-10 w-full max-w-3xl">
-                {/* Logo */}
-                <div className="text-center mb-8">
-                    <h1 className="text-4xl font-black mb-2 bg-gradient-to-r from-yellow-500 via-amber-400 to-yellow-600 bg-clip-text text-transparent tracking-wider">
+            {/* ✨ Content Container */}
+            <div className="relative z-10 w-full max-w-2xl animate-fade-in-up">
+
+                {/* Brand Header */}
+                <div className="text-center mb-12">
+                    <h1 className="font-serif text-2xl tracking-[0.3em] text-yellow-500/80 mb-2 uppercase">
                         {BRANDING.shortName}
                     </h1>
+                    <div className="h-[1px] w-24 bg-gradient-to-r from-transparent via-yellow-500/50 to-transparent mx-auto"></div>
                 </div>
 
-                {/* Main Success Card */}
-                <div className="backdrop-blur-xl bg-white/5 border border-yellow-500/50 rounded-2xl p-12 shadow-2xl text-center">
+                {/* Main Card */}
+                <div className="backdrop-blur-2xl bg-[#0A0A0A]/60 border border-white/10 rounded-3xl p-8 md:p-12 shadow-2xl relative group overflow-hidden">
+                    {/* Glow Effect */}
+                    <div className="absolute inset-0 bg-gradient-to-b from-yellow-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none"></div>
+
                     {/* Success Icon */}
-                    <div className="w-24 h-24 mx-auto mb-6 bg-gradient-to-br from-green-500 to-emerald-600 rounded-full flex items-center justify-center animate-bounce">
-                        <svg className="w-12 h-12 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-                        </svg>
+                    <div className="relative w-24 h-24 mx-auto mb-8">
+                        <div className="absolute inset-0 bg-green-500/20 rounded-full blur-xl animate-pulse"></div>
+                        <div className="relative w-full h-full bg-gradient-to-br from-green-900 to-black border border-green-500/30 rounded-full flex items-center justify-center">
+                            <svg className="w-10 h-10 text-green-400 drop-shadow-[0_0_10px_rgba(74,222,128,0.5)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                            </svg>
+                        </div>
                     </div>
 
-                    {/* Title */}
-                    <h2 className="text-3xl font-black text-white mb-4">
-                        ✅ PAGAMENTO CONFERMATO!
-                    </h2>
-
-                    {/* Tier-Specific Message */}
-                    <p className="text-xl text-gray-300 mb-2">
-                        {tierConfig.icon} {tierConfig.message}
-                    </p>
-
-                    {/* Course Name */}
-                    <div className="backdrop-blur-xl bg-white/10 border border-white/20 rounded-xl p-6 mb-6">
-                        <p className="text-2xl font-bold bg-gradient-to-r from-yellow-500 to-amber-400 bg-clip-text text-transparent">
-                            {tierConfig.name}
+                    {/* Messages */}
+                    <div className="text-center mb-10 space-y-4">
+                        <h2 className="text-4xl md:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-b from-white to-gray-400 tracking-tight">
+                            ACCESSO
+                            <span className="block text-green-400 drop-shadow-lg mt-2 font-serif italic">CONFERMATO</span>
+                        </h2>
+                        <p className="text-xl text-gray-300 font-light border-l-2 border-yellow-500/50 pl-4 inline-block mx-auto text-left">
+                            {tierConfig.message}
                         </p>
                     </div>
 
-                    {/* Bonus Section */}
-                    {purchaseData?.bonus_eligible && (
-                        <div className="backdrop-blur-xl bg-gradient-to-r from-yellow-500/20 to-amber-500/20 border border-yellow-500/50 rounded-xl p-6 mb-6">
-                            <h3 className="text-lg font-bold text-yellow-500 mb-2">
-                                🎁 BONUS SBLOCCATO!
-                            </h3>
-                            <p className="text-white font-semibold mb-3">
-                                {tierConfig.bonus}
-                            </p>
-                            <div className="flex items-center justify-center gap-2 text-sm text-gray-300">
-                                <span>⏰ Registrati entro:</span>
-                                <span className="font-mono font-bold text-yellow-500">
-                                    {bonusTimeLeft || '24h 00m 00s'}
-                                </span>
+                    {/* Course Badge */}
+                    <div className="mb-10 p-[1px] bg-gradient-to-r from-transparent via-yellow-500/30 to-transparent rounded-xl">
+                        <div className="bg-[#050505] rounded-xl p-6 flex items-center gap-6 relative overflow-hidden">
+                            <span className="text-4xl filter drop-shadow-[0_0_15px_rgba(234,179,8,0.3)]">{tierConfig.icon}</span>
+                            <div className="text-left">
+                                <div className="text-xs text-yellow-500 uppercase tracking-widest mb-1">Livello Sbloccato</div>
+                                <div className="font-bold text-lg text-white">{tierConfig.name}</div>
                             </div>
-                            <p className="text-xs text-gray-400 mt-2">
-                                Il bonus sarà automaticamente tuo se completi la registrazione entro 24 ore!
+                        </div>
+                    </div>
+
+                    {/* Bonus Section (if eligible) */}
+                    {purchaseData?.bonus_eligible && (
+                        <div className="mb-10 text-center relative">
+                            <div className="inline-block relative">
+                                <span className="absolute -top-3 -right-3 flex h-3 w-3">
+                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-yellow-400 opacity-75"></span>
+                                    <span className="relative inline-flex rounded-full h-3 w-3 bg-yellow-500"></span>
+                                </span>
+                                <div className="border border-yellow-500/30 bg-yellow-900/10 px-6 py-3 rounded-full text-yellow-400 text-sm font-semibold tracking-wide">
+                                    🎁 BONUS DISPONIBILE PER {bonusTimeLeft || '24h'}
+                                </div>
+                            </div>
+                            <p className="mt-4 text-gray-400 text-sm max-w-sm mx-auto">
+                                Completa la registrazione ora per riscattare: <br />
+                                <strong className="text-white">{tierConfig.bonus}</strong>
                             </p>
                         </div>
                     )}
 
-                    {/* Email Confirmation */}
-                    {email && (
-                        <p className="text-sm text-gray-400 mb-6">
-                            📧 Email di conferma inviata a: <span className="text-yellow-500 font-semibold">{email}</span>
-                        </p>
-                    )}
-
-                    {/* Countdown */}
-                    <div className="mb-8">
-                        <p className="text-gray-400 text-sm mb-2">
-                            Creazione account automatica tra:
-                        </p>
-                        <div className="text-5xl font-black bg-gradient-to-r from-yellow-500 to-amber-400 bg-clip-text text-transparent">
-                            {countdown}s
+                    {/* Automatic Redirect Countdown */}
+                    <div className="mb-8 flex flex-col items-center">
+                        <div className="text-[10px] uppercase tracking-[0.2em] text-gray-500 mb-2">Inizializzazione Account</div>
+                        <div className="flex gap-2">
+                            {[...Array(5)].map((_, i) => (
+                                <div
+                                    key={i}
+                                    className={`h-1 w-8 rounded-full transition-colors duration-500 ${i < countdown ? 'bg-yellow-500' : 'bg-gray-800'}`}
+                                ></div>
+                            ))}
                         </div>
                     </div>
 
                     {/* CTA Button */}
                     <button
                         onClick={() => navigate(`/signup${email ? `?email=${email}` : ''}`)}
-                        className="w-full py-4 bg-gradient-to-r from-yellow-600 to-amber-500 hover:from-yellow-500 hover:to-amber-400 text-black font-bold text-lg rounded-lg shadow-lg shadow-yellow-500/30 transition-all duration-300 transform hover:scale-105"
+                        className="w-full group relative px-8 py-5 bg-white text-black font-bold text-lg tracking-widest uppercase overflow-hidden rounded-lg hover:shadow-[0_0_40px_rgba(255,255,255,0.3)] transition-all duration-300"
                     >
-                        🚀 COMPLETA REGISTRAZIONE ORA
+                        <span className="relative z-10 flex items-center justify-center gap-3">
+                            Entra Nella Matrice
+                            <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                            </svg>
+                        </span>
+                        <div className="absolute inset-0 bg-yellow-400 transform translate-y-full group-hover:translate-y-0 transition-transform duration-300 z-0"></div>
                     </button>
 
-                    {/* Session ID (for debugging) */}
+                    {/* Session Info */}
                     {sessionId && (
-                        <p className="text-xs text-gray-600 mt-4">
-                            Session ID: {sessionId.substring(0, 20)}...
-                        </p>
+                        <div className="mt-6 pt-6 border-t border-white/5 flex justify-between text-[10px] text-gray-600 font-mono">
+                            <span>SECURE_ID: {sessionId.substring(0, 8)}...</span>
+                            <span>ENCRYPTED_CONNECTION</span>
+                        </div>
                     )}
                 </div>
 
-                {/* Footer Note */}
-                <p className="text-center text-gray-500 text-sm mt-6">
-                    🔒 I tuoi dati sono protetti. Riceverai accesso immediato dopo la registrazione.
-                </p>
+                <div className="mt-8 text-center text-xs text-gray-600 tracking-widest uppercase">
+                    Vox Lux Strategy • Protocollo Sovrano
+                </div>
             </div>
+
+            <style>{`
+                @keyframes pulse-slow {
+                    0%, 100% { opacity: 0.1; transform: scale(1); }
+                    50% { opacity: 0.3; transform: scale(1.1); }
+                }
+                @keyframes fade-in-up {
+                    from { opacity: 0; transform: translateY(20px); }
+                    to { opacity: 1; transform: translateY(0); }
+                }
+                .animate-pulse-slow { animation: pulse-slow 8s infinite ease-in-out; }
+                .animate-fade-in-up { animation: fade-in-up 1s ease-out forwards; }
+            `}</style>
         </div>
     );
 };

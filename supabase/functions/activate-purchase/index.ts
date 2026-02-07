@@ -1,12 +1,16 @@
-// Supabase Edge Function: activate-purchase
-// Activates pending purchase when user signs up
-
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+import Stripe from 'https://esm.sh/stripe@14.21.0'
 
 const supabaseUrl = Deno.env.get('SUPABASE_URL')!
 const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
+const stripeSecretKey = Deno.env.get('STRIPE_SECRET_KEY')!
+
 const supabase = createClient(supabaseUrl, supabaseServiceKey)
+const stripe = new Stripe(stripeSecretKey, {
+    apiVersion: '2023-10-16',
+    httpClient: Stripe.createFetchHttpClient(),
+})
 
 serve(async (req) => {
     try {
@@ -18,26 +22,86 @@ serve(async (req) => {
 
         console.log(`🔍 Looking for pending purchases for: ${email}`)
 
-        // Find pending purchases by email
-        const { data: purchases, error: fetchError } = await supabase
+        // 1. Try finding pending purchases in DB
+        let { data: purchases, error: fetchError } = await supabase
             .from('purchases')
             .select('*')
             .eq('email', email)
             .eq('status', 'pending_registration')
 
-        if (fetchError) {
-            throw fetchError
+        if (fetchError) throw fetchError
+
+        // 2. SELF-HEALING: If no purchases in DB, check Stripe directly
+        if (!purchases || purchases.length === 0) {
+            console.log('ℹ️ No DB records found. Checking Stripe for missing webhooks...')
+
+            try {
+                // Search for completed checkout sessions for this email
+                const sessions = await stripe.checkout.sessions.list({
+                    limit: 5,
+                    status: 'complete',
+                    expand: ['data.line_items']
+                });
+
+                // Filter for sessions matching the email (Stripe search is fuzzy sometimes)
+                const matchingSessions = sessions.data.filter(s =>
+                    s.customer_details?.email?.toLowerCase() === email.toLowerCase()
+                );
+
+                for (const session of matchingSessions) {
+                    // Check if this payment is already in DB (to avoid duplicates)
+                    const { data: existing } = await supabase
+                        .from('purchases')
+                        .select('id')
+                        .eq('stripe_payment_id', session.payment_intent as string)
+                        .single();
+
+                    if (!existing) {
+                        console.log(`🚨 Recovering missing purchase: ${session.id}`);
+
+                        const courseId = session.metadata?.courseId || 'matrice-1'; // Default fallback
+                        const amount = session.amount_total || 0;
+
+                        // Insert the missing record
+                        const { error: insertError } = await supabase.from('purchases').insert({
+                            email: email,
+                            course_id: courseId,
+                            stripe_payment_id: session.payment_intent as string,
+                            amount: amount,
+                            status: 'pending_registration',
+                            purchase_timestamp: new Date(session.created * 1000).toISOString(),
+                            bonus_eligible: true // For recovery, we assume eligible to be safe/generous
+                        });
+
+                        if (insertError) {
+                            console.error('Failed to insert recovered purchase:', insertError);
+                        }
+                    }
+                }
+
+                // Re-fetch from DB after recovery attempt
+                const { data: refreshedPurchases } = await supabase
+                    .from('purchases')
+                    .select('*')
+                    .eq('email', email)
+                    .eq('status', 'pending_registration');
+
+                if (refreshedPurchases) purchases = refreshedPurchases;
+
+            } catch (stripeError) {
+                console.error('Stripe check failed:', stripeError);
+            }
         }
 
         if (!purchases || purchases.length === 0) {
-            console.log('ℹ️ No pending purchases found')
+            console.log('ℹ️ Still no pending purchases found after recovery attempt')
             return new Response(JSON.stringify({ activated: 0 }), {
                 headers: { 'Content-Type': 'application/json' },
                 status: 200,
             })
         }
 
-        console.log(`📦 Found ${purchases.length} pending purchase(s)`)
+        console.log(`📦 Found ${purchases.length} pending purchase(s) to activate`)
 
         // Activate all pending purchases
         const activatedPurchaseIds: string[] = []
@@ -63,8 +127,9 @@ serve(async (req) => {
 
             // Grant bonuses if eligible
             if (purchase.bonus_eligible && !purchase.bonus_granted) {
+                // Logic preserved...
                 const now = new Date()
-                const expiresAt = new Date(purchase.bonus_expires_at)
+                const expiresAt = purchase.bonus_expires_at ? new Date(purchase.bonus_expires_at) : new Date(Date.now() + 86400000); // 24h default if null
 
                 if (now <= expiresAt) {
                     await grantBonuses(userId, purchase.id, purchase.course_id)
