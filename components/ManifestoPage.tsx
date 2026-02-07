@@ -191,12 +191,13 @@ export const ManifestoPage: React.FC = () => {
             </audio>
 
             {/* Dynamic Background Images with Smooth Transitions */}
+            {/* Dynamic Background Images with Smooth Transitions */}
             <AnimatePresence mode="popLayout">
                 {currentImage && (
                     <motion.div
                         key={currentImage}
                         initial={{ opacity: 0, scale: 1.1 }}
-                        animate={{ opacity: 0.4, scale: 1 }}
+                        animate={{ opacity: 0.6, scale: 1 }} // Increased opacity
                         exit={{ opacity: 0 }}
                         transition={{ duration: 1.5, ease: "easeInOut" }}
                         className="absolute inset-0 z-0 bg-cover bg-center"
@@ -206,11 +207,19 @@ export const ManifestoPage: React.FC = () => {
             </AnimatePresence>
 
             {/* Base Gradient Overlay for Readability */}
-            <div className="absolute inset-0 z-0 bg-gradient-to-b from-black via-black/50 to-black pointer-events-none"></div>
+            <div className="absolute inset-0 z-0 bg-gradient-to-b from-black/80 via-black/40 to-black/80 pointer-events-none"></div>
 
             {/* Start Screen */}
             {!started && (
-                <div className="z-50 text-center cursor-auto relative">
+                <div className="z-50 flex flex-col items-center justify-center gap-8 cursor-auto relative">
+                    <motion.img
+                        src="/logo.png"
+                        alt="VOX LUX Logo"
+                        className="w-32 md:w-48 opacity-90 drop-shadow-[0_0_15px_rgba(234,179,8,0.5)]"
+                        initial={{ opacity: 0, y: -20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 1, delay: 0.2 }}
+                    />
                     <motion.button
                         initial={{ opacity: 0, scale: 0.9 }}
                         animate={{ opacity: 1, scale: 1 }}
