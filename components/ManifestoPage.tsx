@@ -4,7 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 
 // --- ASSETS & CONFIG ---
-const AUDIO_TRACK_URL = "https://cdn1.suno.ai/d32be224-e48d-405b-9c2a-1fb21bfaf9d6.mp3";
+// Local Audio Track (Bypasses CSP issues)
+const AUDIO_TRACK_URL = "/assets/manifesto/manifesto_track.mp3";
 const IMG = {
     chaos: "/assets/manifesto/chaos_bg.png",
     void: "/assets/manifesto/void_bg.png",
