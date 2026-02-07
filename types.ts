@@ -54,7 +54,7 @@ export const SignupSchema = z.object({
   password: z.string().min(8, "La password deve essere di almeno 8 caratteri").regex(/[A-Z]/, "Serve almeno una maiuscola").regex(/[0-9]/, "Serve almeno un numero"),
   fullName: z.string().min(2, "Inserisci il tuo nome completo"),
   phone: z.string().min(10, "Numero di telefono non valido").optional(),
-  tcAccepted: z.literal(true, { errorMap: () => ({ message: "Devi accettare i Termini e Condizioni" }) }),
+  tcAccepted: z.boolean().refine(val => val === true, { message: "Devi accettare i Termini e Condizioni" }),
 });
 
 export const CheckoutSchema = z.object({
@@ -76,4 +76,52 @@ export interface CourseProgress {
   modules: ModuleProgress[];
   startedAt: string;
   completedAt?: string;
+}
+
+// --- LEGAL ARMORING TYPES ---
+export interface UserContract {
+  id: string;
+  user_id: string;
+  contract_version: string;
+  signed_at: string;
+  ip_address?: string;
+  agreements: {
+    refund_waiver: boolean;
+    privacy_policy: boolean;
+    anti_piracy: boolean;
+    marketing_consent: boolean;
+  };
+  pdf_url?: string;
+}
+
+// --- LMS EVOLUTION TYPES ---
+export interface LessonResource {
+  title: string;
+  url: string;
+  type: 'pdf' | 'link' | 'file';
+}
+
+export interface Lesson {
+  id: string;
+  module_id: string;
+  title: string;
+  description?: string;
+  video_provider: 'youtube' | 'vimeo' | 'custom';
+  video_id: string;
+  duration_minutes: number;
+  order_index: number;
+  resources: LessonResource[];
+  is_free_preview: boolean;
+  // Computed/Joined fields
+  completed?: boolean;
+}
+
+export interface Module {
+  id: string;
+  course_id: string;
+  title: string;
+  description?: string;
+  order_index: number;
+  is_locked: boolean;
+  lessons: Lesson[];
 }

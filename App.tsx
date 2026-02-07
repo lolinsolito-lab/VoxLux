@@ -35,6 +35,7 @@ import { UserManagement } from './pages/admin/UserManagement';
 import { AdminFinance } from './pages/admin/AdminFinance';
 import { AdminContent } from './pages/admin/AdminContent';
 import { AdminDiscounts } from './pages/admin/AdminDiscounts';
+import { LegalGuard } from './components/LegalGuard';
 
 
 // 🌌 VOX LUX STRATEGY - ELITE CONSOLE SIGNATURE
@@ -96,9 +97,12 @@ const App: React.FC = () => {
           <Route path="/terms" element={<TermsPage />} />
 
           {/* Protected Dashboard */}
+          {/* Protected Dashboard */}
           <Route path="/dashboard" element={
             <ProtectedRoute>
-              <DashboardPage />
+              <LegalGuard>
+                <DashboardPage />
+              </LegalGuard>
             </ProtectedRoute>
           } />
 

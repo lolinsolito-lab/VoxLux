@@ -14,6 +14,15 @@ interface CourseProgress {
     total_masterminds: number;
 }
 
+interface BonusProduct {
+    id: string;
+    title: string;
+    description: string;
+    icon: string;
+    delivery_type: 'video' | 'download' | 'link';
+    content_url: string;
+}
+
 import { createCheckoutSession, STRIPE_PRODUCTS, CourseId } from '../services/stripe';
 import { Lock, ShoppingCart, CheckCircle, Crown, X, Settings, Shield } from 'lucide-react';
 import { ProfileSettings } from './ProfileSettings';
@@ -28,6 +37,7 @@ export const DashboardPage: React.FC = () => {
 
     const [purchases, setPurchases] = useState<Purchase[]>([]);
     const [progress, setProgress] = useState<Record<string, CourseProgress>>({});
+    const [bonuses, setBonuses] = useState<BonusProduct[]>([]);
     const [loading, setLoading] = useState(true);
     const [syncing, setSyncing] = useState(false);
 
