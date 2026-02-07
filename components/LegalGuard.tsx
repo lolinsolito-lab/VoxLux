@@ -9,6 +9,7 @@ export const LegalGuard: React.FC<{ children: React.ReactNode }> = ({ children }
     const [hasSigned, setHasSigned] = useState<boolean | null>(null);
     const [loading, setLoading] = useState(true);
     const [submitting, setSubmitting] = useState(false);
+    const [contractId] = useState(() => crypto.randomUUID());
 
     // Form State
     const [agreements, setAgreements] = useState({
@@ -63,6 +64,7 @@ export const LegalGuard: React.FC<{ children: React.ReactNode }> = ({ children }
 
             // 2. Insert Contract Record
             const { error } = await supabase.from('user_contracts').insert({
+                id: contractId,
                 user_id: user.id,
                 contract_version: 'v1.0',
                 ip_address: ipAddress,
@@ -127,10 +129,11 @@ export const LegalGuard: React.FC<{ children: React.ReactNode }> = ({ children }
                                 onChange={(e) => setAgreements({ ...agreements, refund_waiver: e.target.checked })}
                             />
                             <div className="flex-1">
-                                <span className="block font-bold text-white mb-1">Rinuncia al Diritto di Recesso</span>
+                                <span className="block font-bold text-white mb-1">Accesso Immediato al Contenuto Esclusivo</span>
                                 <span className="text-sm text-zinc-400 leading-relaxed">
-                                    Confermo di accedere a contenuti digitali immediatamente disponibili. Ai sensi dell'art. 59 del Codice del Consumo,
-                                    <span className="text-red-400 font-bold"> accetto la perdita del diritto di recesso</span> una volta iniziato l'accesso.
+                                    Confermo di voler accedere <span className="text-yellow-500">immediatamente</span> ai contenuti digitali premium.
+                                    Come previsto dall'art. 59 del Codice del Consumo per i contenuti digitali,
+                                    l'accesso esclusivo è <span className="text-white font-semibold">immediato e definitivo</span>.
                                 </span>
                             </div>
                         </label>
@@ -179,8 +182,8 @@ export const LegalGuard: React.FC<{ children: React.ReactNode }> = ({ children }
                         onClick={handleSign}
                         disabled={!allChecked || submitting}
                         className={`w-full py-4 text-lg font-black tracking-widest uppercase rounded-xl transition-all flex items-center justify-center gap-3 ${allChecked
-                                ? 'bg-yellow-500 hover:bg-yellow-400 text-black shadow-lg shadow-yellow-500/20 transform hover:scale-[1.02]'
-                                : 'bg-zinc-800 text-zinc-500 cursor-not-allowed border border-zinc-700'
+                            ? 'bg-yellow-500 hover:bg-yellow-400 text-black shadow-lg shadow-yellow-500/20 transform hover:scale-[1.02]'
+                            : 'bg-zinc-800 text-zinc-500 cursor-not-allowed border border-zinc-700'
                             }`}
                     >
                         {submitting ? (
@@ -191,7 +194,7 @@ export const LegalGuard: React.FC<{ children: React.ReactNode }> = ({ children }
                     </button>
 
                     <p className="mt-4 text-center text-xs text-zinc-600 font-mono">
-                        Digital ID: {user.id.split('-')[0]} • IP Tracking Active • {new Date().toLocaleDateString()}
+                        Contract ID: {contractId.split('-')[0].toUpperCase()} • IP Tracking Active • {new Date().toLocaleDateString('it-IT')}
                     </p>
                 </div>
             </div>
