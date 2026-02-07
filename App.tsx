@@ -28,6 +28,13 @@ import { TermsPage } from './components/TermsPage';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { createCheckoutSession, CourseId } from './services/stripe';
 import { BackgroundMusic } from './components/BackgroundMusic';
+import { AdminRoute } from './components/AdminRoute';
+import { AdminLayout } from './layouts/AdminLayout';
+import { AdminOverview } from './pages/admin/AdminOverview';
+import { UserManagement } from './pages/admin/UserManagement';
+import { AdminFinance } from './pages/admin/AdminFinance';
+import { AdminContent } from './pages/admin/AdminContent';
+import { AdminDiscounts } from './pages/admin/AdminDiscounts';
 
 
 // 🌌 VOX LUX STRATEGY - ELITE CONSOLE SIGNATURE
@@ -107,6 +114,17 @@ const App: React.FC = () => {
               <AscensionViewWrapper />
             </ProtectedRoute>
           } />
+
+          {/* Admin Dashboard ("God Mode") */}
+          <Route path="/admin" element={<AdminRoute />}>
+            <Route element={<AdminLayout />}>
+              <Route index element={<AdminOverview />} />
+              <Route path="users" element={<UserManagement />} />
+              <Route path="finance" element={<AdminFinance />} />
+              <Route path="content" element={<AdminContent />} />
+              <Route path="discounts" element={<AdminDiscounts />} />
+            </Route>
+          </Route>
 
 
           {/* Public Pricing/Hero Access */}

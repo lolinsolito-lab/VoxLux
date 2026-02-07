@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { BRANDING } from '../config/branding';
+import { SignupSchema } from '../types';
 
 export const SignupPage: React.FC = () => {
     const [searchParams] = useSearchParams();
@@ -15,6 +16,7 @@ export const SignupPage: React.FC = () => {
     const [email, setEmail] = useState(prefilledEmail);
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
+    const [tcAccepted, setTcAccepted] = useState(false);
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
 
@@ -23,13 +25,22 @@ export const SignupPage: React.FC = () => {
         setError('');
 
         // Validation
+        // Validation
         if (password !== confirmPassword) {
             setError('Le password non corrispondono');
             return;
         }
 
-        if (password.length < 6) {
-            setError('La password deve essere di almeno 6 caratteri');
+        const validation = SignupSchema.safeParse({
+            email,
+            password,
+            fullName,
+            phone: phone || undefined, // Send undefined if empty string
+            tcAccepted
+        });
+
+        if (!validation.success) {
+            setError(validation.error.issues[0].message);
             return;
         }
 
@@ -176,12 +187,22 @@ export const SignupPage: React.FC = () => {
                         )}
 
                         {/* Terms Notice */}
-                        <p className="text-xs text-gray-500 text-center">
-                            Registrandoti, accetti i nostri{' '}
-                            <a href="/terms" className="text-yellow-500 hover:text-yellow-400">
-                                Termini di Servizio
-                            </a>
-                        </p>
+                        {/* Terms Notice with Checkbox */}
+                        <div className="flex items-center space-x-3 justify-center">
+                            <input
+                                type="checkbox"
+                                id="terms"
+                                checked={tcAccepted}
+                                onChange={(e) => setTcAccepted(e.target.checked)}
+                                className="w-4 h-4 rounded border-gray-600 text-yellow-500 focus:ring-yellow-500 bg-black/40"
+                            />
+                            <label htmlFor="terms" className="text-xs text-gray-500">
+                                Accetto i{' '}
+                                <a href="/terms" target="_blank" className="text-yellow-500 hover:text-yellow-400 underline">
+                                    Termini di Servizio
+                                </a>
+                            </label>
+                        </div>
 
                         {/* Submit Button */}
                         <button

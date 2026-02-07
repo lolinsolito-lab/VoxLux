@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { BRANDING } from '../config/branding';
+import { LoginSchema } from '../types';
 
 export const LoginPage: React.FC = () => {
     const [email, setEmail] = useState('');
@@ -15,6 +16,13 @@ export const LoginPage: React.FC = () => {
         e.preventDefault();
         setError('');
         setLoading(true);
+
+        const validation = LoginSchema.safeParse({ email, password });
+        if (!validation.success) {
+            setError(validation.error.issues[0].message);
+            setLoading(false);
+            return;
+        }
 
         const result = await login(email, password);
 

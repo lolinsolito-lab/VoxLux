@@ -7,7 +7,7 @@ interface AuthContextType {
     user: User | null;
     supabaseUser: SupabaseUser | null;
     loading: boolean;
-    login: (email: string, password: string) => Promise<{ success: boolean; error?: string }>;
+    login: (email: string, password: string) => Promise<{ success: boolean; error?: string; userId?: string }>;
     signup: (email: string, password: string, fullName: string, phoneNumber?: string) => Promise<{ success: boolean; error?: string; userId?: string }>;
     logout: () => Promise<void>;
     resetPassword: (email: string) => Promise<{ success: boolean; error?: string }>;
@@ -97,6 +97,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
                 enrolledCourses: purchases?.map(p => p.course_id) || [],
                 level: stats?.level_name || 'Novizio',
                 xp: stats?.total_xp || 0,
+                role: profile.role || 'user',
                 createdAt: profile.created_at
             };
 
@@ -108,7 +109,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         }
     };
 
-    const login = async (email: string, password: string): Promise<{ success: boolean; error?: string }> => {
+    const login = async (email: string, password: string): Promise<{ success: boolean; error?: string; userId?: string }> => {
         try {
             const { data, error } = await supabase.auth.signInWithPassword({
                 email,
@@ -121,6 +122,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
             if (data.user) {
                 await loadUserProfile(data.user.id);
+                return { success: true, userId: data.user.id };
             }
 
             return { success: true };
