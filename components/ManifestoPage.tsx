@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { Volume2, VolumeX, ArrowRight } from 'lucide-react';
 
-// Refined Script Data with Themes
+// Refined Script Data with Themes - NO "MATRICE" Terminology
 const SCRIPT_SEQUENCE = [
     // PHASE 1: THE NOISE (Chaos, Fast, Glitchy)
     {
@@ -45,30 +45,30 @@ const SCRIPT_SEQUENCE = [
         style: "text-white text-4xl font-light tracking-[0.3em] backdrop-blur-sm"
     },
 
-    // PHASE 3: THE MATRIX (Structure, Grid, Logic)
+    // PHASE 3: THE BLUEPRINT (Formerly Matrix - Now Strategy/Structure)
     {
-        text: "C'è un codice dietro il caos.",
+        text: "Non è magia. È metodo.",
         duration: 4000,
-        theme: "matrix",
-        style: "text-green-400 text-xl font-mono tracking-widest typing-effect"
+        theme: "blueprint",
+        style: "text-blue-400 text-xl font-mono tracking-widest typing-effect"
     },
     {
-        text: "STORYTELLING",
-        duration: 1000,
-        theme: "matrix",
-        style: "text-white text-5xl font-black tracking-tighter"
+        text: "STORYTELLING STRATEGY",
+        duration: 1500,
+        theme: "blueprint",
+        style: "text-white text-4xl font-black tracking-tighter"
     },
     {
-        text: "PSICOLOGIA",
-        duration: 1000,
-        theme: "matrix",
-        style: "text-white text-5xl font-black tracking-tighter"
+        text: "VOX PODCAST A.I.",
+        duration: 1500,
+        theme: "blueprint",
+        style: "text-white text-4xl font-black tracking-tighter"
     },
     {
-        text: "STRATEGIA",
+        text: "DOMINIO DI MERCATO",
         duration: 2000,
-        theme: "matrix",
-        style: "text-white text-5xl font-black tracking-tighter"
+        theme: "blueprint",
+        style: "text-white text-5xl font-black tracking-tighter text-blue-500"
     },
 
     // PHASE 4: ASCENSION (Gold, Divine, Power)
@@ -137,7 +137,7 @@ export const ManifestoPage: React.FC = () => {
                         <div className="absolute top-0 left-0 w-full h-1 bg-white/10 animate-bounce"></div>
                     </motion.div>
                 );
-            case 'matrix':
+            case 'blueprint':
                 return (
                     <motion.div
                         initial={{ opacity: 0 }}
@@ -145,8 +145,11 @@ export const ManifestoPage: React.FC = () => {
                         exit={{ opacity: 0 }}
                         className="absolute inset-0 z-0 bg-black"
                     >
-                        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-green-900/20 via-black to-black"></div>
-                        <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'linear-gradient(0deg, transparent 24%, rgba(0, 255, 0, .3) 25%, rgba(0, 255, 0, .3) 26%, transparent 27%, transparent 74%, rgba(0, 255, 0, .3) 75%, rgba(0, 255, 0, .3) 76%, transparent 77%, transparent), linear-gradient(90deg, transparent 24%, rgba(0, 255, 0, .3) 25%, rgba(0, 255, 0, .3) 26%, transparent 27%, transparent 74%, rgba(0, 255, 0, .3) 75%, rgba(0, 255, 0, .3) 76%, transparent 77%, transparent)', backgroundSize: '50px 50px' }}></div>
+                        {/* Blueprint Grid - Blue/Tech feel instead of Matrix Green */}
+                        <div className="absolute inset-0 bg-[linear-gradient(to_right,#1e293b_1px,transparent_1px),linear-gradient(to_bottom,#1e293b_1px,transparent_1px)] bg-[size:40px_40px] opacity-20"></div>
+                        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-blue-900/20 via-black to-black"></div>
+                        {/* Animated Scanline */}
+                        <div className="absolute top-0 w-full h-[5px] bg-blue-500/30 blur-[4px] animate-[scan_3s_ease-in-out_infinite]"></div>
                     </motion.div>
                 );
             case 'ascension':
