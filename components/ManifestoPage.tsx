@@ -210,24 +210,26 @@ export const ManifestoPage: React.FC = () => {
             <div className="absolute inset-0 z-0 bg-gradient-to-b from-black/80 via-black/40 to-black/80 pointer-events-none"></div>
 
             {/* Start Screen */}
+            {/* Start Screen - ABSOLUTE CENTERED */}
             {!started && (
-                <div className="z-50 flex flex-col items-center justify-center gap-8 cursor-auto relative">
+                <div className="absolute inset-0 z-50 flex flex-col items-center justify-center gap-12 bg-black/20 backdrop-blur-sm">
                     <motion.img
                         src="/logo.png"
                         alt="VOX LUX Logo"
-                        className="w-32 md:w-48 opacity-90 drop-shadow-[0_0_15px_rgba(234,179,8,0.5)]"
-                        initial={{ opacity: 0, y: -20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 1, delay: 0.2 }}
+                        className="w-48 md:w-64 opacity-90 drop-shadow-[0_0_25px_rgba(234,179,8,0.5)]"
+                        initial={{ opacity: 0, scale: 0.8, y: -20 }}
+                        animate={{ opacity: 1, scale: 1, y: 0 }}
+                        transition={{ duration: 1.2, ease: "easeOut" }}
                     />
                     <motion.button
-                        initial={{ opacity: 0, scale: 0.9 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        whileHover={{ scale: 1.05, boxShadow: "0 0 30px rgba(234,179,8,0.3)" }}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.5, duration: 0.8 }}
+                        whileHover={{ scale: 1.05, boxShadow: "0 0 40px rgba(234,179,8,0.4)", textShadow: "0 0 10px rgba(234,179,8,0.8)" }}
                         onClick={handleStart}
-                        className="group px-12 py-5 bg-transparent border border-yellow-500/30 text-yellow-500 text-xl tracking-[0.5em] font-light hover:bg-yellow-500 hover:text-black transition-all duration-500 rounded-sm uppercase backdrop-blur-sm"
+                        className="group px-14 py-6 bg-transparent border border-yellow-500/40 text-yellow-500 text-xl tracking-[0.6em] font-light hover:bg-yellow-500 hover:text-black transition-all duration-500 rounded-sm uppercase"
                     >
-                        <span className="group-hover:tracking-[0.7em] transition-all duration-500">Inizia il Rituale</span>
+                        <span className="group-hover:tracking-[0.8em] transition-all duration-500">Inizia il Rituale</span>
                     </motion.button>
                 </div>
             )}

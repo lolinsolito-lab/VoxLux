@@ -50,7 +50,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         let stripe: Stripe | null = null;
         if (stripeSecretKey) {
             stripe = new Stripe(stripeSecretKey, {
-                apiVersion: '2023-10-16',
+                // apiVersion: '2023-10-16', // Removing explicit version to use package default (v2023-10-16 is deprecated/mismatched)
             });
         }
 
