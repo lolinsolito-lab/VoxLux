@@ -113,7 +113,7 @@ export const ManifestoPage: React.FC = () => {
     const handleStart = () => {
         setStarted(true);
         // Force audio play
-        const audio = document.querySelector('audio');
+        const audio = document.getElementById('manifesto-audio') as HTMLAudioElement;
         if (audio) {
             audio.volume = 1.0;
             audio.currentTime = 0;
@@ -174,6 +174,11 @@ export const ManifestoPage: React.FC = () => {
 
     return (
         <div className="min-h-screen bg-black flex flex-col items-center justify-center relative overflow-hidden cursor-none font-sans">
+            {/* Audio Track */}
+            <audio id="manifesto-audio" loop>
+                <source src="https://cdn1.suno.ai/d32be224-e48d-405b-9c2a-1fb21bfaf9d6.mp3" type="audio/mpeg" />
+            </audio>
+
             {/* Dynamic Background */}
             <AnimatePresence mode="wait">
                 <motion.div key={currentTheme} className="absolute inset-0 z-0">
