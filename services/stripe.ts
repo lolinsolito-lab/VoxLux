@@ -1,24 +1,10 @@
-import { loadStripe, Stripe } from '@stripe/stripe-js';
+import { loadStripe } from '@stripe/stripe-js';
 
-// Initialize Stripe
-let stripePromise: Promise<Stripe | null>;
+const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
 
-export const getStripe = () => {
-    if (!stripePromise) {
-        const publishableKey = import.meta.env.VITE_STRIPE_PUBLIC_KEY;
+export type CourseId = 'matrice-1' | 'matrice-2' | 'ascension-box';
 
-        if (!publishableKey) {
-            throw new Error('Missing Stripe publishable key');
-        }
-
-        stripePromise = loadStripe(publishableKey);
-    }
-
-    return stripePromise;
-};
-
-// Stripe Product IDs (High-Ticket Pricing Strategy)
-export const STRIPE_PRODUCTS = {
+export const STRIPE_PRODUCTS: Record<CourseId, { priceId: string; amount: number; name: string; description: string }> = {
     'matrice-1': {
         priceId: 'price_1SxCswCtMqmAVVg27E6H8yvF', // Stripe Price ID
         amount: 59700, // €597 in cents
@@ -32,45 +18,51 @@ export const STRIPE_PRODUCTS = {
         description: 'Il percorso completo per creare podcast professionali con AI Voice Cloning',
     },
     'ascension-box': {
-        priceId: 'price_1SxCsxCtMqmAVVg2cgeGTO6j', // Stripe Price ID
-        amount: 99700, // €997 in cents (risparmio €197 vs €1.194)
-        name: 'ASCENSION BOX: The Singularity',
-        description: 'Accesso completo a MATRICE I + MATRICE II + contenuti esclusivi',
+        priceId: 'price_1SxCt1CtMqmAVVg2LIKwvh3s', // Stripe Price ID (Corrected)
+        amount: 99700, // €997 in cents
+        name: 'ASCENSION BOX: The Ultimate Collection',
+        description: 'Accesso completo a Matrice I, Matrice II e sessioni 1-on-1 VIP.',
     },
-} as const;
+};
 
-export type CourseId = keyof typeof STRIPE_PRODUCTS;
-
-// Create Stripe Checkout Session
-export const createCheckoutSession = async (courseId: CourseId, userEmail?: string) => {
-    const product = STRIPE_PRODUCTS[courseId];
-
-    if (!product) {
-        throw new Error(`Invalid course ID: ${courseId}`);
-    }
-
+export const createCheckoutSession = async (priceId: CourseId, email?: string, promoCode?: string, returnUrl?: string) => {
     try {
-        // Call API to create checkout session
+        console.log('Initiating checkout for:', priceId);
+
+        let targetPriceId = STRIPE_PRODUCTS[priceId].priceId;
+
+        // Safety check for Ascension Box specifically
+        if (priceId === 'ascension-box' && targetPriceId !== 'price_1SxCt1CtMqmAVVg2LIKwvh3s') {
+            console.warn('Correcting Ascension Box Price ID');
+            targetPriceId = 'price_1SxCt1CtMqmAVVg2LIKwvh3s';
+        }
+
         const response = await fetch('/api/create-checkout', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                priceId: product.priceId,
-                courseId,
-                userEmail,
+                priceId: targetPriceId,
+                courseId: priceId,
+                userEmail: email, // Optional: Pre-fill email in Stripe
+                promoCode: promoCode,
+                returnUrl: returnUrl, // Optional: Redirect back to specific page
             }),
         });
 
-        const { url } = await response.json();
+        const data = await response.json();
 
-        if (url) {
-            window.location.href = url;
+        if (data.error) {
+            throw new Error(data.error);
+        }
+
+        if (data.url) {
+            window.location.href = data.url;
         } else {
-            console.error('No checkout URL returned from API');
             throw new Error('No checkout URL returned');
         }
+
     } catch (error) {
         console.error('Error creating checkout session:', error);
         throw error;

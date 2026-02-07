@@ -51,7 +51,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
         const supabase = createClient(supabaseUrl, supabaseKey);
 
-        const { priceId, courseId, userEmail, upsellIds = [], promoCode } = req.body;
+        const { priceId, courseId, userEmail, upsellIds = [], promoCode, returnUrl } = req.body;
 
         if (!priceId || !courseId) {
             res.status(400).json({ error: 'Missing priceId or courseId' });
@@ -112,11 +112,16 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
         const origin = req.headers.origin || 'https://vox-lux.vercel.app';
 
+        // Determine success URL: Use custom returnUrl if provided, otherwise default to Thank You page
+        const successUrl = returnUrl
+            ? `${returnUrl}${returnUrl.includes('?') ? '&' : '?'}session_id={CHECKOUT_SESSION_ID}&course=${courseId}&success=true`
+            : `${origin}/thank-you?session_id={CHECKOUT_SESSION_ID}&course=${courseId}`;
+
         // Create Stripe Checkout Session
         const session = await stripe.checkout.sessions.create({
             mode: 'payment',
             line_items: lineItems,
-            success_url: `${origin}/thank-you?session_id={CHECKOUT_SESSION_ID}&course=${courseId}`,
+            success_url: successUrl,
             cancel_url: `${origin}/`,
             customer_email: userEmail,
             discounts,
