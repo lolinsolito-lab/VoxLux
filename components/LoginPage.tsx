@@ -19,6 +19,20 @@ export const LoginPage: React.FC = () => {
         const result = await login(email, password);
 
         if (result.success) {
+            // Attempt to activate any pending purchases for this email
+            try {
+                await fetch('/api/activate-purchase', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        email: email,
+                        userId: result.userId
+                    })
+                });
+            } catch (e) {
+                console.warn('Silent activation check failed:', e);
+            }
+
             navigate('/dashboard');
         } else {
             setError(result.error || 'Login failed');

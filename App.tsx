@@ -107,6 +107,13 @@ const App: React.FC = () => {
             </ProtectedRoute>
           } />
 
+
+          {/* Public Pricing/Hero Access */}
+          <Route path="/pricing" element={<Hero onEnter={async (id) => {
+            // Use the service directly since we are in a Route, not MainApp
+            await createCheckoutSession(id as CourseId, undefined);
+          }} />} />
+
           {/* Main App (Public) */}
           <Route path="/*" element={<MainApp />} />
         </Routes>

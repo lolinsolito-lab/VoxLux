@@ -20,12 +20,39 @@ export const DashboardPage: React.FC = () => {
     const [purchases, setPurchases] = useState<Purchase[]>([]);
     const [progress, setProgress] = useState<Record<string, CourseProgress>>({});
     const [loading, setLoading] = useState(true);
+    const [syncing, setSyncing] = useState(false);
 
     useEffect(() => {
         if (user) {
             loadUserData();
+            // Auto-sync on load just in case
+            handleSyncPurchases(false);
         }
     }, [user]);
+
+    const handleSyncPurchases = async (manual = true) => {
+        if (!user?.email) return;
+        if (manual) setSyncing(true);
+
+        try {
+            // Call local Vercel API
+            await fetch('/api/activate-purchase', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    email: user.email,
+                    userId: user.id
+                })
+            });
+
+            // Reload data after sync attempt
+            if (manual) await loadUserData();
+        } catch (error) {
+            console.error('Error syncing purchases:', error);
+        } finally {
+            if (manual) setSyncing(false);
+        }
+    };
 
     const loadUserData = async () => {
         if (!user) return;
@@ -155,12 +182,23 @@ export const DashboardPage: React.FC = () => {
                             <div className="text-6xl mb-4">📚</div>
                             <h4 className="text-xl font-bold text-white mb-2">Nessun Corso Ancora</h4>
                             <p className="text-gray-400 mb-6">Acquista un corso per iniziare la tua ascensione</p>
-                            <button
-                                onClick={() => navigate('/pricing')}
-                                className="px-6 py-3 bg-gradient-to-r from-yellow-600 to-amber-500 hover:from-yellow-500 hover:to-amber-400 text-black font-bold rounded-lg shadow-lg shadow-yellow-500/30 transition-all duration-300 transform hover:scale-105"
-                            >
-                                Esplora Corsi
-                            </button>
+
+                            <div className="flex flex-col gap-4 items-center">
+                                <button
+                                    onClick={() => navigate('/pricing')}
+                                    className="px-6 py-3 bg-gradient-to-r from-yellow-600 to-amber-500 hover:from-yellow-500 hover:to-amber-400 text-black font-bold rounded-lg shadow-lg shadow-yellow-500/30 transition-all duration-300 transform hover:scale-105"
+                                >
+                                    Esplora Corsi
+                                </button>
+
+                                <button
+                                    onClick={handleSyncPurchases}
+                                    disabled={syncing}
+                                    className="text-sm text-yellow-500 hover:text-yellow-400 underline decoration-dotted underline-offset-4 disabled:opacity-50"
+                                >
+                                    {syncing ? 'Sincronizzazione in corso...' : 'Non vedi il tuo corso? Sincronizza acquisti'}
+                                </button>
+                            </div>
                         </div>
                     ) : (
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
