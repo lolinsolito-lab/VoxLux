@@ -18,7 +18,7 @@ export const STRIPE_PRODUCTS: Record<CourseId, { priceId: string; amount: number
         description: 'Il percorso completo per creare podcast professionali con AI Voice Cloning',
     },
     'ascension-box': {
-        priceId: 'price_1SxCt1CtMqmAVVg2LIKwvh3s', // Stripe Price ID (Corrected)
+        priceId: 'price_1SxCsxCtMqmAVVg2cgeGTO6j', // Stripe Price ID (Corrected from Screenshot)
         amount: 99700, // €997 in cents
         name: 'ASCENSION BOX: The Ultimate Collection',
         description: 'Accesso completo a Matrice I, Matrice II e sessioni 1-on-1 VIP.',
@@ -32,9 +32,9 @@ export const createCheckoutSession = async (priceId: CourseId, email?: string, p
         let targetPriceId = STRIPE_PRODUCTS[priceId].priceId;
 
         // Safety check for Ascension Box specifically
-        if (priceId === 'ascension-box' && targetPriceId !== 'price_1SxCt1CtMqmAVVg2LIKwvh3s') {
+        if (priceId === 'ascension-box' && targetPriceId !== 'price_1SxCsxCtMqmAVVg2cgeGTO6j') {
             console.warn('Correcting Ascension Box Price ID');
-            targetPriceId = 'price_1SxCt1CtMqmAVVg2LIKwvh3s';
+            targetPriceId = 'price_1SxCsxCtMqmAVVg2cgeGTO6j';
         }
 
         const response = await fetch('/api/create-checkout', {

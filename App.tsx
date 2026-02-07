@@ -19,6 +19,7 @@ import { SignupPage } from './components/SignupPage';
 import { OnboardingPage } from './components/OnboardingPage';
 import { ResetPasswordPage } from './components/ResetPasswordPage';
 import { DashboardPage } from './components/DashboardPage';
+import { ManifestoPage } from './components/ManifestoPage';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import { CourseViewWrapper } from './components/CourseViewWrapper';
 import { AscensionViewWrapper } from './components/AscensionViewWrapper';
@@ -113,6 +114,9 @@ const App: React.FC = () => {
             // Use the service directly since we are in a Route, not MainApp
             await createCheckoutSession(id as CourseId, undefined);
           }} />} />
+
+          {/* Cinematic Manifesto */}
+          <Route path="/manifesto" element={<ManifestoPage />} />
 
           {/* Main App (Public) */}
           <Route path="/*" element={<MainApp />} />
