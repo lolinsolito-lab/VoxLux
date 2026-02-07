@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Volume2, VolumeX, Play, Pause } from 'lucide-react';
 
 // --- ASSETS & CONFIG ---
 // Local Audio Track (Bypasses CSP issues)
@@ -146,17 +146,21 @@ const SCRIPT_SEQUENCE: ScriptItem[] = [
     },
 ];
 
+
+
 export const ManifestoPage: React.FC = () => {
     const navigate = useNavigate();
     const [currentIndex, setCurrentIndex] = useState(0);
     const [isFinished, setIsFinished] = useState(false);
     const [started, setStarted] = useState(false);
     const [currentImage, setCurrentImage] = useState<string | null>(null);
+    const [isPaused, setIsPaused] = useState(false);
+    const [isMuted, setIsMuted] = useState(false);
     const audioRef = useRef<HTMLAudioElement>(null);
 
-    // Audio & Sequence Loic
+    // Audio & Sequence Logic
     useEffect(() => {
-        if (!started) return;
+        if (!started || isPaused) return;
 
         if (currentIndex < SCRIPT_SEQUENCE.length) {
             const item = SCRIPT_SEQUENCE[currentIndex];
@@ -173,7 +177,27 @@ export const ManifestoPage: React.FC = () => {
         } else {
             setIsFinished(true);
         }
-    }, [currentIndex, started]);
+    }, [currentIndex, started, isPaused]);
+
+    // Handle Play/Pause
+    const togglePlay = () => {
+        if (audioRef.current) {
+            if (isPaused) {
+                audioRef.current.play();
+            } else {
+                audioRef.current.pause();
+            }
+            setIsPaused(!isPaused);
+        }
+    };
+
+    // Handle Mute
+    const toggleMute = () => {
+        if (audioRef.current) {
+            audioRef.current.muted = !isMuted;
+            setIsMuted(!isMuted);
+        }
+    };
 
     const handleStart = () => {
         setStarted(true);
@@ -185,13 +209,12 @@ export const ManifestoPage: React.FC = () => {
     };
 
     return (
-        <div className="min-h-screen bg-black flex flex-col items-center justify-center relative overflow-hidden cursor-none font-sans select-none">
+        <div className="min-h-screen bg-black flex flex-col items-center justify-center relative overflow-hidden cursor-default font-sans select-none">
             {/* Audio Track */}
             <audio ref={audioRef} loop>
                 <source src={AUDIO_TRACK_URL} type="audio/mpeg" />
             </audio>
 
-            {/* Dynamic Background Images with Smooth Transitions */}
             {/* Dynamic Background Images with Smooth Transitions */}
             <AnimatePresence mode="popLayout">
                 {currentImage && (
@@ -208,9 +231,33 @@ export const ManifestoPage: React.FC = () => {
             </AnimatePresence>
 
             {/* Base Gradient Overlay for Readability */}
-            <div className="absolute inset-0 z-0 bg-gradient-to-b from-black/80 via-black/40 to-black/80 pointer-events-none"></div>
+            <div className="absolute inset-0 z-10 bg-gradient-to-b from-black/80 via-black/40 to-black/80 pointer-events-none"></div>
 
-            {/* Start Screen */}
+            {/* Controls (Bottom Right) */}
+            {started && !isFinished && (
+                <div className="absolute bottom-8 right-8 z-[60] flex items-center gap-4 text-yellow-500/50 hover:text-yellow-500 transition-colors duration-300">
+                    <button
+                        onClick={togglePlay}
+                        className="p-2 hover:bg-white/10 rounded-full transition-all"
+                    >
+                        {isPaused ? <Play size={24} /> : <Pause size={24} />}
+                    </button>
+                    <button
+                        onClick={toggleMute}
+                        className="p-2 hover:bg-white/10 rounded-full transition-all"
+                    >
+                        {isMuted ? <VolumeX size={24} /> : <Volume2 size={24} />}
+                    </button>
+                    <div className="w-24 h-1 bg-white/20 rounded-full overflow-hidden">
+                        <motion.div
+                            className="h-full bg-yellow-500"
+                            initial={{ width: "100%" }}
+                            animate={{ width: isMuted ? "0%" : "100%" }}
+                        />
+                    </div>
+                </div>
+            )}
+
             {/* Start Screen - ABSOLUTE CENTERED */}
             {!started && (
                 <div className="absolute inset-0 z-50 flex flex-col items-center justify-center gap-12 bg-black/20 backdrop-blur-sm">
@@ -236,7 +283,7 @@ export const ManifestoPage: React.FC = () => {
             )}
 
             {/* Narrative Sequence Render */}
-            <div className="z-10 relative max-w-7xl px-8 text-center min-h-[500px] flex items-center justify-center">
+            <div className="z-20 relative max-w-7xl px-8 text-center min-h-[500px] flex items-center justify-center">
                 <AnimatePresence mode="wait">
                     {started && !isFinished && currentIndex < SCRIPT_SEQUENCE.length && (
                         <motion.div
@@ -285,7 +332,7 @@ export const ManifestoPage: React.FC = () => {
             </div>
 
             {/* Cinematic Noise & Vignette Overlay (Always on top) */}
-            <div className="absolute inset-0 pointer-events-none opacity-[0.04] mix-blend-overlay" style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")` }}></div>
+            <div className="absolute inset-0 z-30 pointer-events-none opacity-[0.04] mix-blend-overlay" style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")` }}></div>
         </div>
     );
 };
