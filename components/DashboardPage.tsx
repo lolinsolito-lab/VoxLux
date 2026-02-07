@@ -72,6 +72,10 @@ export const DashboardPage: React.FC = () => {
 
             setPurchases(purchasesData || []);
 
+            // Dedup purchases by course_id to prevent double cards
+            const uniquePurchases = Array.from(new Map((purchasesData || []).map(p => [p.course_id, p])).values());
+            setPurchases(uniquePurchases);
+
             // Fetch progress for each course
             const progressData: Record<string, CourseProgress> = {};
             for (const purchase of purchasesData || []) {
