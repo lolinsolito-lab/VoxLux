@@ -12,6 +12,7 @@ interface AuthContextType {
     logout: () => Promise<void>;
     resetPassword: (email: string) => Promise<{ success: boolean; error?: string }>;
     hasCourse: (courseId: string) => boolean;
+    refreshUser: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -188,6 +189,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         return user?.enrolledCourses.includes(courseId) || false;
     };
 
+    const refreshUser = async (): Promise<void> => {
+        if (supabaseUser) {
+            await loadUserProfile(supabaseUser.id);
+        }
+    };
+
     return (
         <AuthContext.Provider
             value={{
@@ -198,7 +205,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
                 signup,
                 logout,
                 resetPassword,
-                hasCourse
+                hasCourse,
+                refreshUser
             }}
         >
             {children}

@@ -15,7 +15,7 @@ interface CourseProgress {
 }
 
 export const DashboardPage: React.FC = () => {
-    const { user, logout } = useAuth();
+    const { user, logout, refreshUser } = useAuth();
     const navigate = useNavigate();
     const [purchases, setPurchases] = useState<Purchase[]>([]);
     const [progress, setProgress] = useState<Record<string, CourseProgress>>({});
@@ -46,7 +46,12 @@ export const DashboardPage: React.FC = () => {
             });
 
             // Reload data after sync attempt
-            if (manual) await loadUserData();
+            if (manual) {
+                await Promise.all([
+                    loadUserData(),
+                    refreshUser()
+                ]);
+            }
         } catch (error) {
             console.error('Error syncing purchases:', error);
         } finally {
@@ -192,7 +197,7 @@ export const DashboardPage: React.FC = () => {
                                 </button>
 
                                 <button
-                                    onClick={handleSyncPurchases}
+                                    onClick={() => handleSyncPurchases(true)}
                                     disabled={syncing}
                                     className="text-sm text-yellow-500 hover:text-yellow-400 underline decoration-dotted underline-offset-4 disabled:opacity-50"
                                 >
