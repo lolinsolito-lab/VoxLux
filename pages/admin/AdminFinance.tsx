@@ -140,8 +140,8 @@ export const AdminFinance: React.FC = () => {
                                 key={range}
                                 onClick={() => setTimeRange(range)}
                                 className={`px-3 py-1.5 text-xs font-bold rounded transition-colors ${timeRange === range
-                                        ? 'bg-yellow-500 text-black'
-                                        : 'text-zinc-500 hover:text-white'
+                                    ? 'bg-yellow-500 text-black'
+                                    : 'text-zinc-500 hover:text-white'
                                     }`}
                             >
                                 {range.toUpperCase()}
@@ -243,6 +243,93 @@ export const AdminFinance: React.FC = () => {
                             </div>
                         );
                     })}
+                </div>
+            </div>
+
+            {/* FIXED COSTS SECTION */}
+            <div className="bg-zinc-900/50 border border-red-900/30 rounded-xl p-6">
+                <div className="flex items-center justify-between mb-6">
+                    <h2 className="text-xl font-bold text-gray-300">Costi Fissi Mensili</h2>
+                    <span className="text-xs text-zinc-500">Aggiornamento manuale</span>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+                    {/* Supabase */}
+                    <div className="bg-black/40 border border-zinc-800 rounded-lg p-4">
+                        <div className="flex items-center justify-between mb-2">
+                            <span className="text-sm font-bold text-emerald-400">Supabase</span>
+                            <span className="text-xs bg-emerald-900/30 text-emerald-400 px-2 py-0.5 rounded">Database</span>
+                        </div>
+                        <p className="text-2xl font-black text-white">€25<span className="text-xs text-zinc-500">/mese</span></p>
+                        <p className="text-xs text-zinc-600 mt-1">Pro Plan - 8GB Storage</p>
+                    </div>
+
+                    {/* Stripe */}
+                    <div className="bg-black/40 border border-zinc-800 rounded-lg p-4">
+                        <div className="flex items-center justify-between mb-2">
+                            <span className="text-sm font-bold text-purple-400">Stripe</span>
+                            <span className="text-xs bg-purple-900/30 text-purple-400 px-2 py-0.5 rounded">Payments</span>
+                        </div>
+                        <p className="text-2xl font-black text-white">1.4%<span className="text-xs text-zinc-500">+€0.25</span></p>
+                        <p className="text-xs text-zinc-600 mt-1">Per transazione EU</p>
+                    </div>
+
+                    {/* Resend */}
+                    <div className="bg-black/40 border border-zinc-800 rounded-lg p-4">
+                        <div className="flex items-center justify-between mb-2">
+                            <span className="text-sm font-bold text-blue-400">Resend</span>
+                            <span className="text-xs bg-blue-900/30 text-blue-400 px-2 py-0.5 rounded">Email</span>
+                        </div>
+                        <p className="text-2xl font-black text-white">€0<span className="text-xs text-zinc-500">/mese</span></p>
+                        <p className="text-xs text-zinc-600 mt-1">Free tier - 3k emails/mese</p>
+                    </div>
+
+                    {/* Hostinger */}
+                    <div className="bg-black/40 border border-zinc-800 rounded-lg p-4">
+                        <div className="flex items-center justify-between mb-2">
+                            <span className="text-sm font-bold text-orange-400">Hostinger</span>
+                            <span className="text-xs bg-orange-900/30 text-orange-400 px-2 py-0.5 rounded">Dominio</span>
+                        </div>
+                        <p className="text-2xl font-black text-white">€15<span className="text-xs text-zinc-500">/anno</span></p>
+                        <p className="text-xs text-zinc-600 mt-1">voxlux.com + voxluxstrategy.com</p>
+                    </div>
+
+                    {/* Vercel */}
+                    <div className="bg-black/40 border border-zinc-800 rounded-lg p-4">
+                        <div className="flex items-center justify-between mb-2">
+                            <span className="text-sm font-bold text-white">Vercel</span>
+                            <span className="text-xs bg-zinc-700 text-zinc-300 px-2 py-0.5 rounded">Hosting</span>
+                        </div>
+                        <p className="text-2xl font-black text-white">€0<span className="text-xs text-zinc-500">/mese</span></p>
+                        <p className="text-xs text-zinc-600 mt-1">Hobby Plan - Unlimited</p>
+                    </div>
+
+                    {/* Vimeo/YouTube */}
+                    <div className="bg-black/40 border border-zinc-800 rounded-lg p-4">
+                        <div className="flex items-center justify-between mb-2">
+                            <span className="text-sm font-bold text-red-400">Video Hosting</span>
+                            <span className="text-xs bg-red-900/30 text-red-400 px-2 py-0.5 rounded">Media</span>
+                        </div>
+                        <p className="text-2xl font-black text-white">€0<span className="text-xs text-zinc-500">/mese</span></p>
+                        <p className="text-xs text-zinc-600 mt-1">YouTube Unlisted / Vimeo Free</p>
+                    </div>
+                </div>
+
+                {/* Summary */}
+                <div className="bg-gradient-to-r from-red-900/20 to-transparent border border-red-800/30 rounded-lg p-4">
+                    <div className="flex items-center justify-between">
+                        <div>
+                            <p className="text-sm text-zinc-400">Costo Totale Mensile (fisso)</p>
+                            <p className="text-3xl font-black text-red-400">~€26<span className="text-xs text-zinc-500">/mese</span></p>
+                        </div>
+                        <div className="text-right">
+                            <p className="text-sm text-zinc-400">Costo Annuale Stimato</p>
+                            <p className="text-xl font-bold text-zinc-300">~€312<span className="text-xs text-zinc-500">/anno</span></p>
+                        </div>
+                    </div>
+                    <p className="text-xs text-zinc-600 mt-3">
+                        💡 Stripe costa ~€8.60 per ogni vendita da €597 (1.4% + €0.25)
+                    </p>
                 </div>
             </div>
         </div>
