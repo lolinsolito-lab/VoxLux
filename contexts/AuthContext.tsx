@@ -63,6 +63,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
     const loadUserProfile = async (userId: string) => {
         try {
+            console.log('[Auth] Loading profile for userId:', userId);
+
             // Fetch user profile from Supabase
             const { data: profile, error: profileError } = await supabase
                 .from('profiles')
@@ -71,10 +73,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
                 .single();
 
             if (profileError) {
-                console.error('Error loading profile:', profileError);
+                console.error('[Auth] Error loading profile:', profileError);
                 setLoading(false);
                 return;
             }
+
+            console.log('[Auth] Profile loaded:', { email: profile.email, role: profile.role });
 
             // Fetch user purchases
             const { data: purchases } = await supabase
@@ -82,6 +86,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
                 .select('course_id')
                 .eq('user_id', userId)
                 .eq('status', 'active');
+
+            console.log('[Auth] Purchases loaded:', purchases);
 
             // Fetch user stats
             const { data: stats } = await supabase
@@ -101,9 +107,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
                 createdAt: profile.created_at
             };
 
+            console.log('[Auth] Mapped user with role:', mappedUser.role);
             setUser(mappedUser);
         } catch (error) {
-            console.error('Error loading user:', error);
+            console.error('[Auth] Error loading user:', error);
         } finally {
             setLoading(false);
         }
