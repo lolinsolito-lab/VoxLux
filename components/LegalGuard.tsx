@@ -35,10 +35,9 @@ export const LegalGuard: React.FC<{ children: React.ReactNode }> = ({ children }
                 .from('user_contracts')
                 .select('id')
                 .eq('user_id', user.id)
-                .eq('contract_version', 'v1.0') // Current version
-                .single();
+                .eq('contract_version', 'v1.0');
 
-            if (data) {
+            if (data && data.length > 0) {
                 setHasSigned(true);
             } else {
                 setHasSigned(false);
