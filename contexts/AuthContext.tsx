@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect, useRef, ReactNode } from 'react';
 import { User as SupabaseUser } from '@supabase/supabase-js';
 import { supabase } from '../services/supabase';
 import { User, CourseProgress } from '../types';
@@ -33,38 +33,63 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const [user, setUser] = useState<User | null>(null);
     const [supabaseUser, setSupabaseUser] = useState<SupabaseUser | null>(null);
     const [loading, setLoading] = useState(true);
+    const loadingRef = useRef(false);
+    const loadedUserIdRef = useRef<string | null>(null);
 
     // Initialize auth state from Supabase
     useEffect(() => {
-        // Get initial session
-        supabase.auth.getSession().then(({ data: { session } }) => {
+        let isMounted = true;
+
+        const initializeAuth = async () => {
+            const { data: { session } } = await supabase.auth.getSession();
+            if (!isMounted) return;
+
             if (session?.user) {
                 setSupabaseUser(session.user);
-                loadUserProfile(session.user.id);
+                await loadUserProfile(session.user.id);
             } else {
                 setLoading(false);
             }
-        });
+        };
 
-        // Listen for auth changes
-        const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-            if (session?.user) {
-                setSupabaseUser(session.user);
-                loadUserProfile(session.user.id);
-            } else {
-                setSupabaseUser(null);
-                setUser(null);
-                setLoading(false);
+        initializeAuth();
+
+        // Listen for auth changes (login/logout only, not token refresh)
+        const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+            if (!isMounted) return;
+
+            // Only react to actual auth changes, not token refreshes
+            if (event === 'SIGNED_IN' || event === 'SIGNED_OUT' || event === 'USER_UPDATED') {
+                if (session?.user) {
+                    // Only reload if user changed
+                    if (loadedUserIdRef.current !== session.user.id) {
+                        setSupabaseUser(session.user);
+                        loadUserProfile(session.user.id);
+                    }
+                } else {
+                    loadedUserIdRef.current = null;
+                    setSupabaseUser(null);
+                    setUser(null);
+                    setLoading(false);
+                }
             }
         });
 
-        return () => subscription.unsubscribe();
+        return () => {
+            isMounted = false;
+            subscription.unsubscribe();
+        };
     }, []);
 
     const loadUserProfile = async (userId: string) => {
-        try {
-            console.log('[Auth] Loading profile for userId:', userId);
+        // Guard against duplicate/concurrent loads
+        if (loadingRef.current || loadedUserIdRef.current === userId) {
+            return;
+        }
 
+        loadingRef.current = true;
+
+        try {
             // Fetch user profile from Supabase
             const { data: profile, error: profileError } = await supabase
                 .from('profiles')
@@ -73,12 +98,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
                 .single();
 
             if (profileError) {
-                console.error('[Auth] Error loading profile:', profileError);
+                console.error('Error loading profile:', profileError);
                 setLoading(false);
+                loadingRef.current = false;
                 return;
             }
-
-            console.log('[Auth] Profile loaded:', { email: profile.email, role: profile.role });
 
             // Fetch user purchases
             const { data: purchases } = await supabase
@@ -86,8 +110,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
                 .select('course_id')
                 .eq('user_id', userId)
                 .eq('status', 'active');
-
-            console.log('[Auth] Purchases loaded:', purchases);
 
             // Fetch user stats
             const { data: stats } = await supabase
@@ -107,17 +129,22 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
                 createdAt: profile.created_at
             };
 
-            console.log('[Auth] Mapped user with role:', mappedUser.role);
+            loadedUserIdRef.current = userId;
             setUser(mappedUser);
         } catch (error) {
-            console.error('[Auth] Error loading user:', error);
+            console.error('Error loading user:', error);
         } finally {
+            loadingRef.current = false;
             setLoading(false);
         }
     };
 
     const login = async (email: string, password: string): Promise<{ success: boolean; error?: string; userId?: string }> => {
         try {
+            // Reset loaded user to force reload on new login
+            loadedUserIdRef.current = null;
+            loadingRef.current = false;
+
             const { data, error } = await supabase.auth.signInWithPassword({
                 email,
                 password
@@ -173,6 +200,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     };
 
     const logout = async (): Promise<void> => {
+        loadedUserIdRef.current = null;
+        loadingRef.current = false;
         await supabase.auth.signOut();
         setUser(null);
         setSupabaseUser(null);
@@ -200,6 +229,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
     const refreshUser = async (): Promise<void> => {
         if (supabaseUser) {
+            // Force refresh by clearing the loaded user
+            loadedUserIdRef.current = null;
+            loadingRef.current = false;
             await loadUserProfile(supabaseUser.id);
         }
     };

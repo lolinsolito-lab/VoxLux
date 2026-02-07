@@ -13,19 +13,10 @@ export const AdminRoute: React.FC = () => {
         );
     }
 
-    console.log('[AdminRoute] Checking access:', {
-        email: user?.email,
-        role: user?.role,
-        hasUser: !!user
-    });
-
     // Strict Role Check: Only 'admin' or 'god' allowed
     if (!user || (user.role !== 'admin' && user.role !== 'god')) {
-        // Log unauthorized access attempt could go here
-        console.warn(`Unauthorized Admin Access Attempt by: ${user?.email || 'Guest'}`);
         return <Navigate to="/dashboard" replace />;
     }
 
-    console.log('[AdminRoute] Access GRANTED for:', user.email);
     return <Outlet />;
 };
