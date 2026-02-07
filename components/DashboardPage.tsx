@@ -15,7 +15,8 @@ interface CourseProgress {
 }
 
 import { createCheckoutSession, STRIPE_PRODUCTS, CourseId } from '../services/stripe';
-import { Lock, ShoppingCart, CheckCircle, Crown, X } from 'lucide-react';
+import { Lock, ShoppingCart, CheckCircle, Crown, X, Settings } from 'lucide-react';
+import { ProfileSettings } from './ProfileSettings';
 
 export const DashboardPage: React.FC = () => {
     const { user, logout, refreshUser } = useAuth();
@@ -30,6 +31,7 @@ export const DashboardPage: React.FC = () => {
     // Modal State
     const [showSuccessModal, setShowSuccessModal] = useState(false);
     const [purchasedCourseName, setPurchasedCourseName] = useState('');
+    const [showProfileSettings, setShowProfileSettings] = useState(false);
 
     useEffect(() => {
         if (user) {
@@ -212,6 +214,13 @@ export const DashboardPage: React.FC = () => {
                                 </div>
                             </div>
                         )}
+                        <button
+                            onClick={() => setShowProfileSettings(true)}
+                            className="p-2 text-gray-400 hover:text-yellow-500 transition-colors border border-white/10 rounded-lg hover:border-yellow-500/50"
+                            title="Impostazioni Profilo"
+                        >
+                            <Settings size={18} />
+                        </button>
                         <button
                             onClick={handleLogout}
                             className="px-4 py-2 text-sm text-gray-400 hover:text-white transition-colors border border-white/10 rounded-lg hover:border-yellow-500/50"
@@ -400,6 +409,12 @@ export const DashboardPage: React.FC = () => {
                     </div>
                 </div>
             )}
+
+            {/* Profile Settings Modal */}
+            <ProfileSettings
+                isOpen={showProfileSettings}
+                onClose={() => setShowProfileSettings(false)}
+            />
         </div>
     );
 };

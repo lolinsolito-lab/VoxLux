@@ -180,12 +180,12 @@ export const UserManagement: React.FC = () => {
                                             </span>
                                         </td>
                                         <td className="p-4">
-                                            <div className="text-sm font-medium text-zinc-300">Lvl {user.level}</div>
-                                            <div className="text-xs text-zinc-600">{user.xp.toLocaleString()} XP</div>
+                                            <div className="text-sm font-medium text-zinc-300">Lvl {user.level ?? 1}</div>
+                                            <div className="text-xs text-zinc-600">{(user.xp ?? 0).toLocaleString()} XP</div>
                                         </td>
                                         <td className="p-4">
                                             <div className="text-sm text-zinc-400">
-                                                {new Date(user.created_at).toLocaleDateString()}
+                                                {user.created_at ? new Date(user.created_at).toLocaleDateString() : 'N/A'}
                                             </div>
                                         </td>
                                         <td className="p-4 text-right">
