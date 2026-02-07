@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Outlet, Link, useLocation } from 'react-router-dom';
+import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
 import {
     LayoutDashboard,
     Users,
@@ -8,7 +8,8 @@ import {
     LogOut,
     Menu,
     X,
-    ShieldAlert
+    ShieldAlert,
+    ArrowLeft
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { BRANDING } from '../config/branding';
@@ -17,6 +18,7 @@ export const AdminLayout: React.FC = () => {
     const [sidebarOpen, setSidebarOpen] = useState(true);
     const { logout } = useAuth();
     const location = useLocation();
+    const navigate = useNavigate();
 
     const navItems = [
         { path: '/admin', label: 'Overview', icon: <LayoutDashboard size={20} /> },
@@ -71,14 +73,21 @@ export const AdminLayout: React.FC = () => {
                         ))}
                     </nav>
 
-                    {/* User Profile / Logout */}
-                    <div className="p-4 border-t border-zinc-900">
+                    {/* Navigation Buttons */}
+                    <div className="p-4 border-t border-zinc-900 space-y-2">
+                        <button
+                            onClick={() => navigate('/dashboard')}
+                            className="flex items-center space-x-3 w-full px-4 py-3 text-zinc-400 hover:text-cyan-400 hover:bg-cyan-900/10 rounded-lg transition-colors"
+                        >
+                            <ArrowLeft size={20} />
+                            <span className="font-medium text-sm">Torna alla Dashboard</span>
+                        </button>
                         <button
                             onClick={() => logout()}
                             className="flex items-center space-x-3 w-full px-4 py-3 text-zinc-500 hover:text-red-500 hover:bg-red-900/5 rounded-lg transition-colors"
                         >
                             <LogOut size={20} />
-                            <span className="font-medium text-sm">Esci dal Matrix</span>
+                            <span className="font-medium text-sm">Logout</span>
                         </button>
                     </div>
                 </div>
