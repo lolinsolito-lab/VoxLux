@@ -15,8 +15,11 @@ interface CourseProgress {
 }
 
 import { createCheckoutSession, STRIPE_PRODUCTS, CourseId } from '../services/stripe';
-import { Lock, ShoppingCart, CheckCircle, Crown, X, Settings } from 'lucide-react';
+import { Lock, ShoppingCart, CheckCircle, Crown, X, Settings, Shield } from 'lucide-react';
 import { ProfileSettings } from './ProfileSettings';
+
+// Secret admin email - only this email can see GOD MODE button
+const ADMIN_EMAIL = 'jaramichael@hotmail.com';
 
 export const DashboardPage: React.FC = () => {
     const { user, logout, refreshUser } = useAuth();
@@ -239,6 +242,17 @@ export const DashboardPage: React.FC = () => {
                     <h2 className="text-2xl font-bold text-white mb-2 flex items-center gap-2">
                         Benvenuto, {user?.name || user?.email}
                         {hasAscension ? '👑' : '👋'}
+
+                        {/* Secret GOD MODE button - only for admin */}
+                        {user?.email === ADMIN_EMAIL && (
+                            <button
+                                onClick={() => navigate('/admin')}
+                                className="ml-4 px-3 py-1 text-xs bg-gradient-to-r from-red-900 to-red-700 hover:from-red-800 hover:to-red-600 text-white font-bold rounded-lg flex items-center gap-1.5 transition-all transform hover:scale-105 shadow-lg shadow-red-900/30"
+                            >
+                                <Shield size={12} />
+                                GOD MODE
+                            </button>
+                        )}
                     </h2>
                     <div className="flex items-center gap-4 text-sm">
                         <span className="text-gray-400">Livello: <span className="text-yellow-500 font-semibold">{user?.level}</span></span>

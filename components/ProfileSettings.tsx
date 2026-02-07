@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { X, Save, Loader, User, Phone, Globe, FileText, Shield } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { X, Save, Loader, User, Phone, Globe, FileText } from 'lucide-react';
 import { supabase } from '../services/supabase';
 import { useAuth } from '../contexts/AuthContext';
-import { useNavigate } from 'react-router-dom';
 
 interface ProfileData {
     full_name: string;
@@ -17,12 +16,8 @@ interface ProfileSettingsProps {
     onClose: () => void;
 }
 
-// Secret admin email - hardcoded for security
-const ADMIN_EMAIL = 'jaramichael@hotmail.com';
-
 export const ProfileSettings: React.FC<ProfileSettingsProps> = ({ isOpen, onClose }) => {
     const { user, refreshUser } = useAuth();
-    const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
     const [saving, setSaving] = useState(false);
     const [profile, setProfile] = useState<ProfileData>({
@@ -33,11 +28,17 @@ export const ProfileSettings: React.FC<ProfileSettingsProps> = ({ isOpen, onClos
         bio: ''
     });
 
+    const loadedRef = useRef(false);
+
     useEffect(() => {
-        if (isOpen && user) {
+        if (isOpen && user && !loadedRef.current) {
+            loadedRef.current = true;
             loadProfile();
         }
-    }, [isOpen, user]);
+        if (!isOpen) {
+            loadedRef.current = false;
+        }
+    }, [isOpen]);
 
     const loadProfile = async () => {
         if (!user) return;
@@ -95,25 +96,29 @@ export const ProfileSettings: React.FC<ProfileSettingsProps> = ({ isOpen, onClos
         }
     };
 
-    const handleAdminToggle = () => {
-        navigate('/admin');
+    const handleClose = () => {
+        loadedRef.current = false;
         onClose();
     };
 
     if (!isOpen) return null;
 
-    const isSecretAdmin = user?.email === ADMIN_EMAIL;
-
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
-            <div className="relative w-full max-w-lg bg-zinc-900 border border-zinc-800 rounded-2xl shadow-2xl overflow-hidden">
+        <div
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
+            onClick={handleClose}
+        >
+            <div
+                className="relative w-full max-w-lg bg-zinc-900 border border-zinc-800 rounded-2xl shadow-2xl overflow-hidden"
+                onClick={(e) => e.stopPropagation()}
+            >
                 {/* Header */}
                 <div className="flex items-center justify-between p-6 border-b border-zinc-800">
                     <h2 className="text-xl font-black text-white tracking-tight">
                         PROFILO PERSONALE
                     </h2>
                     <button
-                        onClick={onClose}
+                        onClick={handleClose}
                         className="p-2 text-zinc-500 hover:text-white hover:bg-zinc-800 rounded-lg transition-colors"
                     >
                         <X size={20} />
@@ -203,18 +208,7 @@ export const ProfileSettings: React.FC<ProfileSettingsProps> = ({ isOpen, onClos
                                 />
                             </div>
 
-                            {/* Secret Admin Button - ONLY for jaramichael@hotmail.com */}
-                            {isSecretAdmin && (
-                                <div className="pt-4 border-t border-zinc-800">
-                                    <button
-                                        onClick={handleAdminToggle}
-                                        className="w-full flex items-center justify-center gap-2 py-3 px-4 bg-gradient-to-r from-red-900 to-red-700 hover:from-red-800 hover:to-red-600 text-white font-bold rounded-xl transition-all transform hover:scale-[1.02]"
-                                    >
-                                        <Shield size={18} />
-                                        ENTRA IN GOD MODE
-                                    </button>
-                                </div>
-                            )}
+
                         </>
                     )}
                 </div>
@@ -222,7 +216,7 @@ export const ProfileSettings: React.FC<ProfileSettingsProps> = ({ isOpen, onClos
                 {/* Footer */}
                 <div className="flex items-center justify-end gap-3 p-6 border-t border-zinc-800 bg-black/30">
                     <button
-                        onClick={onClose}
+                        onClick={handleClose}
                         className="px-6 py-2.5 text-zinc-400 hover:text-white font-bold transition-colors"
                     >
                         Annulla
