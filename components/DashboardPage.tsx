@@ -25,6 +25,9 @@ interface BonusProduct {
     delivery_type: 'video' | 'download' | 'link';
     content_url: string;
     action_label: string;
+    is_purchasable?: boolean;
+    price_cents?: number;
+    is_unlocked?: boolean; // For rendering logic
 }
 
 
@@ -42,6 +45,7 @@ export const DashboardPage: React.FC = () => {
 
     const [purchases, setPurchases] = useState<Purchase[]>([]);
     const [bonuses, setBonuses] = useState<BonusProduct[]>([]);
+    const [lockedExtras, setLockedExtras] = useState<BonusProduct[]>([]);
     const [progress, setProgress] = useState<Record<string, CourseProgress>>({});
     const [loading, setLoading] = useState(true);
     const [syncing, setSyncing] = useState(false);
@@ -138,20 +142,17 @@ export const DashboardPage: React.FC = () => {
             }
             setProgress(progressData);
 
-            // Fetch Bonuses
-            const { data: bonusData } = await supabase
-                .from('bonus_content')
-                .select('*')
-                .order('order_index', { ascending: true });
+            // Fetch Bonuses using optimized stored function
+            const { data: bonusData, error: bonusError } = await supabase
+                .rpc('get_user_bonuses', { p_user_id: user.id });
 
-            if (bonusData) {
-                // Filter Bonuses based on access permissions
-                const unlockedBonuses = bonusData.filter((b: BonusProduct) => {
-                    if (b.is_global_bonus) return true;
-                    if (b.required_course_id && uniquePurchases.some(p => p.course_id === b.required_course_id)) return true;
-                    return false;
-                });
-                setBonuses(unlockedBonuses);
+            if (bonusData && !bonusError) {
+                // Separate unlocked bonuses from locked extras
+                const unlocked = bonusData.filter((b: any) => b.is_unlocked);
+                const locked = bonusData.filter((b: any) => !b.is_unlocked && b.is_purchasable);
+
+                setBonuses(unlocked.map((b: any) => ({ ...b, is_unlocked: true })));
+                setLockedExtras(locked.map((b: any) => ({ ...b, is_unlocked: false })));
             }
         } catch (error) {
             console.error('Error loading data:', error);
@@ -165,15 +166,38 @@ export const DashboardPage: React.FC = () => {
         navigate('/login');
     };
 
-    const handleBuyCourse = async (courseId: string) => {
-        if (!user?.email) return;
+    const handleBuyCourse = async (courseId: CourseId) => {
+        const checkout_url = await createCheckoutSession(courseId, user!);
+        if (checkout_url) {
+            window.location.href = checkout_url;
+        }
+    };
+
+    const handlePurchaseExtra = async (bonusId: string) => {
+        if (!user) return;
+
         try {
-            // Internal upsell: Redirect back to dashboard on success
-            const returnUrl = `${window.location.origin}/dashboard`;
-            await createCheckoutSession(courseId as CourseId, user.email, undefined, returnUrl);
+            const { data: { session } } = await supabase.auth.getSession();
+            if (!session) return;
+
+            const response = await fetch('/api/create-bonus-checkout', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${session.access_token}`
+                },
+                body: JSON.stringify({ bonus_id: bonusId })
+            });
+
+            if (response.ok) {
+                const { url } = await response.json();
+                window.location.href = url;
+            } else {
+                alert('Errore durante la creazione del checkout. Riprova.');
+            }
         } catch (error) {
-            console.error('Checkout error:', error);
-            alert('Errore durante l\'avvio del checkout. Riprova.');
+            console.error('Purchase error:', error);
+            alert('Errore durante l\'acquisto. Riprova.');
         }
     };
 
@@ -421,6 +445,50 @@ export const DashboardPage: React.FC = () => {
                         </div>
                     </div>
                 )}
+
+                {/* LOCKED EXTRAS (Purchasable) */}
+                {lockedExtras.length > 0 && (
+                    <div className="mb-12 animate-slide-up" style={{ animationDelay: '0.3s' }}>
+                        <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-2">
+                            <span className="text-amber-500">💎</span> Extra Premium - Sblocca Ora
+                        </h2>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            {lockedExtras.map((extra) => (
+                                <div
+                                    key={extra.id}
+                                    className="relative backdrop-blur-sm bg-gradient-to-br from-black/60 to-amber-900/20 border border-amber-500/30 rounded-2xl p-6 hover:border-amber-500/60 transition-all duration-300 group cursor-pointer overflow-hidden"
+                                >
+                                    {/* Lock Overlay */}
+                                    <div className="absolute top-4 right-4 bg-black/70 p-2 rounded-full">
+                                        <Lock className="text-amber-500" size={20} />
+                                    </div>
+
+                                    <div className="relative z-10">
+                                        <div className="text-3xl mb-4 opacity-50 grayscale">{extra.icon}</div>
+                                        <h3 className="text-xl font-bold text-white mb-2">{extra.title}</h3>
+                                        <p className="text-sm text-gray-400 mb-4 line-clamp-2">{extra.description}</p>
+
+                                        <div className="flex items-baseline gap-2 mb-4">
+                                            <span className="text-2xl font-bold text-amber-500">
+                                                €{((extra.price_cents || 0) / 100).toFixed(2)}
+                                            </span>
+                                        </div>
+
+                                        <button
+                                            onClick={() => handlePurchaseExtra(extra.id)}
+                                            className="w-full py-3 bg-gradient-to-r from-amber-600 to-amber-500 hover:from-amber-500 hover:to-amber-400 text-black font-bold rounded-lg transition-all duration-300 flex items-center justify-center gap-2 shadow-lg hover:shadow-amber-500/50"
+                                        >
+                                            <ShoppingCart size={18} />
+                                            ACQUISTA ORA
+                                        </button>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                )}
+
 
                 {/* Quick Stats (if has courses) */}
                 {purchases.length > 0 && (
