@@ -177,9 +177,14 @@ export const DashboardPage: React.FC = () => {
         if (!user) return;
 
         try {
+            console.log('🛒 Attempting to purchase bonus:', bonusId);
             const { data: { session } } = await supabase.auth.getSession();
-            if (!session) return;
+            if (!session) {
+                console.error('❌ No session found');
+                return;
+            }
 
+            console.log('✅ Session found, creating checkout...');
             const response = await fetch('/api/create-bonus-checkout', {
                 method: 'POST',
                 headers: {
@@ -189,14 +194,19 @@ export const DashboardPage: React.FC = () => {
                 body: JSON.stringify({ bonus_id: bonusId })
             });
 
+            console.log('📡 Response status:', response.status);
+
             if (response.ok) {
                 const { url } = await response.json();
+                console.log('✅ Checkout URL received:', url);
                 window.location.href = url;
             } else {
-                alert('Errore durante la creazione del checkout. Riprova.');
+                const errorData = await response.json();
+                console.error('❌ Checkout error:', errorData);
+                alert(`Errore: ${errorData.error || 'Errore durante la creazione del checkout. Riprova.'}`);
             }
         } catch (error) {
-            console.error('Purchase error:', error);
+            console.error('❌ Purchase error:', error);
             alert('Errore durante l\'acquisto. Riprova.');
         }
     };
