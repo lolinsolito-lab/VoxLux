@@ -459,42 +459,108 @@ export const DashboardPage: React.FC = () => {
                 {/* LOCKED EXTRAS (Purchasable) */}
                 {lockedExtras.length > 0 && (
                     <div className="mb-12 animate-slide-up" style={{ animationDelay: '0.3s' }}>
-                        <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-2">
-                            <span className="text-amber-500">💎</span> Extra Premium - Sblocca Ora
-                        </h2>
+                        <div className="text-center mb-10">
+                            <h2 className="text-3xl md:text-4xl font-bold text-white mb-3 flex items-center justify-center gap-3">
+                                <span className="text-amber-500">💎</span>
+                                Extra Premium
+                                <span className="text-amber-500">💎</span>
+                            </h2>
+                            <p className="text-gray-400 text-lg max-w-2xl mx-auto">
+                                Strumenti professionali che trasformano la tua strategia in risultati concreti
+                            </p>
+                        </div>
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                             {lockedExtras.map((extra) => (
                                 <div
                                     key={extra.id}
-                                    className="relative backdrop-blur-sm bg-gradient-to-br from-black/60 to-amber-900/20 border border-amber-500/30 rounded-2xl p-6 hover:border-amber-500/60 transition-all duration-300 group cursor-pointer overflow-hidden"
+                                    className="relative backdrop-blur-sm bg-gradient-to-br from-black/60 to-amber-900/20 border border-amber-500/30 rounded-2xl overflow-hidden hover:border-amber-500/60 transition-all duration-300 group hover:scale-[1.02] hover:shadow-2xl hover:shadow-amber-500/20 flex flex-col"
                                 >
-                                    {/* Lock Overlay */}
-                                    <div className="absolute top-4 right-4 bg-black/70 p-2 rounded-full">
-                                        <Lock className="text-amber-500" size={20} />
+                                    {/* Premium Badge */}
+                                    <div className="absolute top-0 right-0 bg-gradient-to-br from-amber-500 to-amber-600 px-4 py-1 rounded-bl-xl">
+                                        <span className="text-xs font-bold text-black">PREMIUM</span>
                                     </div>
 
-                                    <div className="relative z-10">
-                                        <div className="text-3xl mb-4 opacity-50 grayscale">{extra.icon}</div>
-                                        <h3 className="text-xl font-bold text-white mb-2">{extra.title}</h3>
-                                        <p className="text-sm text-gray-400 mb-4 line-clamp-2">{extra.description}</p>
+                                    {/* Lock Icon */}
+                                    <div className="absolute top-4 left-4 bg-black/70 p-2 rounded-full backdrop-blur-sm">
+                                        <Lock className="text-amber-500" size={18} />
+                                    </div>
 
-                                        <div className="flex items-baseline gap-2 mb-4">
-                                            <span className="text-2xl font-bold text-amber-500">
-                                                €{((extra.price_cents || 0) / 100).toFixed(2)}
+                                    {/* Card Content */}
+                                    <div className="p-8 flex flex-col flex-grow">
+                                        {/* Icon with Glow Effect */}
+                                        <div className="mb-6 relative">
+                                            <div className="text-5xl filter grayscale opacity-50 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-500">
+                                                {extra.icon}
+                                            </div>
+                                            <div className="absolute inset-0 bg-amber-500/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                                        </div>
+
+                                        {/* Title */}
+                                        <h3 className="text-2xl font-bold text-white mb-3 leading-tight min-h-[4rem] flex items-start">
+                                            {extra.title}
+                                        </h3>
+
+                                        {/* Description - Fixed Height for Alignment */}
+                                        <p className="text-sm text-gray-300 mb-6 leading-relaxed flex-grow min-h-[4.5rem]">
+                                            {extra.description}
+                                        </p>
+
+                                        {/* Social Proof / Urgency */}
+                                        <div className="mb-4 flex items-center gap-2 text-xs text-amber-400">
+                                            <span className="inline-flex items-center gap-1">
+                                                ⚡ <span className="font-semibold">Accesso istantaneo</span>
                                             </span>
                                         </div>
 
+                                        {/* Price Section */}
+                                        <div className="mb-6">
+                                            <div className="flex items-baseline gap-3 mb-1">
+                                                <span className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-amber-600">
+                                                    €{((extra.price_cents || 0) / 100).toFixed(0)}
+                                                </span>
+                                                <span className="text-gray-500 text-sm line-through">
+                                                    €{(((extra.price_cents || 0) / 100) * 1.5).toFixed(0)}
+                                                </span>
+                                            </div>
+                                            <p className="text-xs text-gray-400">Investimento una tantum • Accesso a vita</p>
+                                        </div>
+
+                                        {/* CTA Button */}
                                         <button
                                             onClick={() => handlePurchaseExtra(extra.id)}
-                                            className="w-full py-3 bg-gradient-to-r from-amber-600 to-amber-500 hover:from-amber-500 hover:to-amber-400 text-black font-bold rounded-lg transition-all duration-300 flex items-center justify-center gap-2 shadow-lg hover:shadow-amber-500/50"
+                                            className="w-full py-4 bg-gradient-to-r from-amber-600 via-amber-500 to-amber-600 hover:from-amber-500 hover:via-amber-400 hover:to-amber-500 text-black font-bold rounded-xl transition-all duration-300 flex items-center justify-center gap-2 shadow-lg hover:shadow-amber-500/50 group-hover:scale-105 uppercase tracking-wide text-sm"
                                         >
-                                            <ShoppingCart size={18} />
-                                            ACQUISTA ORA
+                                            <ShoppingCart size={18} className="animate-pulse" />
+                                            Sblocca Ora
                                         </button>
+
+                                        {/* Trust Badge */}
+                                        <div className="mt-4 text-center">
+                                            <p className="text-xs text-gray-500 flex items-center justify-center gap-1">
+                                                🔒 Pagamento sicuro tramite Stripe
+                                            </p>
+                                        </div>
                                     </div>
                                 </div>
                             ))}
+                        </div>
+
+                        {/* Bottom Trust Bar */}
+                        <div className="mt-10 text-center">
+                            <div className="inline-flex items-center gap-6 px-8 py-4 bg-white/5 backdrop-blur-sm border border-white/10 rounded-full">
+                                <span className="text-sm text-gray-400 flex items-center gap-2">
+                                    ✓ <span className="font-semibold text-white">Garanzia 30 giorni</span>
+                                </span>
+                                <span className="text-gray-600">|</span>
+                                <span className="text-sm text-gray-400 flex items-center gap-2">
+                                    ✓ <span className="font-semibold text-white">Supporto prioritario</span>
+                                </span>
+                                <span className="text-gray-600">|</span>
+                                <span className="text-sm text-gray-400 flex items-center gap-2">
+                                    ✓ <span className="font-semibold text-white">Aggiornamenti gratuiti</span>
+                                </span>
+                            </div>
                         </div>
                     </div>
                 )}
