@@ -19,9 +19,14 @@ interface BonusProduct {
     title: string;
     description: string;
     icon: string;
+    required_course_id?: string;
+    stripe_product_id?: string;
+    is_global_bonus?: boolean;
     delivery_type: 'video' | 'download' | 'link';
     content_url: string;
+    action_label: string;
 }
+
 
 import { createCheckoutSession, STRIPE_PRODUCTS, CourseId } from '../services/stripe';
 import { Lock, ShoppingCart, CheckCircle, Crown, X, Settings, Shield } from 'lucide-react';
@@ -36,8 +41,8 @@ export const DashboardPage: React.FC = () => {
     const [searchParams, setSearchParams] = useSearchParams();
 
     const [purchases, setPurchases] = useState<Purchase[]>([]);
-    const [progress, setProgress] = useState<Record<string, CourseProgress>>({});
     const [bonuses, setBonuses] = useState<BonusProduct[]>([]);
+    const [progress, setProgress] = useState<Record<string, CourseProgress>>({});
     const [loading, setLoading] = useState(true);
     const [syncing, setSyncing] = useState(false);
 
@@ -132,6 +137,22 @@ export const DashboardPage: React.FC = () => {
                 };
             }
             setProgress(progressData);
+
+            // Fetch Bonuses
+            const { data: bonusData } = await supabase
+                .from('bonus_content')
+                .select('*')
+                .order('order_index', { ascending: true });
+
+            if (bonusData) {
+                // Filter Bonuses based on access permissions
+                const unlockedBonuses = bonusData.filter((b: BonusProduct) => {
+                    if (b.is_global_bonus) return true;
+                    if (b.required_course_id && uniquePurchases.some(p => p.course_id === b.required_course_id)) return true;
+                    return false;
+                });
+                setBonuses(unlockedBonuses);
+            }
         } catch (error) {
             console.error('Error loading data:', error);
         } finally {
@@ -364,6 +385,42 @@ export const DashboardPage: React.FC = () => {
                         })}
                     </div>
                 </div>
+
+                {/* BONUS SECTION */}
+                {bonuses.length > 0 && (
+                    <div className="mb-12 animate-slide-up" style={{ animationDelay: '0.2s' }}>
+                        <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-2">
+                            <span className="text-purple-500">🎁</span> Contenuti Bonus & Risorse
+                        </h2>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            {bonuses.map((bonus) => (
+                                <div
+                                    key={bonus.id}
+                                    className="group relative bg-zinc-900/50 border border-zinc-800 hover:border-purple-500/50 rounded-xl p-6 transition-all duration-300 hover:shadow-[0_0_20px_rgba(168,85,247,0.15)] overflow-hidden"
+                                >
+                                    <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-20 transition-opacity">
+                                        <div className="text-6xl grayscale transition-all duration-500 group-hover:scale-110">{bonus.icon}</div>
+                                    </div>
+
+                                    <div className="relative z-10">
+                                        <div className="text-3xl mb-4">{bonus.icon}</div>
+                                        <h3 className="text-xl font-bold text-white mb-2 group-hover:text-purple-400 transition-colors">{bonus.title}</h3>
+                                        <p className="text-sm text-gray-400 mb-6 line-clamp-2 min-h-[40px]">{bonus.description}</p>
+
+                                        <button
+                                            onClick={() => window.open(bonus.content_url, '_blank')}
+                                            className="w-full py-2 bg-zinc-800 hover:bg-purple-600 text-white font-semibold rounded-lg transition-all duration-300 flex items-center justify-center gap-2 group-hover:shadow-lg"
+                                        >
+                                            {bonus.delivery_type === 'download' ? '⬇️ ' : '📺 '}
+                                            {bonus.action_label || 'ACCEDI'}
+                                        </button>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                )}
 
                 {/* Quick Stats (if has courses) */}
                 {purchases.length > 0 && (
