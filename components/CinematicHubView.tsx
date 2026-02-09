@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { COURSES, Mastermind } from '../services/courseData';
+import { useCourseData } from '../hooks/useCourseData';
+import { Mastermind } from '../services/courseData';
 import { WORLD_THEMES } from '../services/themeRegistry';
 import { useAudioSystem } from '../hooks/useAudioSystem';
 import { Play, Sparkles, Star, ArrowLeft, Check } from 'lucide-react';
@@ -15,7 +16,8 @@ interface CinematicHubViewProps {
 
 export const CinematicHubView: React.FC<CinematicHubViewProps> = ({ courseId, onSelectWorld, onBack, completedModules }) => {
     const { playSound } = useAudioSystem();
-    const course = COURSES[courseId] || COURSES['matrice-1'];
+    // HYBRID INTEGRATION: Use hook for data
+    const { course, loading } = useCourseData(courseId);
     const [hoveredNode, setHoveredNode] = useState<number | null>(null);
 
     // Background (Stars/Atmosphere) moved to <CosmicAtmosphere /> to prevent re-renders
@@ -24,6 +26,16 @@ export const CinematicHubView: React.FC<CinematicHubViewProps> = ({ courseId, on
         // Intro sound
         playSound('ambient_transition');
     }, [playSound]);
+
+    if (loading) {
+        return (
+            <div className="fixed inset-0 bg-black flex items-center justify-center z-50">
+                <div className="w-16 h-16 border-4 border-lux-gold border-t-transparent rounded-full animate-spin"></div>
+            </div>
+        );
+    }
+
+    if (!course) return null; // Should not happen due to fallback logic
 
     // MAP COORDINATES (Semi-random constellation pattern)
     // x, y in percentages
@@ -89,7 +101,7 @@ export const CinematicHubView: React.FC<CinematicHubViewProps> = ({ courseId, on
                         <Sparkles className={`w-4 h-4 md:w-5 md:h-5 ${hoveredNode !== null ? 'text-amber-400 rotate-12 transition-all' : 'text-lux-gold'}`} />
                         <span className="transition-all duration-300">
                             {hoveredNode !== null
-                                ? WORLD_THEMES[hoveredNode]?.name || "MONDO SCONOSCIUTO"
+                                ? (course.masterminds[hoveredNode]?.title || WORLD_THEMES[hoveredNode]?.name || "MONDO SCONOSCIUTO")
                                 : "Il Viaggio dei 10 Mondi"
                             }
                         </span>

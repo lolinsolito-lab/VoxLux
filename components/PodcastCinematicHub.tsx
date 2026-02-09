@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useMemo } from 'react';
-import { COURSES, Mastermind } from '../services/courseData';
+import { useCourseData } from '../hooks/useCourseData';
+import { Mastermind } from '../services/courseData';
 import { PODCAST_THEMES } from '../services/themeRegistry';
 import { useAudioSystem } from '../hooks/useAudioSystem';
 import { Mic, Play, ArrowLeft, Waves, Check, Sparkles } from 'lucide-react';
@@ -29,8 +30,19 @@ const ECLIPSE_STYLE = `
 
 export const PodcastCinematicHub: React.FC<PodcastCinematicHubProps> = ({ courseId, onSelectWorld, onBack, completedModules }) => {
     const { playSound } = useAudioSystem();
-    const course = COURSES[courseId] || COURSES['matrice-2'];
+    // HYBRID INTEGRATION: Hook
+    const { course, loading } = useCourseData(courseId);
     const [hoveredNode, setHoveredNode] = useState<number | null>(null);
+
+    if (loading) {
+        return (
+            <div className="fixed inset-0 bg-black flex items-center justify-center z-50">
+                <div className="w-16 h-16 border-4 border-amber-500 border-t-transparent rounded-full animate-spin"></div>
+            </div>
+        );
+    }
+
+    if (!course) return null;
 
     useEffect(() => {
         playSound('ambient_transition');
@@ -273,7 +285,7 @@ export const PodcastCinematicHub: React.FC<PodcastCinematicHubProps> = ({ course
                                                 {isHovered && (
                                                     <div className="absolute top-full mt-3 w-40 text-center pointer-events-none z-[100] hidden md:block">
                                                         <div className="text-[10px] uppercase tracking-wider bg-black/80 text-amber-100 px-2 py-1 rounded border border-amber-200/30 shadow-xl backdrop-blur-xl">
-                                                            {theme.name}
+                                                            {mastermind.title || theme.name}
                                                         </div>
                                                     </div>
                                                 )}
@@ -300,11 +312,11 @@ export const PodcastCinematicHub: React.FC<PodcastCinematicHubProps> = ({ course
                             </div>
 
                             <h2 className="text-2xl md:text-3xl font-display font-bold text-white mb-2 leading-tight drop-shadow-[0_0_20px_rgba(251,191,36,0.3)]">
-                                {PODCAST_THEMES[hoveredNode % PODCAST_THEMES.length]?.name || "FREQUENZA IGNOTA"}
+                                {course.masterminds[hoveredNode]?.title || PODCAST_THEMES[hoveredNode % PODCAST_THEMES.length]?.name || "FREQUENZA IGNOTA"}
                             </h2>
 
                             <p className="text-amber-100/60 font-serif italic text-sm md:text-base mb-6 max-w-sm md:max-w-lg mx-auto md:mx-0">
-                                "{PODCAST_THEMES[hoveredNode % PODCAST_THEMES.length]?.subname || "Sintonizzazione in corso..."}"
+                                "{course.masterminds[hoveredNode]?.description || PODCAST_THEMES[hoveredNode % PODCAST_THEMES.length]?.subname || "Sintonizzazione in corso..."}"
                             </p>
 
                             {/* START BUTTON (Active State) */}
@@ -356,6 +368,6 @@ export const PodcastCinematicHub: React.FC<PodcastCinematicHubProps> = ({ course
                 </div>
 
             </div>
-        </div>
+        </div >
     );
 };

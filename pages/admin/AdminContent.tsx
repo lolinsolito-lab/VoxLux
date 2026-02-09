@@ -13,6 +13,7 @@ interface BonusProduct {
     delivery_type: string;
     content_url: string;
     active: boolean;
+    icon: string; // NEW
 }
 
 interface UpsellProduct {
@@ -25,7 +26,193 @@ interface UpsellProduct {
     badge: string;
     active: boolean;
     available_for_tiers: string[];
+    icon: string; // NEW
 }
+// ...
+const BonusFormModal = ({ bonus, onClose, onSave }: { bonus: BonusProduct | null; onClose: () => void; onSave: () => void }) => {
+    const [form, setForm] = useState({
+        name: bonus?.name || '',
+        description: bonus?.description || '',
+        tier_applicable: bonus?.tier_applicable || [],
+        eligibility_hours: bonus?.eligibility_hours || 24,
+        delivery_type: bonus?.delivery_type || 'supabase_storage',
+        content_url: bonus?.content_url || '',
+        active: bonus?.active ?? true,
+        icon: bonus?.icon || '🎁'
+    });
+    const [saving, setSaving] = useState(false);
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setSaving(true);
+        try {
+            if (bonus) {
+                await supabase.from('bonus_products').update(form).eq('id', bonus.id);
+            } else {
+                await supabase.from('bonus_products').insert(form);
+            }
+            onSave();
+        } catch (error) {
+            console.error('Error saving bonus:', error);
+            alert('Errore nel salvataggio');
+        } finally {
+            setSaving(false);
+        }
+    };
+
+    return (
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+            <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 w-full max-w-2xl shadow-2xl">
+                <div className="flex justify-between items-center mb-6">
+                    <h3 className="text-xl font-bold text-white flex items-center gap-2">
+                        {bonus ? <Pencil size={20} className="text-purple-500" /> : <Plus size={20} className="text-purple-500" />}
+                        {bonus ? 'Modifica Bonus' : 'Nuovo Bonus'}
+                    </h3>
+                    <button onClick={onClose} className="text-gray-500 hover:text-white"><X size={24} /></button>
+                </div>
+                <form onSubmit={handleSubmit} className="space-y-4">
+                    <div className="grid grid-cols-2 gap-4">
+                        <div>
+                            <label className="text-sm text-gray-400 mb-2 block font-semibold">Titolo</label>
+                            <input type="text" value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-purple-500 focus:outline-none transition-all" />
+                        </div>
+                        <div>
+                            <label className="text-sm text-gray-400 mb-2 block font-semibold">Icona (Emoji)</label>
+                            <input type="text" value={form.icon} onChange={e => setForm(f => ({ ...f, icon: e.target.value }))} className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-center text-2xl text-white focus:border-purple-500 focus:outline-none transition-all" />
+                        </div>
+                    </div>
+                    <div>
+                        <label className="text-sm text-gray-400 mb-2 block font-semibold">Descrizione</label>
+                        <textarea value={form.description} onChange={e => setForm(f => ({ ...f, description: e.target.value }))} className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white h-24 focus:border-purple-500 focus:outline-none transition-all resize-none" />
+                    </div>
+                    <div className="grid grid-cols-2 gap-4">
+                        <div>
+                            <label className="text-sm text-gray-400 mb-2 block font-semibold">Tipo Consegna</label>
+                            <select value={form.delivery_type} onChange={e => setForm(f => ({ ...f, delivery_type: e.target.value }))} className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-purple-500 focus:outline-none transition-all">
+                                <option value="supabase_storage" className="bg-gray-900">📦 Storage</option>
+                                <option value="external_url" className="bg-gray-900">🔗 Link Esterno</option>
+                                <option value="youtube" className="bg-gray-900">📺 YouTube</option>
+                                <option value="vimeo" className="bg-gray-900">🎬 Vimeo</option>
+                                <option value="download_link" className="bg-gray-900">💾 Download</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label className="text-sm text-gray-400 mb-2 block font-semibold">Contenuto (URL/ID)</label>
+                            <input type="text" value={form.content_url} onChange={e => setForm(f => ({ ...f, content_url: e.target.value }))} className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-purple-500 focus:outline-none transition-all font-mono text-sm" />
+                        </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4">
+                        <div>
+                            <label className="text-sm text-gray-400 mb-2 block font-semibold">Ore Eleggibilità</label>
+                            <input type="number" value={form.eligibility_hours} onChange={e => setForm(f => ({ ...f, eligibility_hours: parseInt(e.target.value) || 0 }))} className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-purple-500 focus:outline-none transition-all" />
+                        </div>
+                        <div className="flex items-end">
+                            <label className="flex items-center space-x-3 text-gray-300 cursor-pointer p-3 bg-white/5 rounded-xl border border-white/10 w-full hover:bg-white/10 transition-all">
+                                <input type="checkbox" checked={form.active} onChange={e => setForm(f => ({ ...f, active: e.target.checked }))} className="w-5 h-5 accent-purple-500" />
+                                <span className="font-semibold">Attivo</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <button disabled={saving} className="w-full py-4 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-bold rounded-xl disabled:opacity-50 transition-all shadow-lg text-lg">
+                        {saving ? 'Salvataggio...' : 'Salva Bonus'}
+                    </button>
+                </form>
+            </motion.div>
+        </div>
+    );
+};
+
+const UpsellFormModal = ({ upsell, onClose, onSave }: { upsell: UpsellProduct | null; onClose: () => void; onSave: () => void }) => {
+    const [form, setForm] = useState({
+        name: upsell?.name || '',
+        description: upsell?.description || '',
+        price: upsell?.price || 0,
+        stripe_price_id: upsell?.stripe_price_id || '',
+        display_order: upsell?.display_order || 0,
+        badge: upsell?.badge || '',
+        active: upsell?.active ?? true,
+        available_for_tiers: upsell?.available_for_tiers || [],
+        icon: upsell?.icon || '💎'
+    });
+    const [saving, setSaving] = useState(false);
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setSaving(true);
+        try {
+            if (upsell) {
+                await supabase.from('upsell_products').update(form).eq('id', upsell.id);
+            } else {
+                await supabase.from('upsell_products').insert(form);
+            }
+            onSave();
+        } catch (error) {
+            console.error('Error saving upsell:', error);
+            alert('Errore nel salvataggio');
+        } finally {
+            setSaving(false);
+        }
+    };
+
+    return (
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+            <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 w-full max-w-2xl shadow-2xl">
+                <div className="flex justify-between items-center mb-6">
+                    <h3 className="text-xl font-bold text-white flex items-center gap-2">
+                        {upsell ? <Pencil size={20} className="text-green-500" /> : <Plus size={20} className="text-green-500" />}
+                        {upsell ? 'Modifica Upsell' : 'Nuovo Upsell'}
+                    </h3>
+                    <button onClick={onClose} className="text-gray-500 hover:text-white"><X size={24} /></button>
+                </div>
+                <form onSubmit={handleSubmit} className="space-y-4">
+                    <div className="grid grid-cols-2 gap-4">
+                        <div>
+                            <label className="text-sm text-gray-400 mb-2 block font-semibold">Titolo</label>
+                            <input type="text" value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-green-500 focus:outline-none transition-all" />
+                        </div>
+                        <div>
+                            <label className="text-sm text-gray-400 mb-2 block font-semibold">Prezzo (cents)</label>
+                            <input type="number" value={form.price} onChange={e => setForm(f => ({ ...f, price: parseInt(e.target.value) || 0 }))} className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-green-500 focus:outline-none transition-all" />
+                        </div>
+                    </div>
+                    <div className="grid grid-cols-3 gap-4">
+                        <div>
+                            <label className="text-sm text-gray-400 mb-2 block font-semibold">Ordine</label>
+                            <input type="number" value={form.display_order} onChange={e => setForm(f => ({ ...f, display_order: parseInt(e.target.value) || 0 }))} className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-green-500 focus:outline-none transition-all" />
+                        </div>
+                        <div>
+                            <label className="text-sm text-gray-400 mb-2 block font-semibold">Icona</label>
+                            <input type="text" value={form.icon} onChange={e => setForm(f => ({ ...f, icon: e.target.value }))} className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-center text-xl text-white focus:border-green-500 focus:outline-none transition-all" placeholder="💎" />
+                        </div>
+                        <div>
+                            <label className="text-sm text-gray-400 mb-2 block font-semibold">Badge</label>
+                            <input type="text" value={form.badge} onChange={e => setForm(f => ({ ...f, badge: e.target.value }))} className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-green-500 focus:outline-none transition-all uppercase" placeholder="POPULAR" />
+                        </div>
+                    </div>
+                    <div>
+                        <label className="text-sm text-gray-400 mb-2 block font-semibold">Descrizione</label>
+                        <textarea value={form.description} onChange={e => setForm(f => ({ ...f, description: e.target.value }))} className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white h-24 focus:border-green-500 focus:outline-none transition-all resize-none" />
+                    </div>
+                    <div>
+                        <label className="text-sm text-gray-400 mb-2 block font-semibold">Stripe Price ID</label>
+                        <input type="text" value={form.stripe_price_id} onChange={e => setForm(f => ({ ...f, stripe_price_id: e.target.value }))} className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-green-500 focus:outline-none transition-all font-mono" />
+                    </div>
+                    <div className="flex items-end">
+                        <label className="flex items-center space-x-3 text-gray-300 cursor-pointer p-3 bg-white/5 rounded-xl border border-white/10 w-full hover:bg-white/10 transition-all">
+                            <input type="checkbox" checked={form.active} onChange={e => setForm(f => ({ ...f, active: e.target.checked }))} className="w-5 h-5 accent-green-500" />
+                            <span className="font-semibold">Attivo</span>
+                        </label>
+                    </div>
+                    <button disabled={saving} className="w-full py-4 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-500 hover:to-emerald-500 text-white font-bold rounded-xl disabled:opacity-50 transition-all shadow-lg text-lg">
+                        {saving ? 'Salvataggio...' : 'Salva Upsell'}
+                    </button>
+                </form>
+            </motion.div>
+        </div>
+    );
+};
 
 export const AdminContent: React.FC = () => {
     const [activeTab, setActiveTab] = useState<'bonuses' | 'upsells'>('upsells');
@@ -455,365 +642,4 @@ export const AdminContent: React.FC = () => {
     );
 };
 
-// BONUS FORM MODAL
-const BonusFormModal = ({ bonus, onClose, onSave }: { bonus: BonusProduct | null; onClose: () => void; onSave: () => void }) => {
-    const [form, setForm] = useState({
-        name: bonus?.name || '',
-        description: bonus?.description || '',
-        tier_applicable: bonus?.tier_applicable || [],
-        eligibility_hours: bonus?.eligibility_hours || 24,
-        delivery_type: bonus?.delivery_type || 'supabase_storage',
-        content_url: bonus?.content_url || '',
-        active: bonus?.active ?? true
-    });
-    const [saving, setSaving] = useState(false);
-
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        setSaving(true);
-        try {
-            if (bonus) {
-                await supabase.from('bonus_products').update(form).eq('id', bonus.id);
-            } else {
-                await supabase.from('bonus_products').insert(form);
-            }
-            onSave();
-        } catch (error) {
-            console.error('Error saving bonus:', error);
-            alert('Errore nel salvataggio');
-        } finally {
-            setSaving(false);
-        }
-    };
-
-    const toggleTier = (tier: string) => {
-        setForm(f => ({
-            ...f,
-            tier_applicable: f.tier_applicable.includes(tier)
-                ? f.tier_applicable.filter(t => t !== tier)
-                : [...f.tier_applicable, tier]
-        }));
-    };
-
-    return (
-        <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4"
-            style={{ zIndex: 9999 }}
-            onClick={onClose}
-        >
-            <motion.form
-                initial={{ scale: 0.9, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                exit={{ scale: 0.9, opacity: 0 }}
-                onSubmit={handleSubmit}
-                onClick={(e) => e.stopPropagation()}
-                className="bg-gradient-to-br from-gray-900 to-black border border-purple-500/30 rounded-2xl p-8 w-full max-w-2xl space-y-5 shadow-2xl max-h-[90vh] overflow-y-auto"
-            >
-                <div className="flex justify-between items-center mb-6">
-                    <h2 className="text-3xl font-bold text-white">{bonus ? 'Modifica Bonus' : 'Nuovo Bonus'}</h2>
-                    <button type="button" onClick={onClose} className="text-gray-400 hover:text-white p-2 hover:bg-white/10 rounded-lg transition-all">
-                        <X size={24} />
-                    </button>
-                </div>
-
-                <div>
-                    <label className="text-sm text-gray-400 mb-2 block font-semibold">Nome Bonus</label>
-                    <input
-                        type="text"
-                        value={form.name}
-                        onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
-                        required
-                        placeholder="es. Template Storytelling Esclusivi"
-                        className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:border-purple-500 focus:outline-none transition-all"
-                    />
-                </div>
-
-                <div>
-                    <label className="text-sm text-gray-400 mb-2 block font-semibold">Descrizione</label>
-                    <textarea
-                        value={form.description}
-                        onChange={e => setForm(f => ({ ...f, description: e.target.value }))}
-                        placeholder="Raccolta di 20 template pronti all'uso per storytelling efficace"
-                        className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-500 h-24 focus:border-purple-500 focus:outline-none transition-all resize-none"
-                    />
-                </div>
-
-                <div>
-                    <label className="text-sm text-gray-400 mb-3 block font-semibold">Tier Applicabili</label>
-                    <div className="flex flex-wrap gap-3">
-                        {['matrice-1', 'matrice-2', 'ascension-box'].map(tier => (
-                            <button
-                                key={tier}
-                                type="button"
-                                onClick={() => toggleTier(tier)}
-                                className={`px-4 py-2 rounded-xl border text-sm font-bold transition-all duration-300 ${form.tier_applicable.includes(tier)
-                                    ? 'bg-purple-600 border-purple-500 text-white shadow-lg shadow-purple-500/30'
-                                    : 'bg-white/5 border-white/10 text-gray-400 hover:bg-white/10'
-                                    }`}
-                            >
-                                {tier.replace('matrice-', 'Matrice ').replace('ascension-box', 'Ascension Box')}
-                            </button>
-                        ))}
-                    </div>
-                </div>
-
-                <div className="relative">
-                    <label className="text-sm text-gray-400 mb-2 block font-semibold">Tipo Delivery</label>
-                    <select
-                        value={form.delivery_type}
-                        onChange={e => setForm(f => ({ ...f, delivery_type: e.target.value }))}
-                        className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-purple-500 focus:outline-none transition-all relative z-10 cursor-pointer"
-                        style={{ position: 'relative', zIndex: 10 }}
-                    >
-                        <option value="supabase_storage" className="bg-gray-900">📦 Supabase Storage (Upload File)</option>
-                        <option value="external_url" className="bg-gray-900">🔗 Link Esterno (Website)</option>
-                        <option value="youtube" className="bg-gray-900">📺 YouTube</option>
-                        <option value="vimeo" className="bg-gray-900">🎬 Vimeo</option>
-                        <option value="download_link" className="bg-gray-900">💾 Download Link (PDF, ZIP)</option>
-                    </select>
-                    <p className="text-xs text-gray-500 mt-1">
-                        {form.delivery_type === 'supabase_storage' && '💡 Carica file (PDF, video, audio) su Supabase Storage'}
-                        {form.delivery_type === 'external_url' && '💡 Link a pagina web esterna'}
-                        {form.delivery_type === 'youtube' && '💡 ID video YouTube (es: dQw4w9WgXcQ)'}
-                        {form.delivery_type === 'vimeo' && '💡 ID video Vimeo (es: 123456789)'}
-                        {form.delivery_type === 'download_link' && '💡 Link diretto download (es: Dropbox, Google Drive)'}
-                    </p>
-                </div>
-
-                <div>
-                    <label className="text-sm text-gray-400 mb-2 block font-semibold">
-                        {form.delivery_type === 'youtube' && '🎬 YouTube Video ID'}
-                        {form.delivery_type === 'vimeo' && '🎬 Vimeo Video ID'}
-                        {form.delivery_type === 'supabase_storage' && '📦 Supabase Storage Path'}
-                        {(form.delivery_type === 'external_url' || form.delivery_type === 'download_link') && '🔗 URL Completo'}
-                    </label>
-                    <input
-                        type="text"
-                        value={form.content_url}
-                        onChange={e => setForm(f => ({ ...f, content_url: e.target.value }))}
-                        placeholder={
-                            form.delivery_type === 'youtube' ? 'dQw4w9WgXcQ' :
-                                form.delivery_type === 'vimeo' ? '123456789' :
-                                    form.delivery_type === 'supabase_storage' ? 'bonuses/storytelling-templates.pdf' :
-                                        'https://example.com/file.pdf'
-                        }
-                        className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:border-purple-500 focus:outline-none transition-all font-mono text-sm"
-                    />
-                    <p className="text-xs text-gray-500 mt-1">
-                        {form.delivery_type === 'supabase_storage' && '💾 Path relativo in Supabase Storage (es: bonuses/file.pdf)'}
-                        {(form.delivery_type === 'youtube' || form.delivery_type === 'vimeo') && '🎥 Solo l\'ID del video, NON l\'URL completo'}
-                        {(form.delivery_type === 'external_url' || form.delivery_type === 'download_link') && '🌐 URL completo con https://'}
-                    </p>
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                    <div>
-                        <label className="text-sm text-gray-400 mb-2 block font-semibold">Ore Eleggibilità</label>
-                        <input
-                            type="number"
-                            value={form.eligibility_hours}
-                            onChange={e => setForm(f => ({ ...f, eligibility_hours: parseInt(e.target.value) || 24 }))}
-                            className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-purple-500 focus:outline-none transition-all"
-                        />
-                    </div>
-                    <div className="flex items-end">
-                        <label className="flex items-center space-x-3 text-gray-300 cursor-pointer p-3 bg-white/5 rounded-xl border border-white/10 w-full hover:bg-white/10 transition-all">
-                            <input
-                                type="checkbox"
-                                checked={form.active}
-                                onChange={e => setForm(f => ({ ...f, active: e.target.checked }))}
-                                className="w-5 h-5 accent-purple-500"
-                            />
-                            <span className="font-semibold">Attivo</span>
-                        </label>
-                    </div>
-                </div>
-
-                <button
-                    type="submit"
-                    disabled={saving}
-                    className="w-full py-4 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-bold rounded-xl disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 shadow-lg hover:shadow-purple-500/50 text-lg"
-                >
-                    {saving ? 'Salvataggio...' : (bonus ? 'Aggiorna Bonus' : 'Crea Bonus')}
-                </button>
-            </motion.form>
-        </motion.div>
-    );
-};
-
-// UPSELL FORM MODAL
-const UpsellFormModal = ({ upsell, onClose, onSave }: { upsell: UpsellProduct | null; onClose: () => void; onSave: () => void }) => {
-    const [form, setForm] = useState({
-        name: upsell?.name || '',
-        description: upsell?.description || '',
-        price: upsell?.price || 0,
-        stripe_price_id: upsell?.stripe_price_id || '',
-        display_order: upsell?.display_order || 0,
-        badge: upsell?.badge || '',
-        active: upsell?.active ?? true,
-        available_for_tiers: upsell?.available_for_tiers || []
-    });
-    const [saving, setSaving] = useState(false);
-
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        setSaving(true);
-        try {
-            if (upsell) {
-                await supabase.from('upsell_products').update(form).eq('id', upsell.id);
-            } else {
-                await supabase.from('upsell_products').insert(form);
-            }
-            onSave();
-        } catch (error) {
-            console.error('Error saving upsell:', error);
-            alert('Errore nel salvataggio');
-        } finally {
-            setSaving(false);
-        }
-    };
-
-    const toggleTier = (tier: string) => {
-        setForm(f => ({
-            ...f,
-            available_for_tiers: f.available_for_tiers.includes(tier)
-                ? f.available_for_tiers.filter(t => t !== tier)
-                : [...f.available_for_tiers, tier]
-        }));
-    };
-
-    return (
-        <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4"
-            style={{ zIndex: 9999 }}
-            onClick={onClose}
-        >
-            <motion.form
-                initial={{ scale: 0.9, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                exit={{ scale: 0.9, opacity: 0 }}
-                onSubmit={handleSubmit}
-                onClick={(e) => e.stopPropagation()}
-                className="bg-gradient-to-br from-gray-900 to-black border border-green-500/30 rounded-2xl p-8 w-full max-w-2xl space-y-5 shadow-2xl max-h-[90vh] overflow-y-auto"
-            >
-                <div className="flex justify-between items-center mb-6">
-                    <h2 className="text-3xl font-bold text-white">{upsell ? 'Modifica Upsell' : 'Nuovo Upsell'}</h2>
-                    <button type="button" onClick={onClose} className="text-gray-400 hover:text-white p-2 hover:bg-white/10 rounded-lg transition-all">
-                        <X size={24} />
-                    </button>
-                </div>
-
-                <div>
-                    <label className="text-sm text-gray-400 mb-2 block font-semibold">Nome Upsell</label>
-                    <input
-                        type="text"
-                        value={form.name}
-                        onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
-                        required
-                        placeholder="es. 1-on-1 Coaching Session"
-                        className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:border-green-500 focus:outline-none transition-all"
-                    />
-                </div>
-
-                <div>
-                    <label className="text-sm text-gray-400 mb-2 block font-semibold">Descrizione</label>
-                    <textarea
-                        value={form.description}
-                        onChange={e => setForm(f => ({ ...f, description: e.target.value }))}
-                        placeholder="Sessione personalizzata di coaching (60 min)"
-                        className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-500 h-24 focus:border-green-500 focus:outline-none transition-all resize-none"
-                    />
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                    <div>
-                        <label className="text-sm text-gray-400 mb-2 block font-semibold">Prezzo (cents)</label>
-                        <input
-                            type="number"
-                            value={form.price}
-                            onChange={e => setForm(f => ({ ...f, price: parseInt(e.target.value) || 0 }))}
-                            placeholder="19700"
-                            className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:border-green-500 focus:outline-none transition-all"
-                        />
-                        <p className="text-xs text-gray-500 mt-1">€{(form.price / 100).toFixed(2)}</p>
-                    </div>
-                    <div>
-                        <label className="text-sm text-gray-400 mb-2 block font-semibold">Stripe Price ID</label>
-                        <input
-                            type="text"
-                            value={form.stripe_price_id}
-                            onChange={e => setForm(f => ({ ...f, stripe_price_id: e.target.value }))}
-                            placeholder="price_xxx"
-                            className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:border-green-500 focus:outline-none transition-all font-mono text-sm"
-                        />
-                    </div>
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                    <div>
-                        <label className="text-sm text-gray-400 mb-2 block font-semibold">Ordine Display</label>
-                        <input
-                            type="number"
-                            value={form.display_order}
-                            onChange={e => setForm(f => ({ ...f, display_order: parseInt(e.target.value) || 0 }))}
-                            className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-green-500 focus:outline-none transition-all"
-                        />
-                    </div>
-                    <div>
-                        <label className="text-sm text-gray-400 mb-2 block font-semibold">Badge (opzionale)</label>
-                        <input
-                            type="text"
-                            value={form.badge}
-                            onChange={e => setForm(f => ({ ...f, badge: e.target.value }))}
-                            placeholder="POPULAR"
-                            className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:border-green-500 focus:outline-none transition-all uppercase"
-                        />
-                    </div>
-                </div>
-
-                <div>
-                    <label className="text-sm text-gray-400 mb-3 block font-semibold">Disponibile per Tier</label>
-                    <div className="flex flex-wrap gap-3">
-                        {['matrice-1', 'matrice-2', 'ascension-box'].map(tier => (
-                            <button
-                                key={tier}
-                                type="button"
-                                onClick={() => toggleTier(tier)}
-                                className={`px-4 py-2 rounded-xl border text-sm font-bold transition-all duration-300 ${form.available_for_tiers.includes(tier)
-                                    ? 'bg-green-600 border-green-500 text-white shadow-lg shadow-green-500/30'
-                                    : 'bg-white/5 border-white/10 text-gray-400 hover:bg-white/10'
-                                    }`}
-                            >
-                                {tier.replace('matrice-', 'Matrice ').replace('ascension-box', 'Ascension Box')}
-                            </button>
-                        ))}
-                    </div>
-                </div>
-
-                <label className="flex items-center space-x-3 text-gray-300 cursor-pointer p-3 bg-white/5 rounded-xl border border-white/10 hover:bg-white/10 transition-all">
-                    <input
-                        type="checkbox"
-                        checked={form.active}
-                        onChange={e => setForm(f => ({ ...f, active: e.target.checked }))}
-                        className="w-5 h-5 accent-green-500"
-                    />
-                    <span className="font-semibold">Attivo</span>
-                </label>
-
-                <button
-                    type="submit"
-                    disabled={saving}
-                    className="w-full py-4 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-500 hover:to-emerald-500 text-white font-bold rounded-xl disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 shadow-lg hover:shadow-green-500/50 text-lg"
-                >
-                    {saving ? 'Salvataggio...' : (upsell ? 'Aggiorna Upsell' : 'Crea Upsell')}
-                </button>
-            </motion.form>
-        </motion.div>
-    );
-};
+export default AdminContent;
