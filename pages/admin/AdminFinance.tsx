@@ -11,7 +11,8 @@ interface Purchase {
     amount: number;
     status: string;
     created_at: string;
-    profiles?: { name?: string; email?: string };
+    email?: string;
+    profiles?: { full_name?: string; email?: string };
 }
 
 interface ChartDataPoint {
