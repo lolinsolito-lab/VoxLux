@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Plus, Pencil, Trash2, Book, Users, CheckCircle, Layout, Eye, Lock, Unlock, TrendingUp, PlayCircle, RefreshCw } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { supabase } from '../../services/supabase';
+import { ModuleBuilder } from '../../components/admin/ModuleBuilder';
 
 interface Course {
     id: string;
@@ -38,6 +39,8 @@ export const AdminCourses: React.FC = () => {
     const [loading, setLoading] = useState(true);
     const [showCreateModal, setShowCreateModal] = useState(false);
     const [editingCourse, setEditingCourse] = useState<Course | null>(null);
+    const [showModuleBuilder, setShowModuleBuilder] = useState(false);
+    const [selectedCourseId, setSelectedCourseId] = useState<string | null>(null);
 
     useEffect(() => {
         fetchCourses();
@@ -288,10 +291,10 @@ export const AdminCourses: React.FC = () => {
                                     <div className="mb-4">
                                         <span
                                             className={`inline-block px-3 py-1 rounded-lg text-xs font-bold ${course.status === 'published'
-                                                    ? 'bg-green-500/20 text-green-400 border border-green-500/30'
-                                                    : course.status === 'draft'
-                                                        ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30'
-                                                        : 'bg-gray-500/20 text-gray-400 border border-gray-500/30'
+                                                ? 'bg-green-500/20 text-green-400 border border-green-500/30'
+                                                : course.status === 'draft'
+                                                    ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30'
+                                                    : 'bg-gray-500/20 text-gray-400 border border-gray-500/30'
                                                 }`}
                                         >
                                             {course.status.toUpperCase()}
@@ -299,12 +302,22 @@ export const AdminCourses: React.FC = () => {
                                     </div>
 
                                     {/* Actions */}
-                                    <div className="flex gap-2">
+                                    <div className="flex gap-2 mt-4 pt-4 border-t border-white/10">
+                                        <button
+                                            onClick={() => {
+                                                setSelectedCourseId(course.id);
+                                                setShowModuleBuilder(true);
+                                            }}
+                                            className="flex-1 py-2 bg-purple-500/10 hover:bg-purple-500/20 border border-purple-500/20 rounded-lg text-sm font-medium text-purple-400 transition-colors flex items-center justify-center gap-2"
+                                        >
+                                            <Layout size={16} />
+                                            Gestisci Moduli
+                                        </button>
                                         <button
                                             onClick={() => handleToggleStatus(course.id, course.status)}
                                             className={`flex-1 py-2 rounded-lg font-semibold text-sm transition-all duration-300 ${course.status === 'published'
-                                                    ? 'bg-green-600/20 border border-green-500/30 text-green-400 hover:bg-green-600/30'
-                                                    : 'bg-white/5 border border-white/10 text-gray-400 hover:bg-white/10'
+                                                ? 'bg-green-600/20 border border-green-500/30 text-green-400 hover:bg-green-600/30'
+                                                : 'bg-white/5 border border-white/10 text-gray-400 hover:bg-white/10'
                                                 }`}
                                         >
                                             {course.status === 'published' ? (
@@ -341,6 +354,15 @@ export const AdminCourses: React.FC = () => {
 
             {/* Modals */}
             <AnimatePresence>
+                {showModuleBuilder && selectedCourseId && (
+                    <ModuleBuilder
+                        courseId={selectedCourseId}
+                        onClose={() => {
+                            setShowModuleBuilder(false);
+                            setSelectedCourseId(null);
+                        }}
+                    />
+                )}
                 {showCreateModal && (
                     <CourseFormModal
                         course={editingCourse}
@@ -514,8 +536,8 @@ const CourseFormModal = ({
                                     type="button"
                                     onClick={() => toggleTier(tier)}
                                     className={`px-4 py-2 rounded-lg font-semibold text-sm transition-all ${form.tier_required.includes(tier)
-                                            ? 'bg-purple-600 text-white border-2 border-purple-400'
-                                            : 'bg-white/5 text-gray-400 border-2 border-white/10 hover:border-purple-500/30'
+                                        ? 'bg-purple-600 text-white border-2 border-purple-400'
+                                        : 'bg-white/5 text-gray-400 border-2 border-white/10 hover:border-purple-500/30'
                                         }`}
                                 >
                                     {tier.replace('_', ' ').toUpperCase()}
@@ -549,8 +571,8 @@ const CourseFormModal = ({
                                 type="button"
                                 onClick={() => setForm(f => ({ ...f, status: 'draft' }))}
                                 className={`flex-1 px-4 py-2 rounded-lg font-semibold text-sm transition-all ${form.status === 'draft'
-                                        ? 'bg-amber-600 text-white border-2 border-amber-400'
-                                        : 'bg-white/5 text-gray-400 border-2 border-white/10'
+                                    ? 'bg-amber-600 text-white border-2 border-amber-400'
+                                    : 'bg-white/5 text-gray-400 border-2 border-white/10'
                                     }`}
                             >
                                 Bozza
@@ -559,8 +581,8 @@ const CourseFormModal = ({
                                 type="button"
                                 onClick={() => setForm(f => ({ ...f, status: 'published' }))}
                                 className={`flex-1 px-4 py-2 rounded-lg font-semibold text-sm transition-all ${form.status === 'published'
-                                        ? 'bg-green-600 text-white border-2 border-green-400'
-                                        : 'bg-white/5 text-gray-400 border-2 border-white/10'
+                                    ? 'bg-green-600 text-white border-2 border-green-400'
+                                    : 'bg-white/5 text-gray-400 border-2 border-white/10'
                                     }`}
                             >
                                 Pubblicato
