@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Plus, Pencil, Trash2, Gift, ShoppingBag, ExternalLink, FileText, Video, Music, RefreshCw, X, Check, TrendingUp, DollarSign, Zap, Eye } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { supabase } from '../../services/supabase';
+import { ContentPreviewModal } from '../../components/admin/ContentPreviewModal';
 
 interface BonusProduct {
     id: string;
@@ -35,6 +36,7 @@ export const AdminContent: React.FC = () => {
     const [editingUpsell, setEditingUpsell] = useState<UpsellProduct | null>(null);
     const [showBonusForm, setShowBonusForm] = useState(false);
     const [showUpsellForm, setShowUpsellForm] = useState(false);
+    const [previewContent, setPreviewContent] = useState<BonusProduct | UpsellProduct | null>(null);
 
     useEffect(() => {
         fetchData();
@@ -286,6 +288,12 @@ export const AdminContent: React.FC = () => {
                                             {bonus.active ? 'Attivo' : 'Disattivo'}
                                         </button>
                                         <button
+                                            onClick={() => setPreviewContent(bonus)}
+                                            className="px-4 py-2 bg-blue-600/20 border border-blue-500/30 text-blue-400 rounded-lg hover:bg-blue-600/30 transition-all duration-300"
+                                        >
+                                            <Eye size={16} />
+                                        </button>
+                                        <button
                                             onClick={() => { setEditingBonus(bonus); setShowBonusForm(true); }}
                                             className="px-4 py-2 bg-white/5 border border-white/10 text-gray-300 rounded-lg hover:bg-white/10 transition-all duration-300"
                                         >
@@ -431,6 +439,18 @@ export const AdminContent: React.FC = () => {
                     )
                 }
             </AnimatePresence >
+
+            {/* Content Preview Modal */}
+            <ContentPreviewModal
+                content={previewContent ? {
+                    id: previewContent.id,
+                    title: previewContent.name,
+                    description: 'description' in previewContent ? previewContent.description : '',
+                    content_type: 'delivery_type' in previewContent ? previewContent.delivery_type as any : 'external_link',
+                    content_url: 'content_url' in previewContent ? previewContent.content_url : ''
+                } : null}
+                onClose={() => setPreviewContent(null)}
+            />
         </div >
     );
 };
