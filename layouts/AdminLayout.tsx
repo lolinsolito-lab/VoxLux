@@ -24,6 +24,7 @@ export const AdminLayout: React.FC = () => {
         { path: '/admin', label: 'Overview', icon: <LayoutDashboard size={20} /> },
         { path: '/admin/users', label: 'Utenti (God View)', icon: <Users size={20} /> },
         { path: '/admin/finance', label: 'Finanze', icon: <DollarSign size={20} /> },
+        { path: '/admin/courses', label: 'Corsi LMS', icon: <LayoutDashboard size={20} /> },
         { path: '/admin/content', label: 'Contenuti', icon: <Settings size={20} /> },
         { path: '/admin/discounts', label: 'Sconti', icon: <ShieldAlert size={20} /> },
     ];
