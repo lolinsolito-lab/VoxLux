@@ -54,15 +54,45 @@ export const AdminFinance: React.FC = () => {
             const startDate = new Date();
             startDate.setDate(startDate.getDate() - daysAgo);
 
-            // Fetch purchases with user profiles
-            const { data: purchases } = await supabase
+            // Fetch ALL active purchases first
+            const { data: allPurchases, error: allError } = await supabase
                 .from('purchases')
-                .select(`*, profiles(name, email)`)
-                .eq('status', 'active')
-                .gte('created_at', startDate.toISOString())
-                .order('created_at', { ascending: false });
+                .select(`*`)
+                .eq('status', 'active');
 
-            if (!purchases) return;
+            console.log('All purchases:', allPurchases?.length || 0);
+
+            if (allError) {
+                console.error('Error fetching all purchases:', allError);
+                return;
+            }
+
+            if (!allPurchases || allPurchases.length === 0) {
+                console.warn('No purchases found in database');
+                setLoading(false);
+                return;
+            }
+
+            // Filter by date range
+            const purchases = allPurchases.filter(p => {
+                const purchaseDate = new Date(p.created_at);
+                return purchaseDate >= startDate;
+            });
+
+            console.log('Filtered purchases:', purchases.length);
+
+            // Fetch profiles for recent transactions
+            const userIds = purchases.slice(0, 10).map(p => p.user_id);
+            const { data: profiles } = await supabase
+                .from('profiles')
+                .select('id, name, email')
+                .in('id', userIds);
+
+            // Map profiles to purchases
+            const purchasesWithProfiles = purchases.slice(0, 10).map(p => ({
+                ...p,
+                profiles: profiles?.find(prof => prof.id === p.user_id)
+            }));
 
             // Calculate metrics
             const revenue = purchases.reduce((sum, p) => sum + (p.amount / 100), 0);
@@ -97,7 +127,7 @@ export const AdminFinance: React.FC = () => {
             setChartData(chartDataArray);
 
             // Recent transactions
-            setRecentTransactions(purchases.slice(0, 10));
+            setRecentTransactions(purchasesWithProfiles);
 
         } catch (error) {
             console.error('Error fetching finance data:', error);
@@ -170,8 +200,8 @@ export const AdminFinance: React.FC = () => {
                                 key={range}
                                 onClick={() => setTimeRange(range)}
                                 className={`px-4 py-2 text-sm font-bold rounded-lg transition-all duration-300 ${timeRange === range
-                                        ? 'bg-amber-600 text-white shadow-lg'
-                                        : 'text-gray-400 hover:text-white'
+                                    ? 'bg-amber-600 text-white shadow-lg'
+                                    : 'text-gray-400 hover:text-white'
                                     }`}
                             >
                                 {range.toUpperCase()}
