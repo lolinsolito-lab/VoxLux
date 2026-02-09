@@ -372,8 +372,8 @@ export const AdminContent: React.FC = () => {
                                         <button
                                             onClick={() => handleToggleUpsellActive(upsell.id, upsell.active)}
                                             className={`flex-1 py-2 rounded-lg font-semibold text-sm transition-all duration-300 ${upsell.active
-                                                    ? 'bg-green-600/20 border border-green-500/30 text-green-400 hover:bg-green-600/30'
-                                                    : 'bg-white/5 border border-white/10 text-gray-500 hover:bg-white/10'
+                                                ? 'bg-green-600/20 border border-green-500/30 text-green-400 hover:bg-green-600/30'
+                                                : 'bg-white/5 border border-white/10 text-gray-500 hover:bg-white/10'
                                                 }`}
                                         >
                                             <Check size={16} className="inline mr-1" />
@@ -539,30 +539,53 @@ const BonusFormModal = ({ bonus, onClose, onSave }: { bonus: BonusProduct | null
                     </div>
                 </div>
 
-                <div>
+                <div className="relative">
                     <label className="text-sm text-gray-400 mb-2 block font-semibold">Tipo Delivery</label>
                     <select
                         value={form.delivery_type}
                         onChange={e => setForm(f => ({ ...f, delivery_type: e.target.value }))}
-                        className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-purple-500 focus:outline-none transition-all"
+                        className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-purple-500 focus:outline-none transition-all relative z-10 cursor-pointer"
+                        style={{ position: 'relative', zIndex: 10 }}
                     >
-                        <option value="supabase_storage">Supabase Storage</option>
-                        <option value="external_url">Link Esterno</option>
-                        <option value="youtube">YouTube</option>
-                        <option value="vimeo">Vimeo</option>
-                        <option value="download_link">Download Link</option>
+                        <option value="supabase_storage" className="bg-gray-900">📦 Supabase Storage (Upload File)</option>
+                        <option value="external_url" className="bg-gray-900">🔗 Link Esterno (Website)</option>
+                        <option value="youtube" className="bg-gray-900">📺 YouTube</option>
+                        <option value="vimeo" className="bg-gray-900">🎬 Vimeo</option>
+                        <option value="download_link" className="bg-gray-900">💾 Download Link (PDF, ZIP)</option>
                     </select>
+                    <p className="text-xs text-gray-500 mt-1">
+                        {form.delivery_type === 'supabase_storage' && '💡 Carica file (PDF, video, audio) su Supabase Storage'}
+                        {form.delivery_type === 'external_url' && '💡 Link a pagina web esterna'}
+                        {form.delivery_type === 'youtube' && '💡 ID video YouTube (es: dQw4w9WgXcQ)'}
+                        {form.delivery_type === 'vimeo' && '💡 ID video Vimeo (es: 123456789)'}
+                        {form.delivery_type === 'download_link' && '💡 Link diretto download (es: Dropbox, Google Drive)'}
+                    </p>
                 </div>
 
                 <div>
-                    <label className="text-sm text-gray-400 mb-2 block font-semibold">URL Contenuto</label>
+                    <label className="text-sm text-gray-400 mb-2 block font-semibold">
+                        {form.delivery_type === 'youtube' && '🎬 YouTube Video ID'}
+                        {form.delivery_type === 'vimeo' && '🎬 Vimeo Video ID'}
+                        {form.delivery_type === 'supabase_storage' && '📦 Supabase Storage Path'}
+                        {(form.delivery_type === 'external_url' || form.delivery_type === 'download_link') && '🔗 URL Completo'}
+                    </label>
                     <input
                         type="text"
                         value={form.content_url}
                         onChange={e => setForm(f => ({ ...f, content_url: e.target.value }))}
-                        placeholder="https://..."
+                        placeholder={
+                            form.delivery_type === 'youtube' ? 'dQw4w9WgXcQ' :
+                                form.delivery_type === 'vimeo' ? '123456789' :
+                                    form.delivery_type === 'supabase_storage' ? 'bonuses/storytelling-templates.pdf' :
+                                        'https://example.com/file.pdf'
+                        }
                         className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:border-purple-500 focus:outline-none transition-all font-mono text-sm"
                     />
+                    <p className="text-xs text-gray-500 mt-1">
+                        {form.delivery_type === 'supabase_storage' && '💾 Path relativo in Supabase Storage (es: bonuses/file.pdf)'}
+                        {(form.delivery_type === 'youtube' || form.delivery_type === 'vimeo') && '🎥 Solo l\'ID del video, NON l\'URL completo'}
+                        {(form.delivery_type === 'external_url' || form.delivery_type === 'download_link') && '🌐 URL completo con https://'}
+                    </p>
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
@@ -646,7 +669,8 @@ const UpsellFormModal = ({ upsell, onClose, onSave }: { upsell: UpsellProduct | 
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+            className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4"
+            style={{ zIndex: 9999 }}
             onClick={onClose}
         >
             <motion.form
