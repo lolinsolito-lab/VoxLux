@@ -18,7 +18,8 @@ export const STRIPE_PRODUCTS: Record<CourseId, { priceId: string; amount: number
         description: 'Il percorso completo per creare podcast professionali con AI Voice Cloning',
     },
     'ascension-box': {
-        priceId: 'price_1SxCsxCtMqmAVVg2cgeGTO6j', // Stripe Price ID (Corrected from Screenshot)
+        // Updated Price ID to match the working one from screenshots/logs
+        priceId: 'price_1SxCsxCtMqmAVVg2cgeGTO6j',
         amount: 99700, // €997 in cents
         name: 'ASCENSION BOX: The Ultimate Collection',
         description: 'Accesso completo a Matrice I, Matrice II e sessioni 1-on-1 VIP.',
@@ -29,9 +30,21 @@ export const createCheckoutSession = async (priceId: CourseId, email?: string, p
     try {
         console.log('Initiating checkout for:', priceId);
 
+        // --- FIX: INPUT SANITIZATION ---
+        // Prevents passing entire User objects instead of strings
+        if (email && typeof email !== 'string') {
+            console.warn('⚠️ SANITIZED: Invalid email passed to checkout (likely User object). Removed.', email);
+            email = undefined;
+        }
+        if (promoCode && typeof promoCode !== 'string') {
+            console.warn('⚠️ SANITIZED: Invalid promoCode passed to checkout. Removed.', promoCode);
+            promoCode = undefined;
+        }
+        // -------------------------------
+
         let targetPriceId = STRIPE_PRODUCTS[priceId].priceId;
 
-        // Safety check for Ascension Box specifically
+        // Safety check for Ascension Box specifically (keeping legacy logic just in case)
         if (priceId === 'ascension-box' && targetPriceId !== 'price_1SxCsxCtMqmAVVg2cgeGTO6j') {
             console.warn('Correcting Ascension Box Price ID');
             targetPriceId = 'price_1SxCsxCtMqmAVVg2cgeGTO6j';
@@ -45,15 +58,16 @@ export const createCheckoutSession = async (priceId: CourseId, email?: string, p
             body: JSON.stringify({
                 priceId: targetPriceId,
                 courseId: priceId,
-                userEmail: email, // Optional: Pre-fill email in Stripe
+                userEmail: email, // Now safely guaranteed to be string or undefined
                 promoCode: promoCode,
-                returnUrl: returnUrl, // Optional: Redirect back to specific page
+                returnUrl: returnUrl,
             }),
         });
 
         const data = await response.json();
 
         if (data.error) {
+            console.error('SERVER ERROR:', data.error);
             throw new Error(data.error);
         }
 
