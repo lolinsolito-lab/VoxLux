@@ -89,7 +89,7 @@ export const AdminFinance: React.FC = () => {
                 try {
                     const { data: profilesData, error: profilesError } = await supabase
                         .from('profiles')
-                        .select('id, name, email')
+                        .select('id, full_name, email')
                         .in('id', userIds);
 
                     if (profilesError) {
@@ -106,7 +106,7 @@ export const AdminFinance: React.FC = () => {
             const purchasesWithProfiles = purchases.slice(0, 10).map(p => ({
                 ...p,
                 profiles: profiles?.find(prof => prof.id === p.user_id) || {
-                    name: 'Unknown User',
+                    full_name: 'Unknown User',
                     email: p.email || 'N/A'
                 }
             }));
@@ -389,7 +389,7 @@ export const AdminFinance: React.FC = () => {
                                         <CreditCard size={20} className="text-green-400" />
                                     </div>
                                     <div>
-                                        <h4 className="font-bold text-white">{tx.profiles?.name || tx.profiles?.email || 'Utente'}</h4>
+                                        <h4 className="font-bold text-white">{tx.profiles?.full_name || tx.profiles?.email || 'Utente'}</h4>
                                         <p className="text-sm text-gray-400">{getCourseName(tx.course_id)}</p>
                                     </div>
                                 </div>
