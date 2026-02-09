@@ -23,7 +23,7 @@ export const useCourseData = (courseId: string) => {
                 const { data: dbCourse, error: dbError } = await supabase
                     .from('courses')
                     .select('*')
-                    .eq('id', courseId)
+                    .eq('slug', courseId)
                     .single();
 
                 if (dbError || !dbCourse) {
