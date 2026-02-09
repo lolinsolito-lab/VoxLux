@@ -1,93 +1,127 @@
 import React, { useState, useEffect } from 'react';
-import { DollarSign, TrendingUp, TrendingDown, Calendar, RefreshCw } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { DollarSign, TrendingUp, TrendingDown, Calendar, RefreshCw, Download, Users, ShoppingCart, CreditCard } from 'lucide-react';
+import { LineChart, Line, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 import { supabase } from '../../services/supabase';
 
-interface RevenueDay {
-    date: string;
+interface Purchase {
+    id: string;
+    user_id: string;
     course_id: string;
-    purchases: number;
-    revenue_eur: number;
+    amount: number;
+    status: string;
+    created_at: string;
+    profiles?: { name?: string; email?: string };
 }
 
-interface FinanceStats {
-    totalRevenue: number;
-    thisMonthRevenue: number;
-    lastMonthRevenue: number;
-    averageOrderValue: number;
-    totalPurchases: number;
-    revenueByDay: RevenueDay[];
-    revenueByCourse: { course_id: string; total: number; count: number }[];
+interface ChartDataPoint {
+    date: string;
+    revenue: number;
+    purchases: number;
 }
 
 export const AdminFinance: React.FC = () => {
-    const [stats, setStats] = useState<FinanceStats | null>(null);
     const [loading, setLoading] = useState(true);
     const [timeRange, setTimeRange] = useState<'7d' | '30d' | '90d'>('30d');
+    const [totalRevenue, setTotalRevenue] = useState(0);
+    const [monthRevenue, setMonthRevenue] = useState(0);
+    const [avgOrderValue, setAvgOrderValue] = useState(0);
+    const [totalPurchases, setTotalPurchases] = useState(0);
+    const [chartData, setChartData] = useState<ChartDataPoint[]>([]);
+    const [recentTransactions, setRecentTransactions] = useState<Purchase[]>([]);
 
     useEffect(() => {
         fetchFinanceData();
+        setupRealtime();
     }, [timeRange]);
+
+    const setupRealtime = () => {
+        const channel = supabase
+            .channel('finance-updates')
+            .on('postgres_changes', { event: '*', schema: 'public', table: 'purchases' }, () => {
+                fetchFinanceData();
+            })
+            .subscribe();
+
+        return () => { channel.unsubscribe(); };
+    };
 
     const fetchFinanceData = async () => {
         try {
             setLoading(true);
 
-            // Calculate date range
-            const now = new Date();
             const daysAgo = timeRange === '7d' ? 7 : timeRange === '30d' ? 30 : 90;
-            const startDate = new Date(now.getTime() - daysAgo * 24 * 60 * 60 * 1000);
+            const startDate = new Date();
+            startDate.setDate(startDate.getDate() - daysAgo);
 
-            // Fetch revenue data from view
-            const { data: revenueData, error } = await supabase
-                .from('admin_revenue_overview')
-                .select('*')
-                .gte('date', startDate.toISOString())
-                .order('date', { ascending: true });
-
-            if (error) throw error;
-
-            // Fetch all-time purchases for course breakdown
-            const { data: allPurchases } = await supabase
+            // Fetch purchases with user profiles
+            const { data: purchases } = await supabase
                 .from('purchases')
-                .select('course_id, amount')
-                .eq('status', 'active');
+                .select(`*, profiles(name, email)`)
+                .eq('status', 'active')
+                .gte('created_at', startDate.toISOString())
+                .order('created_at', { ascending: false });
 
-            // Calculate stats
-            const totalRevenue = revenueData?.reduce((sum, day) => sum + (day.revenue_eur || 0), 0) || 0;
-            const totalPurchases = revenueData?.reduce((sum, day) => sum + (day.purchases || 0), 0) || 0;
+            if (!purchases) return;
 
-            // Group by course
-            const courseMap = new Map<string, { total: number; count: number }>();
-            allPurchases?.forEach(p => {
-                const existing = courseMap.get(p.course_id) || { total: 0, count: 0 };
-                courseMap.set(p.course_id, {
-                    total: existing.total + (p.amount / 100),
-                    count: existing.count + 1
+            // Calculate metrics
+            const revenue = purchases.reduce((sum, p) => sum + (p.amount / 100), 0);
+            setTotalRevenue(revenue);
+            setTotalPurchases(purchases.length);
+            setAvgOrderValue(purchases.length > 0 ? revenue / purchases.length : 0);
+
+            // Month revenue
+            const thisMonth = new Date().getMonth();
+            const monthPurchases = purchases.filter(p => new Date(p.created_at).getMonth() === thisMonth);
+            setMonthRevenue(monthPurchases.reduce((sum, p) => sum + (p.amount / 100), 0));
+
+            // Prepare chart data
+            const dateMap = new Map<string, { revenue: number; purchases: number }>();
+            purchases.forEach(p => {
+                const date = new Date(p.created_at).toISOString().split('T')[0];
+                const existing = dateMap.get(date) || { revenue: 0, purchases: 0 };
+                dateMap.set(date, {
+                    revenue: existing.revenue + (p.amount / 100),
+                    purchases: existing.purchases + 1
                 });
             });
 
-            // Calculate month comparisons
-            const thisMonth = new Date().getMonth();
-            const thisMonthData = revenueData?.filter(d => new Date(d.date).getMonth() === thisMonth) || [];
-            const lastMonthData = revenueData?.filter(d => new Date(d.date).getMonth() === thisMonth - 1) || [];
+            const chartDataArray: ChartDataPoint[] = [];
+            for (let i = daysAgo - 1; i >= 0; i--) {
+                const date = new Date();
+                date.setDate(date.getDate() - i);
+                const dateStr = date.toISOString().split('T')[0];
+                const data = dateMap.get(dateStr) || { revenue: 0, purchases: 0 };
+                chartDataArray.push({ date: dateStr, ...data });
+            }
+            setChartData(chartDataArray);
 
-            setStats({
-                totalRevenue,
-                thisMonthRevenue: thisMonthData.reduce((sum, d) => sum + (d.revenue_eur || 0), 0),
-                lastMonthRevenue: lastMonthData.reduce((sum, d) => sum + (d.revenue_eur || 0), 0),
-                averageOrderValue: totalPurchases > 0 ? totalRevenue / totalPurchases : 0,
-                totalPurchases,
-                revenueByDay: revenueData || [],
-                revenueByCourse: Array.from(courseMap.entries()).map(([course_id, data]) => ({
-                    course_id,
-                    ...data
-                }))
-            });
+            // Recent transactions
+            setRecentTransactions(purchases.slice(0, 10));
+
         } catch (error) {
             console.error('Error fetching finance data:', error);
         } finally {
             setLoading(false);
         }
+    };
+
+    const exportCSV = () => {
+        const headers = ['Data', 'Revenue (€)', 'Transazioni'];
+        const rows = chartData.map(d => [
+            new Date(d.date).toLocaleDateString('it-IT'),
+            d.revenue.toFixed(2),
+            d.purchases
+        ]);
+
+        const csv = [headers, ...rows].map(row => row.join(',')).join('\n');
+        const blob = new Blob([csv], { type: 'text/csv' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `voxlux-revenue-${timeRange}-${new Date().toISOString().split('T')[0]}.csv`;
+        a.click();
+        URL.revokeObjectURL(url);
     };
 
     const formatCurrency = (amount: number) => {
@@ -96,242 +130,238 @@ export const AdminFinance: React.FC = () => {
 
     const getCourseName = (courseId: string) => {
         const names: Record<string, string> = {
-            'matrice-1': 'Storytelling Strategy',
-            'matrice-2': 'Vox Podcast Master',
+            'matrice-1': 'Matrice 1',
+            'matrice-2': 'Matrice 2',
             'ascension-box': 'Ascension Box'
         };
         return names[courseId] || courseId;
     };
 
-    const getCourseColor = (courseId: string) => {
-        const colors: Record<string, string> = {
-            'matrice-1': 'from-blue-500 to-blue-700',
-            'matrice-2': 'from-purple-500 to-purple-700',
-            'ascension-box': 'from-yellow-500 to-yellow-700'
-        };
-        return colors[courseId] || 'from-zinc-500 to-zinc-700';
-    };
-
-    // Calculate max revenue for chart scaling
-    const maxRevenue = stats?.revenueByDay.reduce((max, d) => Math.max(max, d.revenue_eur || 0), 0) || 1;
-
     if (loading) {
         return (
-            <div className="flex items-center justify-center h-64">
-                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-yellow-500"></div>
+            <div className="flex items-center justify-center h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900">
+                <motion.div
+                    animate={{ rotate: 360 }}
+                    transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                    className="w-16 h-16 border-4 border-amber-500 border-t-transparent rounded-full"
+                />
             </div>
         );
     }
 
-    const monthChange = stats && stats.lastMonthRevenue > 0
-        ? ((stats.thisMonthRevenue - stats.lastMonthRevenue) / stats.lastMonthRevenue * 100)
-        : 0;
-
     return (
-        <div className="space-y-8">
-            <div className="flex items-center justify-between">
-                <h1 className="text-3xl font-black tracking-tighter text-white">
-                    FINANZE <span className="text-yellow-500">& REVENUE</span>
+        <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 p-8 space-y-8">
+            {/* HEADER */}
+            <motion.div
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="flex items-center justify-between"
+            >
+                <h1 className="text-5xl font-black tracking-tighter">
+                    <span className="bg-clip-text text-transparent bg-gradient-to-r from-red-500 via-orange-500 to-amber-500">
+                        REVENUE TRACKING
+                    </span>
                 </h1>
-                <div className="flex items-center space-x-2">
-                    <div className="flex bg-zinc-900 border border-zinc-800 rounded-lg p-1">
+                <div className="flex items-center gap-3">
+                    {/* Time Range Selector */}
+                    <div className="flex bg-white/5 border border-white/10 rounded-xl p-1">
                         {(['7d', '30d', '90d'] as const).map((range) => (
                             <button
                                 key={range}
                                 onClick={() => setTimeRange(range)}
-                                className={`px-3 py-1.5 text-xs font-bold rounded transition-colors ${timeRange === range
-                                    ? 'bg-yellow-500 text-black'
-                                    : 'text-zinc-500 hover:text-white'
+                                className={`px-4 py-2 text-sm font-bold rounded-lg transition-all duration-300 ${timeRange === range
+                                        ? 'bg-amber-600 text-white shadow-lg'
+                                        : 'text-gray-400 hover:text-white'
                                     }`}
                             >
                                 {range.toUpperCase()}
                             </button>
                         ))}
                     </div>
+
+                    {/* Export CSV */}
+                    <button
+                        onClick={exportCSV}
+                        className="flex items-center gap-2 px-4 py-2 bg-green-600/20 border border-green-500/30 text-green-400 rounded-xl hover:bg-green-600/30 transition-all duration-300"
+                    >
+                        <Download size={18} />
+                        Export CSV
+                    </button>
+
+                    {/* Refresh */}
                     <button
                         onClick={fetchFinanceData}
-                        className="p-2 bg-zinc-800 hover:bg-zinc-700 text-zinc-400 rounded-lg transition-colors"
+                        className="p-2 bg-white/5 border border-white/10 text-gray-400 rounded-xl hover:bg-white/10 transition-all duration-300"
                     >
-                        <RefreshCw size={16} />
+                        <RefreshCw size={20} />
                     </button>
                 </div>
-            </div>
+            </motion.div>
 
             {/* KPI CARDS */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <div className="bg-gradient-to-br from-yellow-500/10 to-yellow-700/5 border border-yellow-500/30 p-6 rounded-xl">
-                    <div className="flex items-center justify-between mb-2">
-                        <DollarSign className="text-yellow-500" size={24} />
-                        <span className={`text-xs font-bold px-2 py-1 rounded ${monthChange >= 0 ? 'bg-green-900/30 text-green-400' : 'bg-red-900/30 text-red-400'}`}>
-                            {monthChange >= 0 ? '+' : ''}{monthChange.toFixed(1)}%
+                {/* Total Revenue */}
+                <motion.div
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: 0.1 }}
+                    className="backdrop-blur-sm bg-gradient-to-br from-green-500/10 to-green-700/5 border border-green-500/30 rounded-2xl p-6 hover:border-green-500/50 transition-all duration-300 hover:scale-105"
+                >
+                    <div className="flex items-center justify-between mb-3">
+                        <div className="p-3 bg-green-500/20 rounded-xl backdrop-blur-sm">
+                            <DollarSign size={24} className="text-green-400" />
+                        </div>
+                        <span className="text-xs bg-green-900/30 text-green-400 px-2 py-1 rounded-md font-bold">
+                            {timeRange}
                         </span>
                     </div>
-                    <p className="text-zinc-400 text-sm">Revenue Periodo</p>
-                    <h3 className="text-3xl font-black text-yellow-400">{formatCurrency(stats?.totalRevenue || 0)}</h3>
-                </div>
+                    <p className="text-sm text-gray-400 mb-1">Revenue Totale</p>
+                    <h3 className="text-3xl font-black text-green-400">{formatCurrency(totalRevenue)}</h3>
+                </motion.div>
 
-                <div className="bg-zinc-900/50 border border-zinc-800 p-6 rounded-xl">
-                    <Calendar className="text-blue-500 mb-2" size={24} />
-                    <p className="text-zinc-400 text-sm">Questo Mese</p>
-                    <h3 className="text-2xl font-bold text-white">{formatCurrency(stats?.thisMonthRevenue || 0)}</h3>
-                </div>
+                {/* Month Revenue */}
+                <motion.div
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: 0.2 }}
+                    className="backdrop-blur-sm bg-gradient-to-br from-blue-500/10 to-blue-700/5 border border-blue-500/30 rounded-2xl p-6 hover:border-blue-500/50 transition-all duration-300 hover:scale-105"
+                >
+                    <div className="flex items-center justify-between mb-3">
+                        <div className="p-3 bg-blue-500/20 rounded-xl backdrop-blur-sm">
+                            <Calendar size={24} className="text-blue-400" />
+                        </div>
+                    </div>
+                    <p className="text-sm text-gray-400 mb-1">Questo Mese</p>
+                    <h3 className="text-3xl font-black text-blue-400">{formatCurrency(monthRevenue)}</h3>
+                </motion.div>
 
-                <div className="bg-zinc-900/50 border border-zinc-800 p-6 rounded-xl">
-                    <TrendingUp className="text-green-500 mb-2" size={24} />
-                    <p className="text-zinc-400 text-sm">AOV (Medio)</p>
-                    <h3 className="text-2xl font-bold text-white">{formatCurrency(stats?.averageOrderValue || 0)}</h3>
-                </div>
+                {/* AOV */}
+                <motion.div
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: 0.3 }}
+                    className="backdrop-blur-sm bg-gradient-to-br from-purple-500/10 to-purple-700/5 border border-purple-500/30 rounded-2xl p-6 hover:border-purple-500/50 transition-all duration-300 hover:scale-105"
+                >
+                    <div className="flex items-center justify-between mb-3">
+                        <div className="p-3 bg-purple-500/20 rounded-xl backdrop-blur-sm">
+                            <TrendingUp size={24} className="text-purple-400" />
+                        </div>
+                    </div>
+                    <p className="text-sm text-gray-400 mb-1">AOV (Avg Order)</p>
+                    <h3 className="text-3xl font-black text-purple-400">{formatCurrency(avgOrderValue)}</h3>
+                </motion.div>
 
-                <div className="bg-zinc-900/50 border border-zinc-800 p-6 rounded-xl">
-                    <DollarSign className="text-purple-500 mb-2" size={24} />
-                    <p className="text-zinc-400 text-sm">Transazioni</p>
-                    <h3 className="text-2xl font-bold text-white">{stats?.totalPurchases || 0}</h3>
-                </div>
+                {/* Total Purchases */}
+                <motion.div
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: 0.4 }}
+                    className="backdrop-blur-sm bg-gradient-to-br from-amber-500/10 to-amber-700/5 border border-amber-500/30 rounded-2xl p-6 hover:border-amber-500/50 transition-all duration-300 hover:scale-105"
+                >
+                    <div className="flex items-center justify-between mb-3">
+                        <div className="p-3 bg-amber-500/20 rounded-xl backdrop-blur-sm">
+                            <ShoppingCart size={24} className="text-amber-400" />
+                        </div>
+                    </div>
+                    <p className="text-sm text-gray-400 mb-1">Transazioni</p>
+                    <h3 className="text-3xl font-black text-amber-400">{totalPurchases}</h3>
+                </motion.div>
             </div>
 
-            {/* REVENUE CHART (CSS-based) */}
-            <div className="bg-zinc-900/50 border border-zinc-800 rounded-xl p-6">
-                <h2 className="text-xl font-bold text-gray-300 mb-6">Andamento Revenue</h2>
-                <div className="h-48 flex items-end space-x-1">
-                    {stats?.revenueByDay.slice(-30).map((day, index) => {
-                        const height = maxRevenue > 0 ? (day.revenue_eur / maxRevenue) * 100 : 0;
-                        return (
-                            <div
-                                key={index}
-                                className="flex-1 group relative"
-                            >
-                                <div
-                                    className="bg-gradient-to-t from-yellow-600 to-yellow-400 rounded-t-sm hover:from-yellow-500 hover:to-yellow-300 transition-all cursor-pointer"
-                                    style={{ height: `${Math.max(height, 2)}%` }}
-                                />
-                                <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 hidden group-hover:block bg-black border border-zinc-700 rounded px-2 py-1 text-xs text-white whitespace-nowrap z-10">
-                                    {new Date(day.date).toLocaleDateString('it-IT')}<br />
-                                    {formatCurrency(day.revenue_eur)}
-                                </div>
-                            </div>
-                        );
-                    })}
-                </div>
-                <div className="flex justify-between mt-2 text-xs text-zinc-600">
-                    <span>{stats?.revenueByDay[0] ? new Date(stats.revenueByDay[0].date).toLocaleDateString('it-IT') : '-'}</span>
-                    <span>{stats?.revenueByDay[stats.revenueByDay.length - 1] ? new Date(stats.revenueByDay[stats.revenueByDay.length - 1].date).toLocaleDateString('it-IT') : '-'}</span>
-                </div>
-            </div>
+            {/* REVENUE CHART */}
+            <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.5 }}
+                className="backdrop-blur-sm bg-gradient-to-br from-white/5 to-white/[0.02] border border-white/10 rounded-2xl p-6"
+            >
+                <h2 className="text-2xl font-bold text-white mb-6">Andamento Revenue & Transazioni</h2>
+                <ResponsiveContainer width="100%" height={350}>
+                    <AreaChart data={chartData}>
+                        <defs>
+                            <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="5%" stopColor="#10b981" stopOpacity={0.3} />
+                                <stop offset="95%" stopColor="#10b981" stopOpacity={0} />
+                            </linearGradient>
+                            <linearGradient id="colorPurchases" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="5%" stopColor="#f59e0b" stopOpacity={0.3} />
+                                <stop offset="95%" stopColor="#f59e0b" stopOpacity={0} />
+                            </linearGradient>
+                        </defs>
+                        <CartesianGrid strokeDasharray="3 3" stroke="#ffffff10" />
+                        <XAxis
+                            dataKey="date"
+                            stroke="#6b7280"
+                            tick={{ fill: '#9ca3af' }}
+                            tickFormatter={(date) => new Date(date).toLocaleDateString('it-IT', { month: 'short', day: 'numeric' })}
+                        />
+                        <YAxis yAxisId="left" stroke="#10b981" tick={{ fill: '#10b981' }} />
+                        <YAxis yAxisId="right" orientation="right" stroke="#f59e0b" tick={{ fill: '#f59e0b' }} />
+                        <Tooltip
+                            contentStyle={{ backgroundColor: '#1f2937', border: '1px solid #374151', borderRadius: '0.5rem' }}
+                            labelStyle={{ color: '#fff' }}
+                            formatter={(value: any, name: string) => {
+                                if (name === 'revenue') return [formatCurrency(value), 'Revenue'];
+                                return [value, 'Acquisti'];
+                            }}
+                        />
+                        <Legend />
+                        <Area yAxisId="left" type="monotone" dataKey="revenue" stroke="#10b981" strokeWidth={2} fillOpacity={1} fill="url(#colorRevenue)" />
+                        <Area yAxisId="right" type="monotone" dataKey="purchases" stroke="#f59e0b" strokeWidth={2} fillOpacity={1} fill="url(#colorPurchases)" />
+                    </AreaChart>
+                </ResponsiveContainer>
+            </motion.div>
 
-            {/* REVENUE BY COURSE */}
-            <div className="bg-zinc-900/50 border border-zinc-800 rounded-xl p-6">
-                <h2 className="text-xl font-bold text-gray-300 mb-6">Revenue per Corso</h2>
+            {/* RECENT TRANSACTIONS */}
+            <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.6 }}
+                className="backdrop-blur-sm bg-gradient-to-br from-white/5 to-white/[0.02] border border-white/10 rounded-2xl p-6"
+            >
+                <div className="flex items-center justify-between mb-6">
+                    <h2 className="text-2xl font-bold text-white">Transazioni Recenti</h2>
+                    <div className="flex items-center gap-2 px-3 py-1.5 bg-green-600/20 border border-green-500/30 rounded-lg">
+                        <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                        <span className="text-xs text-green-400 font-bold">LIVE</span>
+                    </div>
+                </div>
+
                 <div className="space-y-4">
-                    {stats?.revenueByCourse.map((course) => {
-                        const totalCourseRev = stats.revenueByCourse.reduce((sum, c) => sum + c.total, 0);
-                        const percentage = totalCourseRev > 0 ? (course.total / totalCourseRev) * 100 : 0;
-                        return (
-                            <div key={course.course_id} className="space-y-2">
-                                <div className="flex justify-between items-center">
-                                    <span className="font-medium text-zinc-200">{getCourseName(course.course_id)}</span>
-                                    <div className="text-right">
-                                        <span className="font-bold text-white">{formatCurrency(course.total)}</span>
-                                        <span className="text-xs text-zinc-500 ml-2">({course.count} vendite)</span>
+                    {recentTransactions.map((tx, index) => (
+                        <motion.div
+                            key={tx.id}
+                            initial={{ opacity: 0, x: -20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ delay: index * 0.05 }}
+                            className="backdrop-blur-sm bg-gradient-to-br from-white/5 to-white/[0.02] border border-white/10 rounded-xl p-4 hover:border-white/20 transition-all duration-300"
+                        >
+                            <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-4">
+                                    <div className="p-3 bg-green-500/20 rounded-xl">
+                                        <CreditCard size={20} className="text-green-400" />
+                                    </div>
+                                    <div>
+                                        <h4 className="font-bold text-white">{tx.profiles?.name || tx.profiles?.email || 'Utente'}</h4>
+                                        <p className="text-sm text-gray-400">{getCourseName(tx.course_id)}</p>
                                     </div>
                                 </div>
-                                <div className="h-2 bg-zinc-800 rounded-full overflow-hidden">
-                                    <div
-                                        className={`h-full bg-gradient-to-r ${getCourseColor(course.course_id)} rounded-full transition-all duration-500`}
-                                        style={{ width: `${percentage}%` }}
-                                    />
+                                <div className="text-right">
+                                    <p className="text-xl font-bold text-green-400">{formatCurrency(tx.amount / 100)}</p>
+                                    <p className="text-xs text-gray-500">{new Date(tx.created_at).toLocaleString('it-IT')}</p>
                                 </div>
                             </div>
-                        );
-                    })}
+                        </motion.div>
+                    ))}
+
+                    {recentTransactions.length === 0 && (
+                        <div className="text-center py-12">
+                            <ShoppingCart className="mx-auto mb-4 text-gray-600" size={48} />
+                            <p className="text-gray-400">Nessuna transazione nel periodo selezionato</p>
+                        </div>
+                    )}
                 </div>
-            </div>
-
-            {/* FIXED COSTS SECTION */}
-            <div className="bg-zinc-900/50 border border-red-900/30 rounded-xl p-6">
-                <div className="flex items-center justify-between mb-6">
-                    <h2 className="text-xl font-bold text-gray-300">Costi Fissi Mensili</h2>
-                    <span className="text-xs text-zinc-500">Aggiornamento manuale</span>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
-                    {/* Supabase */}
-                    <div className="bg-black/40 border border-zinc-800 rounded-lg p-4">
-                        <div className="flex items-center justify-between mb-2">
-                            <span className="text-sm font-bold text-emerald-400">Supabase</span>
-                            <span className="text-xs bg-emerald-900/30 text-emerald-400 px-2 py-0.5 rounded">Database</span>
-                        </div>
-                        <p className="text-2xl font-black text-white">€25<span className="text-xs text-zinc-500">/mese</span></p>
-                        <p className="text-xs text-zinc-600 mt-1">Pro Plan - 8GB Storage</p>
-                    </div>
-
-                    {/* Stripe */}
-                    <div className="bg-black/40 border border-zinc-800 rounded-lg p-4">
-                        <div className="flex items-center justify-between mb-2">
-                            <span className="text-sm font-bold text-purple-400">Stripe</span>
-                            <span className="text-xs bg-purple-900/30 text-purple-400 px-2 py-0.5 rounded">Payments</span>
-                        </div>
-                        <p className="text-2xl font-black text-white">1.4%<span className="text-xs text-zinc-500">+€0.25</span></p>
-                        <p className="text-xs text-zinc-600 mt-1">Per transazione EU</p>
-                    </div>
-
-                    {/* Resend */}
-                    <div className="bg-black/40 border border-zinc-800 rounded-lg p-4">
-                        <div className="flex items-center justify-between mb-2">
-                            <span className="text-sm font-bold text-blue-400">Resend</span>
-                            <span className="text-xs bg-blue-900/30 text-blue-400 px-2 py-0.5 rounded">Email</span>
-                        </div>
-                        <p className="text-2xl font-black text-white">€0<span className="text-xs text-zinc-500">/mese</span></p>
-                        <p className="text-xs text-zinc-600 mt-1">Free tier - 3k emails/mese</p>
-                    </div>
-
-                    {/* Hostinger */}
-                    <div className="bg-black/40 border border-zinc-800 rounded-lg p-4">
-                        <div className="flex items-center justify-between mb-2">
-                            <span className="text-sm font-bold text-orange-400">Hostinger</span>
-                            <span className="text-xs bg-orange-900/30 text-orange-400 px-2 py-0.5 rounded">Dominio</span>
-                        </div>
-                        <p className="text-2xl font-black text-white">€15<span className="text-xs text-zinc-500">/anno</span></p>
-                        <p className="text-xs text-zinc-600 mt-1">voxlux.com + voxluxstrategy.com</p>
-                    </div>
-
-                    {/* Vercel */}
-                    <div className="bg-black/40 border border-zinc-800 rounded-lg p-4">
-                        <div className="flex items-center justify-between mb-2">
-                            <span className="text-sm font-bold text-white">Vercel</span>
-                            <span className="text-xs bg-zinc-700 text-zinc-300 px-2 py-0.5 rounded">Hosting</span>
-                        </div>
-                        <p className="text-2xl font-black text-white">€0<span className="text-xs text-zinc-500">/mese</span></p>
-                        <p className="text-xs text-zinc-600 mt-1">Hobby Plan - Unlimited</p>
-                    </div>
-
-                    {/* Vimeo/YouTube */}
-                    <div className="bg-black/40 border border-zinc-800 rounded-lg p-4">
-                        <div className="flex items-center justify-between mb-2">
-                            <span className="text-sm font-bold text-red-400">Video Hosting</span>
-                            <span className="text-xs bg-red-900/30 text-red-400 px-2 py-0.5 rounded">Media</span>
-                        </div>
-                        <p className="text-2xl font-black text-white">€0<span className="text-xs text-zinc-500">/mese</span></p>
-                        <p className="text-xs text-zinc-600 mt-1">YouTube Unlisted / Vimeo Free</p>
-                    </div>
-                </div>
-
-                {/* Summary */}
-                <div className="bg-gradient-to-r from-red-900/20 to-transparent border border-red-800/30 rounded-lg p-4">
-                    <div className="flex items-center justify-between">
-                        <div>
-                            <p className="text-sm text-zinc-400">Costo Totale Mensile (fisso)</p>
-                            <p className="text-3xl font-black text-red-400">~€26<span className="text-xs text-zinc-500">/mese</span></p>
-                        </div>
-                        <div className="text-right">
-                            <p className="text-sm text-zinc-400">Costo Annuale Stimato</p>
-                            <p className="text-xl font-bold text-zinc-300">~€312<span className="text-xs text-zinc-500">/anno</span></p>
-                        </div>
-                    </div>
-                    <p className="text-xs text-zinc-600 mt-3">
-                        💡 Stripe costa ~€8.60 per ogni vendita da €597 (1.4% + €0.25)
-                    </p>
-                </div>
-            </div>
+            </motion.div>
         </div>
     );
 };
