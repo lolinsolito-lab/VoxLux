@@ -82,16 +82,33 @@ export const AdminFinance: React.FC = () => {
             console.log('Filtered purchases:', purchases.length);
 
             // Fetch profiles for recent transactions
-            const userIds = purchases.slice(0, 10).map(p => p.user_id);
-            const { data: profiles } = await supabase
-                .from('profiles')
-                .select('id, name, email')
-                .in('id', userIds);
+            const userIds = purchases.slice(0, 10).map(p => p.user_id).filter(Boolean);
+
+            let profiles: any[] = [];
+            if (userIds.length > 0) {
+                try {
+                    const { data: profilesData, error: profilesError } = await supabase
+                        .from('profiles')
+                        .select('id, name, email')
+                        .in('id', userIds);
+
+                    if (profilesError) {
+                        console.warn('Error fetching profiles (non-critical):', profilesError);
+                    } else {
+                        profiles = profilesData || [];
+                    }
+                } catch (err) {
+                    console.warn('Profiles fetch failed (non-critical):', err);
+                }
+            }
 
             // Map profiles to purchases
             const purchasesWithProfiles = purchases.slice(0, 10).map(p => ({
                 ...p,
-                profiles: profiles?.find(prof => prof.id === p.user_id)
+                profiles: profiles?.find(prof => prof.id === p.user_id) || {
+                    name: 'Unknown User',
+                    email: p.email || 'N/A'
+                }
             }));
 
             // Calculate metrics
