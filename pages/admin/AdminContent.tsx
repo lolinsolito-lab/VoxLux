@@ -202,8 +202,8 @@ export const AdminContent: React.FC = () => {
                 <button
                     onClick={() => setActiveTab('bonuses')}
                     className={`px-8 py-3 rounded-xl font-bold transition-all duration-300 flex items-center gap-2 ${activeTab === 'bonuses'
-                            ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-lg shadow-purple-500/50'
-                            : 'bg-white/5 text-gray-400 hover:bg-white/10'
+                        ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-lg shadow-purple-500/50'
+                        : 'bg-white/5 text-gray-400 hover:bg-white/10'
                         }`}
                 >
                     <Gift size={20} />
@@ -212,8 +212,8 @@ export const AdminContent: React.FC = () => {
                 <button
                     onClick={() => setActiveTab('upsells')}
                     className={`px-8 py-3 rounded-xl font-bold transition-all duration-300 flex items-center gap-2 ${activeTab === 'upsells'
-                            ? 'bg-gradient-to-r from-green-600 to-emerald-600 text-white shadow-lg shadow-green-500/50'
-                            : 'bg-white/5 text-gray-400 hover:bg-white/10'
+                        ? 'bg-gradient-to-r from-green-600 to-emerald-600 text-white shadow-lg shadow-green-500/50'
+                        : 'bg-white/5 text-gray-400 hover:bg-white/10'
                         }`}
                 >
                     <ShoppingBag size={20} />
@@ -278,8 +278,8 @@ export const AdminContent: React.FC = () => {
                                         <button
                                             onClick={() => handleToggleBonusActive(bonus.id, bonus.active)}
                                             className={`flex-1 py-2 rounded-lg font-semibold text-sm transition-all duration-300 ${bonus.active
-                                                    ? 'bg-green-600/20 border border-green-500/30 text-green-400 hover:bg-green-600/30'
-                                                    : 'bg-white/5 border border-white/10 text-gray-500 hover:bg-white/10'
+                                                ? 'bg-green-600/20 border border-green-500/30 text-green-400 hover:bg-green-600/30'
+                                                : 'bg-white/5 border border-white/10 text-gray-500 hover:bg-white/10'
                                                 }`}
                                         >
                                             <Check size={16} className="inline mr-1" />
@@ -336,9 +336,8 @@ export const AdminContent: React.FC = () => {
                                     initial={{ opacity: 0, scale: 0.95 }}
                                     animate={{ opacity: 1, scale: 1 }}
                                     transition={{ delay: index * 0.05 }}
-                                    className={`backdrop-blur-sm bg-gradient-to-br from-white/5 to-white/[0.02] border rounded-2xl p-6 transition-all duration-300 hover:border-green-500/50 hover:shadow-2xl hover:shadow-green-500/10 group ${
-                                        upsell.active ? 'border-white/10' : 'border-red-500/30 opacity-60'
-                                    }`}
+                                    className={`backdrop-blur-sm bg-gradient-to-br from-white/5 to-white/[0.02] border rounded-2xl p-6 transition-all duration-300 hover:border-green-500/50 hover:shadow-2xl hover:shadow-green-500/10 group ${upsell.active ? 'border-white/10' : 'border-red-500/30 opacity-60'
+                                        }`}
                                 >
                                     <div className="flex items-start justify-between mb-4">
                                         <div>
@@ -364,7 +363,7 @@ export const AdminContent: React.FC = () => {
                                     <p className="text-sm text-gray-400 mb-4 leading-relaxed">{upsell.description}</p>
 
                                     <div className="p-3 bg-black/30 rounded-xl border border-white/5 mb-4">
-                                        {' <p className="text-xs text-gray-500 font-mono truncate">
+                                        <p className="text-xs text-gray-500 font-mono truncate">
                                             {upsell.stripe_price_id || 'No Stripe ID'}
                                         </p>
                                     </div>
@@ -372,11 +371,10 @@ export const AdminContent: React.FC = () => {
                                     <div className="flex gap-2">
                                         <button
                                             onClick={() => handleToggleUpsellActive(upsell.id, upsell.active)}
-                                            className={`flex-1 py-2 rounded-lg font-semibold text-sm transition-all duration-300 ${
-                                                upsell.active 
-                                                    ? 'bg-green-600/20 border border-green-500/30 text-green-400 hover:bg-green-600/30' 
+                                            className={`flex-1 py-2 rounded-lg font-semibold text-sm transition-all duration-300 ${upsell.active
+                                                    ? 'bg-green-600/20 border border-green-500/30 text-green-400 hover:bg-green-600/30'
                                                     : 'bg-white/5 border border-white/10 text-gray-500 hover:bg-white/10'
-                                            }`}
+                                                }`}
                                         >
                                             <Check size={16} className="inline mr-1" />
                                             {upsell.active ? 'Attivo' : 'Disattivo'}
@@ -395,43 +393,43 @@ export const AdminContent: React.FC = () => {
                                         </button>
                                     </div>
                                 </motion.div>
-                ))}
-        </div>
+                            ))}
+                        </div>
 
                         {
-        upsells.length === 0 && (
-            <div className="text-center py-20">
-                <ShoppingBag className="mx-auto mb-4 text-gray-600" size={64} />
-                <p className="text-xl text-gray-400">Nessun upsell disponibile</p>
-                <p className="text-sm text-gray-500 mt-2">Crea il primo upsell premium!</p>
-            </div>
-        )
-    }
+                            upsells.length === 0 && (
+                                <div className="text-center py-20">
+                                    <ShoppingBag className="mx-auto mb-4 text-gray-600" size={64} />
+                                    <p className="text-xl text-gray-400">Nessun upsell disponibile</p>
+                                    <p className="text-sm text-gray-500 mt-2">Crea il primo upsell premium!</p>
+                                </div>
+                            )
+                        }
                     </motion.div >
                 )}
             </AnimatePresence >
 
-    {/* MODALS */ }
-    <AnimatePresence>
-{
-    showBonusForm && (
-        <BonusFormModal
-            bonus={editingBonus}
-            onClose={() => setShowBonusForm(false)}
-            onSave={() => { setShowBonusForm(false); fetchData(); }}
-        />
-    )
-}
+            {/* MODALS */}
+            <AnimatePresence>
+                {
+                    showBonusForm && (
+                        <BonusFormModal
+                            bonus={editingBonus}
+                            onClose={() => setShowBonusForm(false)}
+                            onSave={() => { setShowBonusForm(false); fetchData(); }}
+                        />
+                    )
+                }
 
-{
-    showUpsellForm && (
-        <UpsellFormModal
-            upsell={editingUpsell}
-            onClose={() => setShowUpsellForm(false)}
-            onSave={() => { setShowUpsellForm(false); fetchData(); }}
-        />
-    )
-}
+                {
+                    showUpsellForm && (
+                        <UpsellFormModal
+                            upsell={editingUpsell}
+                            onClose={() => setShowUpsellForm(false)}
+                            onSave={() => { setShowUpsellForm(false); fetchData(); }}
+                        />
+                    )
+                }
             </AnimatePresence >
         </div >
     );
@@ -531,8 +529,8 @@ const BonusFormModal = ({ bonus, onClose, onSave }: { bonus: BonusProduct | null
                                 type="button"
                                 onClick={() => toggleTier(tier)}
                                 className={`px-4 py-2 rounded-xl border text-sm font-bold transition-all duration-300 ${form.tier_applicable.includes(tier)
-                                        ? 'bg-purple-600 border-purple-500 text-white shadow-lg shadow-purple-500/30'
-                                        : 'bg-white/5 border-white/10 text-gray-400 hover:bg-white/10'
+                                    ? 'bg-purple-600 border-purple-500 text-white shadow-lg shadow-purple-500/30'
+                                    : 'bg-white/5 border-white/10 text-gray-400 hover:bg-white/10'
                                     }`}
                             >
                                 {tier.replace('matrice-', 'Matrice ').replace('ascension-box', 'Ascension Box')}
@@ -743,8 +741,8 @@ const UpsellFormModal = ({ upsell, onClose, onSave }: { upsell: UpsellProduct | 
                                 type="button"
                                 onClick={() => toggleTier(tier)}
                                 className={`px-4 py-2 rounded-xl border text-sm font-bold transition-all duration-300 ${form.available_for_tiers.includes(tier)
-                                        ? 'bg-green-600 border-green-500 text-white shadow-lg shadow-green-500/30'
-                                        : 'bg-white/5 border-white/10 text-gray-400 hover:bg-white/10'
+                                    ? 'bg-green-600 border-green-500 text-white shadow-lg shadow-green-500/30'
+                                    : 'bg-white/5 border-white/10 text-gray-400 hover:bg-white/10'
                                     }`}
                             >
                                 {tier.replace('matrice-', 'Matrice ').replace('ascension-box', 'Ascension Box')}
