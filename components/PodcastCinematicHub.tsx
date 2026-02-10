@@ -34,21 +34,11 @@ export const PodcastCinematicHub: React.FC<PodcastCinematicHubProps> = ({ course
     const { course, loading } = useCourseData(courseId);
     const [hoveredNode, setHoveredNode] = useState<number | null>(null);
 
-    if (loading) {
-        return (
-            <div className="fixed inset-0 bg-black flex items-center justify-center z-50">
-                <div className="w-16 h-16 border-4 border-amber-500 border-t-transparent rounded-full animate-spin"></div>
-            </div>
-        );
-    }
-
-    if (!course) return null;
-
     useEffect(() => {
-        playSound('ambient_transition');
-    }, [playSound]);
-
-    // Stars and Atmosphere moved to <PodcastAtmosphere />
+        if (!loading) {
+            playSound('ambient_transition');
+        }
+    }, [playSound, loading]);
 
     // ORBIT CONFIGURATION
     // 10 distinct concentric orbits. 
@@ -79,6 +69,16 @@ export const PodcastCinematicHub: React.FC<PodcastCinematicHubProps> = ({ course
             };
         });
     }, []);
+
+    if (loading) {
+        return (
+            <div className="fixed inset-0 bg-black flex items-center justify-center z-50">
+                <div className="w-16 h-16 border-4 border-amber-500 border-t-transparent rounded-full animate-spin"></div>
+            </div>
+        );
+    }
+
+    if (!course) return null;
 
     const isWorldComplete = (mm: Mastermind) => {
         if (!mm.modules || mm.modules.length === 0) return false;

@@ -12,6 +12,7 @@ export interface Mastermind {
     id: string;
     title: string;
     subtitle: string;
+    description?: string;
     modules: Module[];
 }
 
