@@ -1,62 +1,59 @@
-export const podcastWorld9Content = {
+import { WorldContent } from "../../services/courses/types";
+
+export const podcastWorld9Content: WorldContent = {
+    // MONDO 9: MONETIZZAZIONE AUDIO
     narrative: {
-        intro: "Il suono non è vibrazione. È architettura della mente. In questo mondo, imparerai a costruire cattedrali invisibili.",
-        outro: "Hai posato la prima pietra. Il tuo tempio sonoro ha ora fondamenta che nessuno può scuotere."
+        intro: "L'arte ha bisogno di risorse. Trasforma l'attenzione in sostegno, e il sostegno in libertà creativa.",
+        outro: "Il cerchio si chiude. Il valore che dai ritorna a te moltiplicato."
     },
     modulesContent: [
-        // MODULO 9.1
         {
-            scene: {
-                visual: "Uno spettrogramma dorato fluttua nel vuoto, reagendo al tuo respiro. È 'vivo'."
-            },
+            // 9.1 Sponsorizzazioni Strategiche
+            scene: { visual: "Due mani di luce si stringono. Un contratto d'oro si materializza." },
             download: {
-                title: "ARCHITETTURA INVISIBILE",
-                content: "Prima di registrare, devi progettare lo spazio acustico. Non stai parlando a un microfono, stai parlando all'orecchio interno del tuo ascoltatore. Qui impariamo a trattare la stanza non come uno studio, ma come un santuario psicoacustico."
+                title: "SPONSORIZZAZIONI STRATEGICHE",
+                content: "CPM vs Value Based. Come pitchare agli sponsor anche con pochi ascolti. Pre-roll, Mid-roll e l'arte della 'Host-Read Ad'."
             },
             ritual: {
-                title: "Il Silenzio Zero",
-                action: "Ascolta il silenzio della tua stanza.",
-                task: "Identifica 3 rumori di fondo che il tuo cervello ignora ma che il microfono amplifica.",
-                feedback: "L'eliminazione del rumore non è tecnica, è un atto di purezza.",
-                output: "Unlock: 'Purezza del Segnale'."
+                title: "Il Pitch",
+                action: "Scrivi una mail a un potenziale sponsor di nicchia.",
+                task: "Non vendere numeri. Vendi la fiducia della tua audience.",
+                feedback: "Tu non vendi impression. Vendi influenza.",
+                output: "Unlock: 'Media Kit'."
             },
-            script: "Chiudi gli occhi. Cosa senti? Il ronzio del frigo? Il traffico? Quello è il nemico. Il silenzio è la tela su cui dipingeremo. Senza silenzio, non c'è sacralità."
+            script: "Non interrompere lo show per la pubblicità. Integra la pubblicità nello show. Se la consigli tu, non è ad, è consiglio."
         },
-        // MODULO 9.2
         {
-            scene: {
-                visual: "Il microfono al centro si illumina. Attorno ad esso ruotano anelli di frequenza."
-            },
+            // 9.2 Premium Membership
+            scene: { visual: "Un cancello di velluto si apre solo per chi ha la chiave dorata." },
             download: {
-                title: "LA SCELTA DELL'ARMA",
-                content: "Dinamico o Condensatore? USB o XLR? Non sono scelte tecniche, sono scelte di intimità. Il microfono è l'estensione della tua laringe. Scegliere quello sbagliato è come indossare la pelle di un altro."
+                title: "PREMIUM MEMBERSHIP",
+                content: "Patreon, Supercast, Apple Subscriptions. Creare contenuti bonus per i 'Super Fans'. I 1000 True Fans."
             },
             ritual: {
-                title: "Sintonizzazione",
-                action: "Parla al microfono da diverse distanze.",
-                task: "Trova il 'Punto di Prossimità' dove la tua voce acquista corpo senza distorsione.",
-                feedback: "La voce cambia personalità con la distanza.",
-                output: "Unlock: 'Distanza Aurea'."
+                title: "Il Santuario",
+                action: "Definisci la tua offerta Premium.",
+                task: "Cosa dai in più? (Backstage, Q&A, Extended Episodes).",
+                feedback: "I veri fan vogliono 'di più di te'.",
+                output: "Unlock: 'Membership Strategy'."
             },
-            script: "Avvicinati. Ancora. Senti come il suono diventa caldo? L'effetto di prossimità è il segreto dell'intimità radiofonica. Non urlare al mondo. Sussurra all'orecchio."
+            script: "Chiedi supporto con orgoglio. Stai dando valore. Chi ti ama vuole sostenerti. Dagliene la possibilità."
         },
-        // MODULO 9.3
         {
-            scene: {
-                visual: "L'onda sonora si stabilizza e diventa una linea solida di luce indaco.",
-            },
+            // 9.3 Ecosystem Audio
+            scene: { visual: "Un albero cresce dal podcast, i cui rami sono libri, corsi, eventi." },
             download: {
-                title: "FLUSSO DI SEGNALE",
-                content: "Dal microfono alla DAW. Ogni cavo, ogni interfaccia è un ponte. Se il ponte è debole, il messaggio cade nel vuoto. Impariamo a costruire ponti indistruttibili."
+                title: "ECOSYSTEM AUDIO",
+                content: "Il podcast come Top of Funnel. Portare traffico a corsi, coaching, eventi. Monetizzare la backend, non solo l'ascolto.",
             },
             ritual: {
-                title: "Il Check-Up",
-                action: "Verifica la catena del segnale.",
-                task: "Gain Staging: Imposta il livello di ingresso perfetto (-12dB).",
-                feedback: "Il segnale troppo basso è timido. Troppo alto è arrogante. Cerca l'equilibrio.",
-                output: "Unlock: 'Equilibrio del Gain'."
+                title: "L'Imbuto",
+                action: "Inserisci una CTA chiara alla fine dell'episodio.",
+                task: "Portali fuori dall'app, nel tuo mondo (Email list).",
+                feedback: "Non costruire casa su terreno in affitto (Spotify). Porta i dati a casa tua.",
+                output: "Unlock: 'Revenue Funnel'."
             },
-            script: "Il volume non è potenza. La chiarezza è potenza. Non cercare di sovrastare il rumore. Toglilo. Lascia che la tua voce scorra senza ostacoli."
+            script: "Il podcast non è il business. Il podcast è il megafono del business. Usalo per amplificare la tua offerta principale."
         }
     ]
 };

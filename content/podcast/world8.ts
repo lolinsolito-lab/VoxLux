@@ -1,62 +1,59 @@
-export const podcastWorld8Content = {
+import { WorldContent } from "../../services/courses/types";
+
+export const podcastWorld8Content: WorldContent = {
+    // MONDO 8: DISTRIBUZIONE GLOBALE
     narrative: {
-        intro: "Il suono non è vibrazione. È architettura della mente. In questo mondo, imparerai a costruire cattedrali invisibili.",
-        outro: "Hai posato la prima pietra. Il tuo tempio sonoro ha ora fondamenta che nessuno può scuotere."
+        intro: "Hai creato valore. Ora devi consegnarlo. Il mondo è vasto, ma ci sono autostrade digitali che portano ovunque.",
+        outro: "Il segnale è ovunque. La tua voce è ora onnipresente."
     },
     modulesContent: [
-        // MODULO 8.1
         {
-            scene: {
-                visual: "Uno spettrogramma dorato fluttua nel vuoto, reagendo al tuo respiro. È 'vivo'."
-            },
+            // 8.1 Piattaforme & RSS
+            scene: { visual: "Un hub centrale spara raggi di luce verso icone planetarie (Spotify, Apple, Google)." },
             download: {
-                title: "ARCHITETTURA INVISIBILE",
-                content: "Prima di registrare, devi progettare lo spazio acustico. Non stai parlando a un microfono, stai parlando all'orecchio interno del tuo ascoltatore. Qui impariamo a trattare la stanza non come uno studio, ma come un santuario psicoacustico."
+                title: "PIATTAFORME & RSS",
+                content: "Hosting provider. Come funziona l'RSS feed. Distribuire su Spotify, Apple Podcasts, Amazon Music e oltre con un click."
             },
             ritual: {
-                title: "Il Silenzio Zero",
-                action: "Ascolta il silenzio della tua stanza.",
-                task: "Identifica 3 rumori di fondo che il tuo cervello ignora ma che il microfono amplifica.",
-                feedback: "L'eliminazione del rumore non è tecnica, è un atto di purezza.",
-                output: "Unlock: 'Purezza del Segnale'."
+                title: "Il Lancio",
+                action: "Configura il tuo hosting (Anchor/Spotify o Buzzsprout).",
+                task: "Valida il feed RSS.",
+                feedback: "Sii ovunque. Rimuovi ogni frizione all'ascolto.",
+                output: "Unlock: 'Multi-Platform Setup'."
             },
-            script: "Chiudi gli occhi. Cosa senti? Il ronzio del frigo? Il traffico? Quello è il nemico. Il silenzio è la tela su cui dipingeremo. Senza silenzio, non c'è sacralità."
+            script: "Non importa quale app usano. Tu devi essere lì. Il tuo show deve essere utility pubblica, accessibile come l'acqua."
         },
-        // MODULO 8.2
         {
-            scene: {
-                visual: "Il microfono al centro si illumina. Attorno ad esso ruotano anelli di frequenza."
-            },
+            // 8.2 SEO Audio
+            scene: { visual: "Parole chiave luminose galleggiano nell'aria e vengono attratte da un magnete." },
             download: {
-                title: "LA SCELTA DELL'ARMA",
-                content: "Dinamico o Condensatore? USB o XLR? Non sono scelte tecniche, sono scelte di intimità. Il microfono è l'estensione della tua laringe. Scegliere quello sbagliato è come indossare la pelle di un altro."
+                title: "SEO AUDIO",
+                content: "Titoli, descrizioni, show notes. Come farsi trovare dai motori di ricerca e dagli algoritmi interni delle app."
             },
             ritual: {
-                title: "Sintonizzazione",
-                action: "Parla al microfono da diverse distanze.",
-                task: "Trova il 'Punto di Prossimità' dove la tua voce acquista corpo senza distorsione.",
-                feedback: "La voce cambia personalità con la distanza.",
-                output: "Unlock: 'Distanza Aurea'."
+                title: "La Calamita",
+                action: "Riscrivi 3 titoli di episodi.",
+                task: "Usa la formula: Beneficio + Curiosità + Keywords.",
+                feedback: "Se non cliccano, non ascoltano. Il titolo è l'80% del lavoro.",
+                output: "Unlock: 'SEO Checklist'."
             },
-            script: "Avvicinati. Ancora. Senti come il suono diventa caldo? L'effetto di prossimità è il segreto dell'intimità radiofonica. Non urlare al mondo. Sussurra all'orecchio."
+            script: "Non essere criptico. Sii chiaro. La gente cerca risposte ai loro problemi. Metti la soluzione nel titolo."
         },
-        // MODULO 8.3
         {
-            scene: {
-                visual: "L'onda sonora si stabilizza e diventa una linea solida di luce indaco.",
-            },
+            // 8.3 Viralità Algoritmica
+            scene: { visual: "Un'onda d'urto si propaga esponenzialmente attraverso una rete di nodi." },
             download: {
-                title: "FLUSSO DI SEGNALE",
-                content: "Dal microfono alla DAW. Ogni cavo, ogni interfaccia è un ponte. Se il ponte è debole, il messaggio cade nel vuoto. Impariamo a costruire ponti indistruttibili."
+                title: "VIRALITÀ ALGORITMICA",
+                content: "Chart ranking, velocity, ratings. Come hackerare (eticamente) l'algoritmo al lancio per entrare in classifica."
             },
             ritual: {
-                title: "Il Check-Up",
-                action: "Verifica la catena del segnale.",
-                task: "Gain Staging: Imposta il livello di ingresso perfetto (-12dB).",
-                feedback: "Il segnale troppo basso è timido. Troppo alto è arrogante. Cerca l'equilibrio.",
-                output: "Unlock: 'Equilibrio del Gain'."
+                title: "L'Onda d'Urto",
+                action: "Pianifica la strategia 'Launch Week'.",
+                task: "Obiettivo: 50 recensioni in 48 ore.",
+                feedback: "L'algoritmo ama la velocità. Dagli fuoco.",
+                output: "Unlock: 'Launch Strategy'."
             },
-            script: "Il volume non è potenza. La chiarezza è potenza. Non cercare di sovrastare il rumore. Toglilo. Lascia che la tua voce scorra senza ostacoli."
+            script: "Agli algoritmi non piaci tu. A loro piace l'engagement. Dagli quello che vogliono e ti daranno il mondo."
         }
     ]
 };

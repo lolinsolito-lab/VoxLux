@@ -50,12 +50,12 @@ export const AdminCourses: React.FC = () => {
     const fetchCourses = async () => {
         setLoading(true);
         try {
-            // Fetch courses with module count
+            // Fetch courses with module count (NEW SCHEMA)
             const { data: coursesData, error } = await supabase
                 .from('courses')
                 .select(`
                     *,
-                    course_modules (count)
+                    modules (count)
                 `)
                 .order('display_order', { ascending: true });
 
@@ -64,7 +64,7 @@ export const AdminCourses: React.FC = () => {
             // Transform data to include module count
             const coursesWithCount = coursesData?.map(course => ({
                 ...course,
-                module_count: course.course_modules?.[0]?.count || 0
+                module_count: course.modules?.[0]?.count || 0
             })) || [];
 
             setCourses(coursesWithCount);

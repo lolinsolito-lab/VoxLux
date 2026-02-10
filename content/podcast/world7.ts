@@ -1,62 +1,59 @@
-export const podcastWorld7Content = {
+import { WorldContent } from "../../services/courses/types";
+
+export const podcastWorld7Content: WorldContent = {
+    // MONDO 7: INTERVISTE & STORYTELLING
     narrative: {
-        intro: "Il suono non è vibrazione. È architettura della mente. In questo mondo, imparerai a costruire cattedrali invisibili.",
-        outro: "Hai posato la prima pietra. Il tuo tempio sonoro ha ora fondamenta che nessuno può scuotere."
+        intro: "L'altro è uno specchio. Impara a fare le domande giuste e rivelerai l'anima del mondo.",
+        outro: "Hai estratto l'oro dalle parole altrui. Ora sei un maestro della conversazione."
     },
     modulesContent: [
-        // MODULO 7.1
         {
-            scene: {
-                visual: "Uno spettrogramma dorato fluttua nel vuoto, reagendo al tuo respiro. È 'vivo'."
-            },
+            // 7.1 La Domanda Che Disarma
+            scene: { visual: "Una chiave dorata gira in una serratura complessa, aprendo una porta segreta." },
             download: {
-                title: "ARCHITETTURA INVISIBILE",
-                content: "Prima di registrare, devi progettare lo spazio acustico. Non stai parlando a un microfono, stai parlando all'orecchio interno del tuo ascoltatore. Qui impariamo a trattare la stanza non come uno studio, ma come un santuario psicoacustico."
+                title: "LA DOMANDA CHE DISARMA",
+                content: "Come superare le risposte pre-confezionate (PR answers). Tecniche per portare l'ospite in uno stato di flusso e vulnerabilità."
             },
             ritual: {
-                title: "Il Silenzio Zero",
-                action: "Ascolta il silenzio della tua stanza.",
-                task: "Identifica 3 rumori di fondo che il tuo cervello ignora ma che il microfono amplifica.",
-                feedback: "L'eliminazione del rumore non è tecnica, è un atto di purezza.",
-                output: "Unlock: 'Purezza del Segnale'."
+                title: "Lo Scassinatore",
+                action: "Prepara 3 domande che l'ospite non ha mai sentito.",
+                task: "Evita 'raccontaci di te'. Chiedi 'qual è stata la tua notte più buia?'.",
+                feedback: "Le domande migliori sono brevi e coraggiose.",
+                output: "Unlock: 'Question Framework'."
             },
-            script: "Chiudi gli occhi. Cosa senti? Il ronzio del frigo? Il traffico? Quello è il nemico. Il silenzio è la tela su cui dipingeremo. Senza silenzio, non c'è sacralità."
+            script: "Non chiedere informazioni. Chiedi trasformazioni. Non chiedere 'cosa', chiedi 'perché' e 'come ti sei sentito'."
         },
-        // MODULO 7.2
         {
-            scene: {
-                visual: "Il microfono al centro si illumina. Attorno ad esso ruotano anelli di frequenza."
-            },
+            // 7.2 Ascolto Attivo Strategico
+            scene: { visual: "Un radar pulsa dal centro, captando segnali deboli e nascosti." },
             download: {
-                title: "LA SCELTA DELL'ARMA",
-                content: "Dinamico o Condensatore? USB o XLR? Non sono scelte tecniche, sono scelte di intimità. Il microfono è l'estensione della tua laringe. Scegliere quello sbagliato è come indossare la pelle di un altro."
+                title: "ASCOLTO ATTIVO STRATEGICO",
+                content: "Il silenzio come arma. Come usare le pause per far dire all'ospite più di quanto volesse. Ascoltare il non-detto."
             },
             ritual: {
-                title: "Sintonizzazione",
-                action: "Parla al microfono da diverse distanze.",
-                task: "Trova il 'Punto di Prossimità' dove la tua voce acquista corpo senza distorsione.",
-                feedback: "La voce cambia personalità con la distanza.",
-                output: "Unlock: 'Distanza Aurea'."
+                title: "Il Vuoto Fertile",
+                action: "Simulazione: Dopo una risposta, aspetta 3 secondi prima di parlare.",
+                task: "Osserva come l'altro riempie il vuoto con la verità.",
+                feedback: "La magia accade nelle pause.",
+                output: "Unlock: 'Listening Protocol'."
             },
-            script: "Avvicinati. Ancora. Senti come il suono diventa caldo? L'effetto di prossimità è il segreto dell'intimità radiofonica. Non urlare al mondo. Sussurra all'orecchio."
+            script: "Se stai pensando alla prossima domanda, non stai ascoltando. Sii presente. Balla con quello che ti danno."
         },
-        // MODULO 7.3
         {
-            scene: {
-                visual: "L'onda sonora si stabilizza e diventa una linea solida di luce indaco.",
-            },
+            // 7.3 Montaggio Narrativo
+            scene: { visual: "Pezzi di un puzzle temporale vengono riordinati per formare un'immagine perfetta." },
             download: {
-                title: "FLUSSO DI SEGNALE",
-                content: "Dal microfono alla DAW. Ogni cavo, ogni interfaccia è un ponte. Se il ponte è debole, il messaggio cade nel vuoto. Impariamo a costruire ponti indistruttibili."
+                title: "MONTAGGIO NARRATIVO",
+                content: "La cronologia è noiosa. Inizia dalla fine (In Media Res). Costruisci archi narrativi spostando blocchi di conversazione."
             },
             ritual: {
-                title: "Il Check-Up",
-                action: "Verifica la catena del segnale.",
-                task: "Gain Staging: Imposta il livello di ingresso perfetto (-12dB).",
-                feedback: "Il segnale troppo basso è timido. Troppo alto è arrogante. Cerca l'equilibrio.",
-                output: "Unlock: 'Equilibrio del Gain'."
+                title: "Lo Storyboarder",
+                action: "Prendi un'intervista lineare.",
+                task: "Sposta il momento più emozionante all'inizio (Cold Open).",
+                feedback: "La realtà è lineare. La storia è circolare.",
+                output: "Unlock: 'Story Arc Template'."
             },
-            script: "Il volume non è potenza. La chiarezza è potenza. Non cercare di sovrastare il rumore. Toglilo. Lascia che la tua voce scorra senza ostacoli."
+            script: "Tu non sei un verbalizzatore. Sei un regista. Hai il potere di manipolare il tempo per massimizzare l'impatto."
         }
     ]
 };

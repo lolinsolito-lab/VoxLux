@@ -1,62 +1,59 @@
-export const podcastWorld2Content = {
+import { WorldContent } from "../../services/courses/types";
+
+export const podcastWorld2Content: WorldContent = {
+    // MONDO 2: PSICOLOGIA VOCALE
     narrative: {
-        intro: "Il suono non è vibrazione. È architettura della mente. In questo mondo, imparerai a costruire cattedrali invisibili.",
-        outro: "Hai posato la prima pietra. Il tuo tempio sonoro ha ora fondamenta che nessuno può scuotere."
+        intro: "La tua voce è il primo strumento. Prima di parlare agli altri, devi imparare a suonare te stesso.",
+        outro: "Ora controlli lo strumento. Non sei più uno speaker, sei un direttore d'orchestra."
     },
     modulesContent: [
-        // MODULO 2.1
         {
-            scene: {
-                visual: "Uno spettrogramma dorato fluttua nel vuoto, reagendo al tuo respiro. È 'vivo'."
-            },
+            // 2.1 Texture Vocale
+            scene: { visual: "Corde vocali stilizzate vibrano come arpe luminose." },
             download: {
-                title: "ARCHITETTURA INVISIBILE",
-                content: "Prima di registrare, devi progettare lo spazio acustico. Non stai parlando a un microfono, stai parlando all'orecchio interno del tuo ascoltatore. Qui impariamo a trattare la stanza non come uno studio, ma come un santuario psicoacustico."
+                title: "TEXTURE VOCALE",
+                content: "Tono, ritmo, volume. Questi sono i colori della tua palette. Impara a dipingere con la voce, non solo a trasmettere dati."
             },
             ritual: {
-                title: "Il Silenzio Zero",
-                action: "Ascolta il silenzio della tua stanza.",
-                task: "Identifica 3 rumori di fondo che il tuo cervello ignora ma che il microfono amplifica.",
-                feedback: "L'eliminazione del rumore non è tecnica, è un atto di purezza.",
-                output: "Unlock: 'Purezza del Segnale'."
+                title: "Lo Spettro",
+                action: "Registra la stessa frase in 3 modalità: Autorevole, Empatica, Energica.",
+                task: "Ascolta le differenze frequenziali.",
+                feedback: "La monotonia è la morte dell'attenzione.",
+                output: "Unlock: 'Profilo Vocale'."
             },
-            script: "Chiudi gli occhi. Cosa senti? Il ronzio del frigo? Il traffico? Quello è il nemico. Il silenzio è la tela su cui dipingeremo. Senza silenzio, non c'è sacralità."
+            script: "La tua voce ha una texture. È ruvida come la pietra o liscia come la seta? Usala intenzionalmente."
         },
-        // MODULO 2.2
         {
-            scene: {
-                visual: "Il microfono al centro si illumina. Attorno ad esso ruotano anelli di frequenza."
-            },
+            // 2.2 Respirazione Strategica
+            scene: { visual: "Un polmone di luce si espande e contrae ritmicamente." },
             download: {
-                title: "LA SCELTA DELL'ARMA",
-                content: "Dinamico o Condensatore? USB o XLR? Non sono scelte tecniche, sono scelte di intimità. Il microfono è l'estensione della tua laringe. Scegliere quello sbagliato è come indossare la pelle di un altro."
+                title: "RESPIRAZIONE STRATEGICA",
+                content: "Il respiro è il carburante del pensiero. Senza ossigeno, la voce trema e il pensiero si annebbia. Controllo diaframmatico."
             },
             ritual: {
-                title: "Sintonizzazione",
-                action: "Parla al microfono da diverse distanze.",
-                task: "Trova il 'Punto di Prossimità' dove la tua voce acquista corpo senza distorsione.",
-                feedback: "La voce cambia personalità con la distanza.",
-                output: "Unlock: 'Distanza Aurea'."
+                title: "Il Mantice",
+                action: "Esercizio respiratorio 4-7-8 prima di registrare.",
+                task: "Sostieni una nota per 30 secondi.",
+                feedback: "Chi controlla il respiro, controlla la stanza.",
+                output: "Unlock: 'Controllo del Respiro'."
             },
-            script: "Avvicinati. Ancora. Senti come il suono diventa caldo? L'effetto di prossimità è il segreto dell'intimità radiofonica. Non urlare al mondo. Sussurra all'orecchio."
+            script: "Non respirare per sopravvivere. Respira per performare. L'aria è la materia prima delle tue parole."
         },
-        // MODULO 2.3
         {
-            scene: {
-                visual: "L'onda sonora si stabilizza e diventa una linea solida di luce indaco.",
-            },
+            // 2.3 Il Punto di Prossimità
+            scene: { visual: "Onde concentriche si espandono dalla bocca del narratore all'infinito." },
             download: {
-                title: "FLUSSO DI SEGNALE",
-                content: "Dal microfono alla DAW. Ogni cavo, ogni interfaccia è un ponte. Se il ponte è debole, il messaggio cade nel vuoto. Impariamo a costruire ponti indistruttibili."
+                title: "IL PUNTO DI PROSSIMITÀ",
+                content: "L'intimità si crea con la fisica. La distanza dal microfono cambia la percezione psicologica dell'ascoltatore."
             },
             ritual: {
-                title: "Il Check-Up",
-                action: "Verifica la catena del segnale.",
-                task: "Gain Staging: Imposta il livello di ingresso perfetto (-12dB).",
-                feedback: "Il segnale troppo basso è timido. Troppo alto è arrogante. Cerca l'equilibrio.",
-                output: "Unlock: 'Equilibrio del Gain'."
+                title: "Il Sussurro",
+                action: "Registra avvicinandoti progressivamente al microfono.",
+                task: "Trova il punto dove la voce 'abbraccia' l'ascoltatore.",
+                feedback: "Troppo vicino è invadente. Troppo lontano è freddo.",
+                output: "Unlock: 'Sweet Spot Personale'."
             },
-            script: "Il volume non è potenza. La chiarezza è potenza. Non cercare di sovrastare il rumore. Toglilo. Lascia che la tua voce scorra senza ostacoli."
+            script: "Vuoi parlare alla folla o all'individuo? Il podcast è un medium intimo. Entra nel loro spazio personale con rispetto."
         }
     ]
 };

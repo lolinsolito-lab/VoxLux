@@ -3,9 +3,6 @@ import { supabase } from '../services/supabase';
 import { Course, Mastermind } from '../services/courses';
 import { COURSES as HARDCODED_COURSES } from '../services/courses';
 
-// Extend the Course type to match DB schema if needed, 
-// but for now we try to map DB response to the existing frontend type.
-
 export const useCourseData = (courseId: string) => {
     const [course, setCourse] = useState<Course | null>(null);
     const [loading, setLoading] = useState(true);
@@ -31,9 +28,8 @@ export const useCourseData = (courseId: string) => {
                     throw new Error('Fallback to legacy');
                 }
 
-                // 2. Fetch Modules — Priority: New Schema → Legacy Fallback
-
-                // Try NEW schema first (modules + lessons)
+                // 2. Fetch Modules — Priority: New Schema
+                // Using NEW schema (modules + lessons)
                 const { data: newModules, error: newModulesError } = await supabase
                     .from('modules')
                     .select(`
@@ -51,67 +47,35 @@ export const useCourseData = (courseId: string) => {
                             resources
                         )
                     `)
-                    .eq('course_id', courseId)
+                    .eq('course_id', dbCourse.id)
                     .order('order_index', { ascending: true });
 
-                let masterminds: Mastermind[] = [];
-
-                if (!newModulesError && newModules && newModules.length > 0) {
-                    // ✅ NEW SCHEMA — Used by Podcast (matrice-2) and all future courses
-                    masterminds = newModules.map(m => ({
-                        id: m.id,
-                        title: m.title,
-                        subtitle: 'Modulo',
-                        description: m.description,
-                        modules: (m.lessons || []).sort((a: any, b: any) => a.order_index - b.order_index).map((l: any) => ({
-                            id: l.id,
-                            title: l.title,
-                            description: l.description,
-                            type: l.video_provider === 'audio' ? 'audio' : 'video',
-                            duration: l.duration_minutes ? `${l.duration_minutes}:00` : '15:00',
-                            output: '',
-                            resources: l.resources
-                        }))
-                    }));
-                } else {
-                    // ⚠️ LEGACY FALLBACK — Only for Storytelling (matrice-1) until migrated
-                    const { data: dbModules, error: modulesError } = await supabase
-                        .from('course_modules')
-                        .select('*')
-                        .eq('course_id', dbCourse.id)
-                        .order('module_order', { ascending: true });
-
-                    if (modulesError) {
-                        console.error('Error fetching legacy modules:', modulesError);
-                    }
-
-                    const modules = dbModules || [];
-                    const modulesPerWorld = 3;
-                    const totalWorlds = Math.ceil(modules.length / modulesPerWorld);
-
-                    for (let i = 0; i < totalWorlds; i++) {
-                        const worldModules = modules.slice(i * modulesPerWorld, (i + 1) * modulesPerWorld);
-                        if (worldModules.length > 0) {
-                            masterminds.push({
-                                id: `world-${i + 1}`,
-                                title: `Mondo ${i + 1}`,
-                                subtitle: 'Modulo',
-                                modules: worldModules.map(m => ({
-                                    id: m.id,
-                                    title: m.title,
-                                    description: m.description,
-                                    type: m.content_type as 'video' | 'audio' | 'text',
-                                    duration: m.duration ? String(m.duration) : '15:00',
-                                    output: ''
-                                }))
-                            });
-                        }
-                    }
+                if (newModulesError) {
+                    console.error('Error fetching modules:', newModulesError);
+                    throw newModulesError;
                 }
 
-                // If DB result is too empty (e.g. no modules anywhere), fallback
+                const masterminds: Mastermind[] = (newModules || []).map(m => ({
+                    id: m.id,
+                    title: m.title,
+                    subtitle: 'Modulo',
+                    description: m.description,
+                    modules: (m.lessons || []).sort((a: any, b: any) => a.order_index - b.order_index).map((l: any) => ({
+                        id: l.id,
+                        title: l.title,
+                        description: l.description,
+                        type: l.video_provider === 'audio' ? 'audio' : 'video',
+                        duration: l.duration_minutes ? `${l.duration_minutes}:00` : '15:00',
+                        output: '',
+                        resources: l.resources
+                    }))
+                }));
+
+                // If DB result is empty, it might be an issue, but we'll return empty course
+                // or throw to fallback if that's preferred. For now we assume correct migration.
                 if (masterminds.length === 0) {
-                    throw new Error('DB Empty');
+                    // Optionally throw here if you want to fallback to hardcoded when DB is empty
+                    // throw new Error('DB Empty');
                 }
 
                 const mappedCourse: Course = {

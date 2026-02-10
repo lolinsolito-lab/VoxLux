@@ -1,62 +1,59 @@
-export const podcastWorld5Content = {
+import { WorldContent } from "../../services/courses/types";
+
+export const podcastWorld5Content: WorldContent = {
+    // MONDO 5: PRODUZIONE & MIX
     narrative: {
-        intro: "Il suono non è vibrazione. È architettura della mente. In questo mondo, imparerai a costruire cattedrali invisibili.",
-        outro: "Hai posato la prima pietra. Il tuo tempio sonoro ha ora fondamenta che nessuno può scuotere."
+        intro: "Hai registrato e pulito. Ora devi dipingere. Il mix è dove la tecnica diventa emozione.",
+        outro: "La tua voce ora brilla. Sei pronto per le orecchie del mondo."
     },
     modulesContent: [
-        // MODULO 5.1
         {
-            scene: {
-                visual: "Uno spettrogramma dorato fluttua nel vuoto, reagendo al tuo respiro. È 'vivo'."
-            },
+            // 5.1 EQ Strategico
+            scene: { visual: "Frequenze colorate vengono bilanciate su una bilancia d'oro." },
             download: {
-                title: "ARCHITETTURA INVISIBILE",
-                content: "Prima di registrare, devi progettare lo spazio acustico. Non stai parlando a un microfono, stai parlando all'orecchio interno del tuo ascoltatore. Qui impariamo a trattare la stanza non come uno studio, ma come un santuario psicoacustico."
+                title: "EQ STRATEGICO",
+                content: "Scolpire le frequenze. Rimuovere il fango (Low Mids), esaltare la presenza (High Mids), aggiungere aria (Highs)."
             },
             ritual: {
-                title: "Il Silenzio Zero",
-                action: "Ascolta il silenzio della tua stanza.",
-                task: "Identifica 3 rumori di fondo che il tuo cervello ignora ma che il microfono amplifica.",
-                feedback: "L'eliminazione del rumore non è tecnica, è un atto di purezza.",
-                output: "Unlock: 'Purezza del Segnale'."
+                title: "Scolpire la Voce",
+                action: "Applica High Pass Filter a 80Hz.",
+                task: "Trova e riduci la frequenza nasale risonante.",
+                feedback: "L'EQ sottrattivo è più potente di quello additivo.",
+                output: "Unlock: 'EQ Curves Personali'."
             },
-            script: "Chiudi gli occhi. Cosa senti? Il ronzio del frigo? Il traffico? Quello è il nemico. Il silenzio è la tela su cui dipingeremo. Senza silenzio, non c'è sacralità."
+            script: "Non aggiungere ciò che manca. Togli ciò che disturba. L'EQ è l'arte della sottrazione."
         },
-        // MODULO 5.2
         {
-            scene: {
-                visual: "Il microfono al centro si illumina. Attorno ad esso ruotano anelli di frequenza."
-            },
+            // 5.2 Layering Sonoro
+            scene: { visual: "Strati trasparenti di vetro si sovrappongono creando un'immagine complessa." },
             download: {
-                title: "LA SCELTA DELL'ARMA",
-                content: "Dinamico o Condensatore? USB o XLR? Non sono scelte tecniche, sono scelte di intimità. Il microfono è l'estensione della tua laringe. Scegliere quello sbagliato è come indossare la pelle di un altro."
+                title: "LAYERING SONORO",
+                content: "Voce + Musica + SFX. Come bilanciare i livelli (Ducking) affinché la voce regni sempre sovrana ma non sia mai sola."
             },
             ritual: {
-                title: "Sintonizzazione",
-                action: "Parla al microfono da diverse distanze.",
-                task: "Trova il 'Punto di Prossimità' dove la tua voce acquista corpo senza distorsione.",
-                feedback: "La voce cambia personalità con la distanza.",
-                output: "Unlock: 'Distanza Aurea'."
+                title: "Il Tappeto Volante",
+                action: "Mixa una voce su una base musicale.",
+                task: "Usa il Sidechain Compression per abbassare la musica quando parli.",
+                feedback: "La musica deve sostenere, non combattere.",
+                output: "Unlock: 'Multi-Track Mix'."
             },
-            script: "Avvicinati. Ancora. Senti come il suono diventa caldo? L'effetto di prossimità è il segreto dell'intimità radiofonica. Non urlare al mondo. Sussurra all'orecchio."
+            script: "La musica è il sottotesto emotivo. Deve guidare il cuore senza distrarre la mente."
         },
-        // MODULO 5.3
         {
-            scene: {
-                visual: "L'onda sonora si stabilizza e diventa una linea solida di luce indaco.",
-            },
+            // 5.3 Mastering per Streaming
+            scene: { visual: "Un sigillo finale viene impresso sul file audio. Check verde: 'Spotify Ready'." },
             download: {
-                title: "FLUSSO DI SEGNALE",
-                content: "Dal microfono alla DAW. Ogni cavo, ogni interfaccia è un ponte. Se il ponte è debole, il messaggio cade nel vuoto. Impariamo a costruire ponti indistruttibili."
+                title: "MASTERING PER STREAMING",
+                content: "LUFS, True Peak, Standard broadcast. Come assicurarsi che il tuo podcast suoni forte e chiaro su Spotify come su Apple."
             },
             ritual: {
-                title: "Il Check-Up",
-                action: "Verifica la catena del segnale.",
-                task: "Gain Staging: Imposta il livello di ingresso perfetto (-12dB).",
-                feedback: "Il segnale troppo basso è timido. Troppo alto è arrogante. Cerca l'equilibrio.",
-                output: "Unlock: 'Equilibrio del Gain'."
+                title: "Final Polish",
+                action: "Misura i LUFS del tuo mix.",
+                task: "Portalo a -14 LUFS (Standard) o -16 LUFS (Apple).",
+                feedback: "Sei pronto per la distribuzione globale.",
+                output: "Unlock: 'Export Settings Pro'."
             },
-            script: "Il volume non è potenza. La chiarezza è potenza. Non cercare di sovrastare il rumore. Toglilo. Lascia che la tua voce scorra senza ostacoli."
+            script: "Questo è l'ultimo tocco. La vernice finale. Assicurati che il tuo lavoro rispetti gli standard dell'industria."
         }
     ]
 };

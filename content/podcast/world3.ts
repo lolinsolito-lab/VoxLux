@@ -1,62 +1,59 @@
-export const podcastWorld3Content = {
+import { WorldContent } from "../../services/courses/types";
+
+export const podcastWorld3Content: WorldContent = {
+    // MONDO 3: ARCHITETTURA SONORA
     narrative: {
-        intro: "Il suono non è vibrazione. È architettura della mente. In questo mondo, imparerai a costruire cattedrali invisibili.",
-        outro: "Hai posato la prima pietra. Il tuo tempio sonoro ha ora fondamenta che nessuno può scuotere."
+        intro: "Non registriamo nel vuoto. Registriamo in uno spazio. Impara a piegare l'acustica alla tua volontà.",
+        outro: "Hai costruito il tuo tempio. Ora ogni parola risuonerà con la giusta sacralità."
     },
     modulesContent: [
-        // MODULO 3.1
         {
-            scene: {
-                visual: "Uno spettrogramma dorato fluttua nel vuoto, reagendo al tuo respiro. È 'vivo'."
-            },
+            // 3.1 Trattamento Acustico
+            scene: { visual: "Pannelli geometrici assorbono onde rosse caotiche, restituendo onde blu ordinate." },
             download: {
-                title: "ARCHITETTURA INVISIBILE",
-                content: "Prima di registrare, devi progettare lo spazio acustico. Non stai parlando a un microfono, stai parlando all'orecchio interno del tuo ascoltatore. Qui impariamo a trattare la stanza non come uno studio, ma come un santuario psicoacustico."
+                title: "TRATTAMENTO ACUSTICO",
+                content: "La stanza suona più del microfono. Bass traps, pannelli, diffusione. Come trattare uno spazio senza spendere una fortuna."
             },
             ritual: {
-                title: "Il Silenzio Zero",
-                action: "Ascolta il silenzio della tua stanza.",
-                task: "Identifica 3 rumori di fondo che il tuo cervello ignora ma che il microfono amplifica.",
-                feedback: "L'eliminazione del rumore non è tecnica, è un atto di purezza.",
-                output: "Unlock: 'Purezza del Segnale'."
+                title: "Il Clapping Test",
+                action: "Batti le mani negli angoli della stanza.",
+                task: "Identifica le frequenze che 'rimbalzano' metalliche.",
+                feedback: "Il riverbero incontrollato distrugge l'intelligibilità.",
+                output: "Unlock: 'Mappa Acustica'."
             },
-            script: "Chiudi gli occhi. Cosa senti? Il ronzio del frigo? Il traffico? Quello è il nemico. Il silenzio è la tela su cui dipingeremo. Senza silenzio, non c'è sacralità."
+            script: "Senti quel rimbombo? È il suono che muore male. Dobbiamo catturarlo prima che torni nel microfono."
         },
-        // MODULO 3.2
         {
-            scene: {
-                visual: "Il microfono al centro si illumina. Attorno ad esso ruotano anelli di frequenza."
-            },
+            // 3.2 Il Silenzio Come Canvas
+            scene: { visual: "Un livello d'acqua perfettamente immobile riflette il cielo." },
             download: {
-                title: "LA SCELTA DELL'ARMA",
-                content: "Dinamico o Condensatore? USB o XLR? Non sono scelte tecniche, sono scelte di intimità. Il microfono è l'estensione della tua laringe. Scegliere quello sbagliato è come indossare la pelle di un altro."
+                title: "IL SILENZIO COME CANVAS",
+                content: "Noise floor e rapporto segnale/rumore. Il silenzio digitale assoluto è innaturale. Il 'Room Tone' è la colla."
             },
             ritual: {
-                title: "Sintonizzazione",
-                action: "Parla al microfono da diverse distanze.",
-                task: "Trova il 'Punto di Prossimità' dove la tua voce acquista corpo senza distorsione.",
-                feedback: "La voce cambia personalità con la distanza.",
-                output: "Unlock: 'Distanza Aurea'."
+                title: "Cattura del Fantasma",
+                action: "Registra 30 secondi di 'Room Tone' puro.",
+                task: "Usa questo profilo per la riduzione rumore spettrale.",
+                feedback: "Il silenzio non è vuoto. È pieno di potenziale.",
+                output: "Unlock: 'Profilo Silenzio'."
             },
-            script: "Avvicinati. Ancora. Senti come il suono diventa caldo? L'effetto di prossimità è il segreto dell'intimità radiofonica. Non urlare al mondo. Sussurra all'orecchio."
+            script: "Non cancellare il mondo. Addomesticalo. Il Room Tone è l'impronta digitale del tuo spazio."
         },
-        // MODULO 3.3
         {
-            scene: {
-                visual: "L'onda sonora si stabilizza e diventa una linea solida di luce indaco.",
-            },
+            // 3.3 Reverb Naturale vs Artificiale
+            scene: { visual: "Una cattedrale virtuale si costruisce attorno all'audio." },
             download: {
-                title: "FLUSSO DI SEGNALE",
-                content: "Dal microfono alla DAW. Ogni cavo, ogni interfaccia è un ponte. Se il ponte è debole, il messaggio cade nel vuoto. Impariamo a costruire ponti indistruttibili."
+                title: "REVERB & SPAZIALITÀ",
+                content: "Quando aggiungere spazio artificiale? Creare profondità e ambiente per trasportare l'ascoltatore altrove."
             },
             ritual: {
-                title: "Il Check-Up",
-                action: "Verifica la catena del segnale.",
-                task: "Gain Staging: Imposta il livello di ingresso perfetto (-12dB).",
-                feedback: "Il segnale troppo basso è timido. Troppo alto è arrogante. Cerca l'equilibrio.",
-                output: "Unlock: 'Equilibrio del Gain'."
+                title: "Teletrasporto",
+                action: "Applica un riverbero 'Small Room' e uno 'Large Hall' alla stessa voce.",
+                task: "Senti come cambia l'autorità percepita.",
+                feedback: "Il riverbero è un vestito. Scegli quello adatto all'occasione.",
+                output: "Unlock: 'Signature Reverb'."
             },
-            script: "Il volume non è potenza. La chiarezza è potenza. Non cercare di sovrastare il rumore. Toglilo. Lascia che la tua voce scorra senza ostacoli."
+            script: "Dove siamo? In una biblioteca o in uno stadio? Tu decidi la location nella mente dell'ascoltatore."
         }
     ]
 };

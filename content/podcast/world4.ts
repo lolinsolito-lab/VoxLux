@@ -1,62 +1,59 @@
-export const podcastWorld4Content = {
+import { WorldContent } from "../../services/courses/types";
+
+export const podcastWorld4Content: WorldContent = {
+    // MONDO 4: EDITING STRATEGICO
     narrative: {
-        intro: "Il suono non è vibrazione. È architettura della mente. In questo mondo, imparerai a costruire cattedrali invisibili.",
-        outro: "Hai posato la prima pietra. Il tuo tempio sonoro ha ora fondamenta che nessuno può scuotere."
+        intro: "L'editing non è correzione. È riscrittura. Qui scolpiamo il tempo e il ritmo del pensiero.",
+        outro: "Il superfluo è stato rimosso. Ciò che resta è essenza pura."
     },
     modulesContent: [
-        // MODULO 4.1
         {
-            scene: {
-                visual: "Uno spettrogramma dorato fluttua nel vuoto, reagendo al tuo respiro. È 'vivo'."
-            },
+            // 4.1 Anatomia del Taglio
+            scene: { visual: "Un bisturi laser seziona una forma d'onda, rimuovendo le parti grigie." },
             download: {
-                title: "ARCHITETTURA INVISIBILE",
-                content: "Prima di registrare, devi progettare lo spazio acustico. Non stai parlando a un microfono, stai parlando all'orecchio interno del tuo ascoltatore. Qui impariamo a trattare la stanza non come uno studio, ma come un santuario psicoacustico."
+                title: "ANATOMIA DEL TAGLIO",
+                content: "Cut, Fade, Crossfade. La differenza tra un taglio udibile (errore) e un taglio invisibile (arte). Il respiro come punto di editing."
             },
             ritual: {
-                title: "Il Silenzio Zero",
-                action: "Ascolta il silenzio della tua stanza.",
-                task: "Identifica 3 rumori di fondo che il tuo cervello ignora ma che il microfono amplifica.",
-                feedback: "L'eliminazione del rumore non è tecnica, è un atto di purezza.",
-                output: "Unlock: 'Purezza del Segnale'."
+                title: "Chirurgia Sonora",
+                action: "Prendi una registrazione grezza di 5 min.",
+                task: "Riducila a 3 min senza perdere il senso, solo rimuovendo pause e ripetizioni.",
+                feedback: "Se non si sente il taglio, hai fatto un buon lavoro.",
+                output: "Unlock: 'Workflow Editing'."
             },
-            script: "Chiudi gli occhi. Cosa senti? Il ronzio del frigo? Il traffico? Quello è il nemico. Il silenzio è la tela su cui dipingeremo. Senza silenzio, non c'è sacralità."
+            script: "Rispetta il respiro, ma uccidi l'esitazione. Il tuo ospite deve sembrare la versione più intelligente di se stesso."
         },
-        // MODULO 4.2
         {
-            scene: {
-                visual: "Il microfono al centro si illumina. Attorno ad esso ruotano anelli di frequenza."
-            },
+            // 4.2 Pulizia Chirurgica
+            scene: { visual: "Particelle di polvere (click e pop) vengono aspirate via dall'audio." },
             download: {
-                title: "LA SCELTA DELL'ARMA",
-                content: "Dinamico o Condensatore? USB o XLR? Non sono scelte tecniche, sono scelte di intimità. Il microfono è l'estensione della tua laringe. Scegliere quello sbagliato è come indossare la pelle di un altro."
+                title: "PULIZIA CHIRURGICA",
+                content: "De-click, De-breath, De-ess. Rimuovere i distatori subconsci che affaticano il cervello dell'ascoltatore."
             },
             ritual: {
-                title: "Sintonizzazione",
-                action: "Parla al microfono da diverse distanze.",
-                task: "Trova il 'Punto di Prossimità' dove la tua voce acquista corpo senza distorsione.",
-                feedback: "La voce cambia personalità con la distanza.",
-                output: "Unlock: 'Distanza Aurea'."
+                title: "Detox Audio",
+                action: "Identifica e rimuovi 5 'Lip Smacks' o respiri eccessivi.",
+                task: "Confronta prima e dopo.",
+                feedback: "L'ascoltatore non sa perché, ma ora prova sollievo.",
+                output: "Unlock: 'Audio Pulito'."
             },
-            script: "Avvicinati. Ancora. Senti come il suono diventa caldo? L'effetto di prossimità è il segreto dell'intimità radiofonica. Non urlare al mondo. Sussurra all'orecchio."
+            script: "Ogni 'click' della bocca è un micro-stress per chi ascolta in cuffia. Pulisci il segnale. Rispetta l'orecchio."
         },
-        // MODULO 4.3
         {
-            scene: {
-                visual: "L'onda sonora si stabilizza e diventa una linea solida di luce indaco.",
-            },
+            // 4.3 Compressione & Limiting
+            scene: { visual: "Un blocco di granito viene pressato fino a diventare un diamante." },
             download: {
-                title: "FLUSSO DI SEGNALE",
-                content: "Dal microfono alla DAW. Ogni cavo, ogni interfaccia è un ponte. Se il ponte è debole, il messaggio cade nel vuoto. Impariamo a costruire ponti indistruttibili."
+                title: "DINAMICHE & LOUDNESS",
+                content: "Compressione non vuol dire schiacciare. Vuol dire rendere consistente l'intimità. Portare i sussurri al livello delle urla."
             },
             ritual: {
-                title: "Il Check-Up",
-                action: "Verifica la catena del segnale.",
-                task: "Gain Staging: Imposta il livello di ingresso perfetto (-12dB).",
-                feedback: "Il segnale troppo basso è timido. Troppo alto è arrogante. Cerca l'equilibrio.",
-                output: "Unlock: 'Equilibrio del Gain'."
+                title: "Il Muro del Suono",
+                action: "Applica compressione 3:1.",
+                task: "Nota come la voce diventa 'presente' e 'in faccia'.",
+                feedback: "La compressione è il suono della radio moderna.",
+                output: "Unlock: 'Master Chain Template'."
             },
-            script: "Il volume non è potenza. La chiarezza è potenza. Non cercare di sovrastare il rumore. Toglilo. Lascia che la tua voce scorra senza ostacoli."
+            script: "Vogliamo che ti sentano anche in metropolitana. La dinamica è bella, ma l'intelligibilità è regina."
         }
     ]
 };
