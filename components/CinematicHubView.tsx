@@ -130,8 +130,8 @@ export const CinematicHubView: React.FC<CinematicHubViewProps> = ({ courseId, on
                             playSound('click');
                             // If hovering, go to that specific world. Else go to the first one/current progress.
                             const targetId = hoveredNode !== null
-                                ? course.masterminds[hoveredNode].id
-                                : course.masterminds[0].id;
+                                ? `${course.masterminds[hoveredNode].id}|${hoveredNode}`
+                                : `${course.masterminds[0].id}|0`;
                             onSelectWorld(targetId);
                         }}
                         className={`

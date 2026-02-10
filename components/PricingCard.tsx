@@ -101,6 +101,15 @@ export const PricingCard: React.FC<PricingCardProps> = ({
                 </div>
 
                 <div className="relative z-10 flex flex-col h-full items-center w-full">
+                    {/* Floating Badge */}
+                    {savings && (
+                        <div className="absolute top-0 right-0 transform translate-x-2 -translate-y-2">
+                            <div className={`${isSun ? 'bg-gradient-to-r from-yellow-400 to-yellow-600 border-yellow-200' : 'bg-gradient-to-r from-emerald-400 to-emerald-600 border-emerald-200'} text-black text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider shadow-lg animate-pulse border z-30`}>
+                                {savings}
+                            </div>
+                        </div>
+                    )}
+
                     <div className={`w-20 h-20 rounded-full border ${isSun ? 'border-yellow-500/40' : 'border-stone-600'} flex items-center justify-center bg-black/60 mb-6 ${theme.iconBg} group-hover:scale-110 transition-all duration-500 shadow-[0_0_30px_rgba(250,204,21,0.1)] ${isSun ? 'group-hover:shadow-[0_0_60px_rgba(250,204,21,0.6)]' : 'group-hover:shadow-[0_0_50px_rgba(255,255,255,0.6)]'} relative overflow-hidden`}>
                         <div className={`absolute inset-0 ${isSun ? 'bg-yellow-400/10' : 'bg-white/0 group-hover:bg-white/20'} blur-md animate-pulse`}></div>
                         <Icon className={`w-8 h-8 ${theme.iconColor} ${theme.iconHover} transition-colors relative z-10 ${isSun ? 'animate-[spin_8s_linear_infinite]' : 'animate-[pulse_4s_infinite]'}`} />

@@ -179,7 +179,16 @@ export const StorytellingWorldView: React.FC<StorytellingWorldViewProps> = ({ wo
     const dual = content.dualModules;
 
     // Helper to get current content object generically for Media/Downloads
-    const activeContent: any = stage === 'INTRO' ? null : stage === 'SUN' ? dual.sunContent : stage === 'MOON' ? dual.moonContent : dual.goldenThread;
+    let activeContent: any = null;
+    if (stage === 'SUN') activeContent = dual.sunContent;
+    else if (stage === 'MOON') activeContent = dual.moonContent;
+    else if (stage === 'THREAD') activeContent = dual.goldenThread;
+    else if (typeof stage === 'string' && stage.startsWith('EXTRA_')) {
+        const idx = parseInt(stage.split('_')[1]);
+        if (content.extraModules && content.extraModules[idx]) {
+            activeContent = content.extraModules[idx];
+        }
+    }
 
     // AUDIO & TRANSITIONS
     useEffect(() => {
@@ -213,7 +222,22 @@ export const StorytellingWorldView: React.FC<StorytellingWorldViewProps> = ({ wo
         playSound('click');
         if (stage === 'SUN') setStage('MOON');
         else if (stage === 'MOON') setStage('THREAD');
-        else onComplete(); // End of world
+        else if (stage === 'THREAD') {
+            if (content.extraModules && content.extraModules.length > 0) {
+                setStage('EXTRA_0' as any);
+            } else {
+                onComplete();
+            }
+        }
+        else if (typeof stage === 'string' && stage.startsWith('EXTRA_')) {
+            const currentExtraIndex = parseInt(stage.split('_')[1]);
+            if (content.extraModules && currentExtraIndex < content.extraModules.length - 1) {
+                setStage(`EXTRA_${currentExtraIndex + 1}` as any);
+            } else {
+                onComplete();
+            }
+        }
+        else onComplete();
     };
 
     // THEME COLORS based on Stage 
@@ -373,6 +397,24 @@ export const StorytellingWorldView: React.FC<StorytellingWorldViewProps> = ({ wo
                                         <p className="text-[10px] text-white/60 uppercase tracking-widest mb-2 font-medium">Output</p>
                                         <p className="text-lg md:text-xl text-white font-mono tracking-tight">{dual.goldenThread.output}</p>
                                     </div>
+                                </>
+                            )}
+
+                            {/* EXTRA MODULES RENDERING */}
+                            {typeof stage === 'string' && stage.startsWith('EXTRA_') && activeContent && (
+                                <>
+                                    <h3 className="text-emerald-400 uppercase tracking-[0.2em] mb-3 text-xs font-bold drop-shadow-md">
+                                        Espansione: Modulo {parseInt(stage.split('_')[1]) + 4}
+                                    </h3>
+                                    <h1 className="text-2xl md:text-3xl font-display font-medium text-white mb-4 tracking-wide">
+                                        {activeContent.title}
+                                    </h1>
+                                    <div className="w-12 h-[1px] bg-emerald-500/30 mx-auto mb-6" />
+
+                                    <div
+                                        className="text-sm md:text-base text-gray-300 font-light leading-relaxed mb-6 prose prose-invert max-w-none"
+                                        dangerouslySetInnerHTML={{ __html: activeContent.content }}
+                                    />
                                 </>
                             )}
                         </div>

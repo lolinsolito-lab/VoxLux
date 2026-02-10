@@ -167,7 +167,7 @@ export const DashboardPage: React.FC = () => {
     };
 
     const handleBuyCourse = async (courseId: CourseId) => {
-        const checkout_url = await createCheckoutSession(courseId, user!);
+        const checkout_url = await createCheckoutSession(courseId, user?.email);
         if (checkout_url) {
             window.location.href = checkout_url;
         }
@@ -212,26 +212,43 @@ export const DashboardPage: React.FC = () => {
     };
 
     // Fixed Course Definition
-    const ALL_COURSES = [
-        {
-            id: 'matrice-1',
-            title: 'Storytelling Strategy Master',
-            icon: '✨',
-            route: '/course/matrice-1',
-            priceId: STRIPE_PRODUCTS['matrice-1'].priceId,
-            price: STRIPE_PRODUCTS['matrice-1'].amount,
-            description: STRIPE_PRODUCTS['matrice-1'].description
-        },
-        {
-            id: 'matrice-2',
-            title: 'Vox Podcast Master',
-            icon: '🎙️',
-            route: '/course/matrice-2',
-            priceId: STRIPE_PRODUCTS['matrice-2'].priceId,
-            price: STRIPE_PRODUCTS['matrice-2'].amount,
-            description: STRIPE_PRODUCTS['matrice-2'].description
-        }
-    ];
+    const ALL_COURSES: {
+        id: CourseId;
+        title: string;
+        icon: string;
+        route: string;
+        priceId: string;
+        price: number;
+        description: string;
+    }[] = [
+            {
+                id: 'matrice-1',
+                title: 'Storytelling Strategy Master',
+                icon: '✨',
+                route: '/course/matrice-1',
+                priceId: STRIPE_PRODUCTS['matrice-1'].priceId,
+                price: STRIPE_PRODUCTS['matrice-1'].amount,
+                description: STRIPE_PRODUCTS['matrice-1'].description
+            },
+            {
+                id: 'matrice-2',
+                title: 'Vox Podcast Master',
+                icon: '🎙️',
+                route: '/course/matrice-2',
+                priceId: STRIPE_PRODUCTS['matrice-2'].priceId,
+                price: STRIPE_PRODUCTS['matrice-2'].amount,
+                description: STRIPE_PRODUCTS['matrice-2'].description
+            },
+            {
+                id: 'ascension-box',
+                title: 'ASCENSION: The Singularity', // As per screenshot
+                icon: '💠',
+                route: '/ascension', // Special route for the box
+                priceId: STRIPE_PRODUCTS['ascension-box'].priceId,
+                price: STRIPE_PRODUCTS['ascension-box'].amount,
+                description: STRIPE_PRODUCTS['ascension-box'].description
+            }
+        ];
 
     // Calculate Owned Course IDs
     const ownedCourseIds = new Set(purchases.map(p => p.course_id));

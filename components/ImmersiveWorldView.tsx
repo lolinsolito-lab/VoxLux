@@ -14,6 +14,7 @@ import { useAuth } from '../contexts/AuthContext';
 
 // --- CONTENUTI STORYTELLING (Nuovo Path) ---
 import { world1Content } from '../content/story/world1';
+import { supabase } from '../services/supabase';
 import { world2 } from '../content/story/world2';
 import { world3 } from '../content/story/world3';
 import { world4 } from '../content/story/world4';
@@ -72,6 +73,7 @@ export const ImmersiveWorldView: React.FC<ImmersiveWorldViewProps> = ({
     // STATE
     const [currentModuleIdx, setCurrentModuleIdx] = useState(0);
     const [stage, setStage] = useState<Stage>('WORLD_INTRO');
+    const [quizModuleId, setQuizModuleId] = useState<string | null>(null);
 
     // AUTH & SYSTEM
     const { user } = useAuth();
@@ -106,26 +108,48 @@ export const ImmersiveWorldView: React.FC<ImmersiveWorldViewProps> = ({
         activeContent = podMap[worldNum];
     }
 
+    // --- MERGE DB OVERRIDES ---
+    // Find the matching module from DB based on worldNum (1-based index)
+    // DB modules likely have order_index 0-9.
+    // So worldNum 1 matches order_index 0.
+    const dbModule = mastermind.modules ? mastermind.modules.find(m => m.order_index === worldNum - 1) : null;
+
+    // FETCH QUIZ AVAILABILITY (Must be top level)
+    useEffect(() => {
+        const checkQuiz = async () => {
+            if (dbModule?.id) {
+                const { data } = await supabase
+                    .from('quizzes')
+                    .select('id')
+                    .eq('module_id', dbModule.id)
+                    .single();
+                if (data) setQuizModuleId(dbModule.id);
+                else setQuizModuleId(null);
+            } else {
+                setQuizModuleId(null);
+            }
+        };
+        checkQuiz();
+    }, [dbModule]);
+
+    // Import helper (Dynamic require is meh, but keeping structure)
+    const { mergeWorldContent } = require('../services/contentMerger');
+
+    if (dbModule) {
+        // console.log(`[ImmersiveWorldView] Merging DB content for World ${worldNum}`, dbModule);
+        activeContent = mergeWorldContent(activeContent, dbModule);
+    }
+
     // console.log('[ImmersiveWorldView] Debug:', { themeId: theme.id, worldNum, activeContent: !!activeContent });
 
     // --- STAGE OVERRIDES (Quiz & Diploma) ---
-    // Moved up so they take precedence over the World View logic once triggered.
 
     // RENDER QUIZ
-    if (stage === 'QUIZ_ACTIVE') {
-        const isPodcast = courseId === 'matrice-2';
-        // Construct Quiz Object conforming to CourseQuiz interface
-        const quizData = {
-            courseId: courseId || 'matrice-1',
-            passingScore: 70,
-            questions: (isPodcast ? podcastQuiz : world10Quiz) || []
-        };
-
+    if (stage === 'QUIZ_ACTIVE' && quizModuleId) {
         return (
             <div className="absolute inset-0 z-50 bg-black">
                 <QuizView
-                    quiz={quizData}
-                    courseId={courseId || 'matrice-1'}
+                    moduleId={quizModuleId}
                     onComplete={(passed) => passed ? setStage('FINAL_RITUAL') : onClose()}
                     onClose={onClose}
                 />
@@ -146,8 +170,8 @@ export const ImmersiveWorldView: React.FC<ImmersiveWorldViewProps> = ({
                 content={activeContent}
                 onClose={onClose}
                 onComplete={() => {
-                    // LINK TO END GAME QUIZ (WORLD 10 ONLY)
-                    if (worldNum === 10) {
+                    // LINK TO END GAME QUIZ (If available for this module)
+                    if (quizModuleId) {
                         setStage('QUIZ_ACTIVE');
                     } else {
                         onCompleteWorld();
@@ -164,8 +188,8 @@ export const ImmersiveWorldView: React.FC<ImmersiveWorldViewProps> = ({
                 content={activeContent}
                 onClose={onClose}
                 onComplete={() => {
-                    // LINK TO END GAME QUIZ (WORLD 10 ONLY)
-                    if (worldNum === 10) {
+                    // LINK TO END GAME QUIZ (If available for this module)
+                    if (quizModuleId) {
                         setStage('QUIZ_ACTIVE');
                     } else {
                         onCompleteWorld();
@@ -174,6 +198,7 @@ export const ImmersiveWorldView: React.FC<ImmersiveWorldViewProps> = ({
             />
         );
     }
+
 
 
     /* ========================================= */

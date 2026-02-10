@@ -6,6 +6,11 @@ export interface Module {
     output: string;
     type: 'audio' | 'video' | 'text';
     duration: string;
+    // New Schema Fields (Optional for backward compatibility)
+    order_index?: number;
+    video_url?: string;
+    resources?: any;
+    lessons?: any[]; // For when Module represents a World (recursive/mixed usage)
 }
 
 export interface Mastermind {
@@ -16,18 +21,36 @@ export interface Mastermind {
     modules: Module[];
 }
 
-export interface QuizQuestion {
+// DB-aligned Quiz Structure
+export interface QuestionOption {
     id: string;
-    question: string;
-    options: string[];
-    correctAnswer: number; // index 0-3
-    explanation?: string;
+    text: string;
+    isCorrect: boolean;
 }
 
+export interface QuizQuestion {
+    id: string;
+    text: string;
+    options: QuestionOption[];
+    explanation?: string; // Shown after answer
+    points: number;
+}
+
+export interface Quiz {
+    id: string;
+    module_id: string;
+    title: string;
+    description?: string;
+    questions: QuizQuestion[];
+    passing_score: number; // Percentage
+    created_at?: string;
+}
+
+// Legacy support if needed, but prefer strict typing
 export interface CourseQuiz {
     courseId: string;
-    passingScore: number; // percentage (e.g., 90)
-    questions: QuizQuestion[];
+    passingScore: number;
+    questions: any[];
 }
 
 export interface DiplomaSpec {
@@ -52,8 +75,15 @@ export interface Course {
     title: string;
     description: string;
     masterminds: Mastermind[];
-    quiz?: CourseQuiz;
-    diploma?: DiplomaSpec;
+    quiz?: CourseQuiz; // Legacy
+    // Valid DB Fields
+    diploma_requirements?: {
+        min_score_percent: number;
+        required_quizzes: 'all' | string[];
+        required_lessons: 'all' | string[];
+        diploma_template_id: string;
+    };
+    diploma?: DiplomaSpec; // Frontend visual spec
 }
 
 // STORYTELLING WORLD CONTENT
@@ -61,7 +91,7 @@ export interface Course {
 export interface ContentResource {
     label: string;
     url: string;
-    type: 'pdf' | 'image' | 'link';
+    type: 'pdf' | 'image' | 'link' | string;
 }
 
 
@@ -115,4 +145,11 @@ export interface WorldContent {
         outro: string;
     };
     dualModules: DualModuleContent;
+    // New: Support for unlimited additional lessons (Lesson 4+)
+    extraModules?: {
+        title: string;
+        content: string; // HTML/RichText
+        videoUrl?: string;
+        downloads?: ContentResource[];
+    }[];
 }

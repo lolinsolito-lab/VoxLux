@@ -66,8 +66,32 @@ export const CourseView: React.FC<CourseViewProps> = ({ courseId, onBack, onNavi
     // 4. Other Courses -> Standard List View
 
     if (activeImmersiveWorldId && (course.id === 'matrice-1' || course.id === 'matrice-2')) {
-        const worldIndex = course.masterminds.findIndex(m => m.id === activeImmersiveWorldId);
+        let targetId = activeImmersiveWorldId;
+        let forcedIndex = -1;
+
+        // PARSE COMPOSITE ID (For Matrice 2 DB Compatibility)
+        if (targetId.includes('|')) {
+            const parts = targetId.split('|');
+            targetId = parts[0];
+            forcedIndex = parseInt(parts[1]);
+        }
+
+        let worldIndex = course.masterminds.findIndex(m => m.id === targetId);
+
+        // Fallback to forced index if normal lookup fails (Static vs DB Mismatch)
+        if (worldIndex === -1 && forcedIndex !== -1) {
+            worldIndex = forcedIndex;
+        }
+
         const worldData = course.masterminds[worldIndex];
+
+        // Safety guard
+        if (!worldData) {
+            console.error("World Data not found for", activeImmersiveWorldId);
+            setActiveImmersiveWorldId(null);
+            return null;
+        }
+
         const theme = getThemeForMastermind(worldIndex, course.id); // Pass course.id
 
         return (

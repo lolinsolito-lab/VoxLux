@@ -206,7 +206,7 @@ export const PodcastCinematicHub: React.FC<PodcastCinematicHubProps> = ({ course
                                             onClick={(e) => {
                                                 e.stopPropagation();
                                                 playSound('click');
-                                                onSelectWorld(mastermind.id);
+                                                onSelectWorld(`${mastermind.id}|${nodeIndex}`);
                                             }}
                                         >
                                             {/* Counter-Rotating Container */}
@@ -327,7 +327,7 @@ export const PodcastCinematicHub: React.FC<PodcastCinematicHubProps> = ({ course
                             <button
                                 onClick={() => {
                                     playSound('click');
-                                    onSelectWorld(course.masterminds[hoveredNode].id);
+                                    onSelectWorld(`${course.masterminds[hoveredNode].id}|${hoveredNode}`);
                                 }}
                                 className="md:hidden group relative w-auto px-8 py-3 bg-lux-gold text-black font-bold uppercase tracking-[0.2em] text-xs hover:bg-white transition-all duration-300 shadow-[0_0_20px_rgba(251,191,36,0.3)] hover:shadow-[0_0_40px_rgba(255,255,255,0.6)] rounded-full flex items-center justify-center gap-3 mx-auto"
                             >
@@ -359,7 +359,7 @@ export const PodcastCinematicHub: React.FC<PodcastCinematicHubProps> = ({ course
                             <button
                                 onClick={() => {
                                     playSound('click');
-                                    onSelectWorld(course.masterminds[0].id);
+                                    onSelectWorld(`${course.masterminds[0].id}|0`);
                                 }}
                                 className="group relative w-auto px-8 py-3 bg-lux-gold text-black font-bold uppercase tracking-[0.2em] text-xs md:text-sm hover:bg-white transition-all duration-300 shadow-[0_0_20px_rgba(251,191,36,0.3)] hover:shadow-[0_0_40px_rgba(255,255,255,0.6)] rounded-full flex items-center gap-3"
                             >

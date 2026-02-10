@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { supabase } from '../../services/supabase';
-import { Search, Shield, Ban, Unlock, Users, Mail, Calendar, TrendingUp, Crown, Zap } from 'lucide-react';
+import { Search, Shield, Ban, Unlock, Users, Mail, Calendar, TrendingUp, Crown, Zap, Award } from 'lucide-react';
 
 interface UserProfile {
     id: string;
@@ -19,6 +19,7 @@ export const UserManagement: React.FC = () => {
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
     const [filterRole, setFilterRole] = useState('all');
+    const [quizStats, setQuizStats] = useState<Record<string, number>>({});
 
     useEffect(() => {
         fetchUsers();
@@ -39,13 +40,26 @@ export const UserManagement: React.FC = () => {
     const fetchUsers = async () => {
         try {
             setLoading(true);
-            const { data, error } = await supabase
+            const { data: profiles, error } = await supabase
                 .from('profiles')
                 .select('*')
                 .order('created_at', { ascending: false });
 
             if (error) throw error;
-            setUsers(data || []);
+            setUsers(profiles || []);
+
+            // Fetch Quiz Stats
+            const { data: results } = await supabase
+                .from('quiz_results')
+                .select('user_id, passed')
+                .eq('passed', true);
+
+            const stats: Record<string, number> = {};
+            results?.forEach(r => {
+                stats[r.user_id] = (stats[r.user_id] || 0) + 1;
+            });
+            setQuizStats(stats);
+
         } catch (error) {
             console.error('Error fetching users:', error);
         } finally {
@@ -286,6 +300,13 @@ export const UserManagement: React.FC = () => {
                                         <span className="text-xs text-gray-400">XP</span>
                                     </div>
                                     <p className="text-xl font-bold text-white">{(user.xp ?? 0).toLocaleString()}</p>
+                                </div>
+                                <div className="bg-white/5 rounded-xl p-3 col-span-2 flex items-center justify-between">
+                                    <div className="flex items-center gap-2">
+                                        <Award size={14} className="text-purple-400" />
+                                        <span className="text-xs text-gray-400">Diplomi / Quiz</span>
+                                    </div>
+                                    <p className="text-xl font-bold text-white">{quizStats[user.id] || 0}</p>
                                 </div>
                             </div>
 

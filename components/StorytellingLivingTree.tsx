@@ -253,7 +253,7 @@ export const StorytellingLivingTree: React.FC<StorytellingLivingTreeProps> = ({
                             }}
                             onClick={() => {
                                 playSound('click');
-                                onSelectWorld(mm.id);
+                                onSelectWorld(`${mm.id}|${index}`);
                             }}
                         >
                             {/* A. COSMIC ORBITS */}

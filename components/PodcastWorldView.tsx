@@ -376,8 +376,13 @@ export const PodcastWorldView: React.FC<PodcastWorldViewProps> = ({ worldId, con
 
     const theme = PODCAST_THEMES[worldId] || PODCAST_THEMES[1];
 
-    const activeContent: any = orbitIndex === 0 ? dual.sunContent : orbitIndex === 1 ? dual.moonContent : dual.goldenThread;
+    const activeContent: any = orbitIndex === 0 ? dual.sunContent :
+        orbitIndex === 1 ? dual.moonContent :
+            orbitIndex === 2 ? dual.goldenThread :
+                (content.extraModules && content.extraModules[orbitIndex - 3]) || null;
+
     const activeType = orbitIndex === 0 ? 'sun' : orbitIndex === 1 ? 'moon' : 'signal';
+    // Dynamically expand orbit angles if needed, or cycle them
     const ORBIT_ANGLES = [0, (2 * Math.PI) / 3, (4 * Math.PI) / 3];
 
     // INTRO LOGIC
@@ -396,7 +401,8 @@ export const PodcastWorldView: React.FC<PodcastWorldViewProps> = ({ worldId, con
     }, [orbitIndex, stage, playSound]);
 
     const handleNext = () => {
-        if (orbitIndex < 2) setOrbitIndex(prev => prev + 1);
+        const maxIndex = 2 + (content.extraModules?.length || 0);
+        if (orbitIndex < maxIndex) setOrbitIndex(prev => prev + 1);
         else onComplete();
     };
 
@@ -460,6 +466,25 @@ export const PodcastWorldView: React.FC<PodcastWorldViewProps> = ({ worldId, con
                                 label="Fase 3: Output"
                                 onClick={() => setOrbitIndex(2)}
                             />
+
+                            {/* EXTRA PLANETS (Dynamic) */}
+                            {content.extraModules && content.extraModules.map((mod, idx) => {
+                                const realIdx = idx + 3;
+                                // Calculate angle dynamically if needed, or just offset
+                                const angle = ORBIT_ANGLES[2] + ((idx + 1) * (Math.PI / 2));
+                                // Simple incremental positioning for now
+
+                                return (
+                                    <PlanetaryBody
+                                        key={`extra-${idx}`}
+                                        position={[Math.sin(angle) * theme.orbitRadius, 0, Math.cos(angle) * theme.orbitRadius]}
+                                        type="signal" // Re-use signal or new type
+                                        active={orbitIndex === realIdx}
+                                        label={`Extra: ${idx + 1}`}
+                                        onClick={() => setOrbitIndex(realIdx)}
+                                    />
+                                );
+                            })}
 
                             <Sparkles count={200} scale={15} size={2} speed={0.2} opacity={0.3} color={theme.secondaryColor} />
 
