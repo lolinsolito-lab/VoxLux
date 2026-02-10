@@ -36,7 +36,7 @@ export const useCourseData = (courseId: string) => {
                     .from('course_modules')
                     .select('*')
                     .eq('course_id', courseId)
-                    .order('order_index', { ascending: true });
+                    .order('module_order', { ascending: true });
 
                 if (modulesError) {
                     console.error('Error fetching modules:', modulesError);
