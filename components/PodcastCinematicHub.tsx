@@ -182,8 +182,12 @@ export const PodcastCinematicHub: React.FC<PodcastCinematicHubProps> = ({ course
                                 {orbit.nodes.map((nodeIndex) => {
                                     const theme = PODCAST_THEMES[nodeIndex % PODCAST_THEMES.length];
                                     const mastermind = course.masterminds[nodeIndex];
+
+                                    // GUARD: If the course has fewer masterminds than the visual system expects (10), skip rendering this node.
+                                    if (!mastermind) return null;
+
                                     const isHovered = hoveredNode === nodeIndex;
-                                    const isComplete = isWorldComplete(mastermind);
+                                    const isComplete = isWorldComplete(mastermind); // Safe now
 
                                     return (
                                         <div
