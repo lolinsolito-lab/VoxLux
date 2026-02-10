@@ -35,7 +35,7 @@ export const useCourseData = (courseId: string) => {
                 const { data: dbModules, error: modulesError } = await supabase
                     .from('course_modules')
                     .select('*')
-                    .eq('course_id', courseId)
+                    .eq('course_id', dbCourse.id)
                     .order('module_order', { ascending: true });
 
                 if (modulesError) {
