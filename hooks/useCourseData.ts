@@ -31,10 +31,9 @@ export const useCourseData = (courseId: string) => {
                     throw new Error('Fallback to legacy');
                 }
 
-                // 2. Fetch Modules (Dual Strategy: New Schema first, then Legacy)
+                // 2. Fetch Modules — Priority: New Schema → Legacy Fallback
 
-                // Strategy A: New Schema (modules + lessons)
-                // Used by Matrice-2 (Podcast) and future courses
+                // Try NEW schema first (modules + lessons)
                 const { data: newModules, error: newModulesError } = await supabase
                     .from('modules')
                     .select(`
@@ -52,37 +51,30 @@ export const useCourseData = (courseId: string) => {
                             resources
                         )
                     `)
-                    .eq('course_id', courseId) // Note: course_id in 'modules' is text slug, not UUID
+                    .eq('course_id', courseId)
                     .order('order_index', { ascending: true });
 
-                let newMasterminds: Mastermind[] = [];
-                let legacyMasterminds: Mastermind[] = [];
+                let masterminds: Mastermind[] = [];
 
                 if (!newModulesError && newModules && newModules.length > 0) {
-                    // MAP NEW SCHEMA TO MASTERMIND
-                    newMasterminds = newModules.map(m => ({
+                    // ✅ NEW SCHEMA — Used by Podcast (matrice-2) and all future courses
+                    masterminds = newModules.map(m => ({
                         id: m.id,
                         title: m.title,
-                        subtitle: 'Modulo', // dedicated subtitle field missing in modules table, strictly speaking
+                        subtitle: 'Modulo',
                         description: m.description,
                         modules: (m.lessons || []).sort((a: any, b: any) => a.order_index - b.order_index).map((l: any) => ({
                             id: l.id,
                             title: l.title,
                             description: l.description,
-                            type: l.video_provider === 'audio' ? 'audio' : 'video', // heuristic
+                            type: l.video_provider === 'audio' ? 'audio' : 'video',
                             duration: l.duration_minutes ? `${l.duration_minutes}:00` : '15:00',
                             output: '',
                             resources: l.resources
                         }))
                     }));
-                }
-
-                // Strategy B: Legacy Schema (course_modules)
-                // Used by Matrice-1 (Storytelling)
-                // Strategy B: Legacy Schema (course_modules)
-                // Used by Matrice-1 (Storytelling)
-                // Always check legacy to support hybrid courses (like Matrice-2)
-                {
+                } else {
+                    // ⚠️ LEGACY FALLBACK — Only for Storytelling (matrice-1) until migrated
                     const { data: dbModules, error: modulesError } = await supabase
                         .from('course_modules')
                         .select('*')
@@ -95,12 +87,12 @@ export const useCourseData = (courseId: string) => {
 
                     const modules = dbModules || [];
                     const modulesPerWorld = 3;
-                    const totalWorlds = 10;
+                    const totalWorlds = Math.ceil(modules.length / modulesPerWorld);
 
                     for (let i = 0; i < totalWorlds; i++) {
                         const worldModules = modules.slice(i * modulesPerWorld, (i + 1) * modulesPerWorld);
                         if (worldModules.length > 0) {
-                            legacyMasterminds.push({
+                            masterminds.push({
                                 id: `world-${i + 1}`,
                                 title: `Mondo ${i + 1}`,
                                 subtitle: 'Modulo',
@@ -116,9 +108,6 @@ export const useCourseData = (courseId: string) => {
                         }
                     }
                 }
-
-                // MERGE: (Legacy 1-6) + (New 7-10)
-                const masterminds = [...legacyMasterminds, ...newMasterminds];
 
                 // If DB result is too empty (e.g. no modules anywhere), fallback
                 if (masterminds.length === 0) {
