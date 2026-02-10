@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, Pencil, Trash2, Book, Users, CheckCircle, Layout, Eye, Lock, Unlock, TrendingUp, PlayCircle, RefreshCw } from 'lucide-react';
+import { Plus, Pencil, Trash2, Book, Users, CheckCircle, Layout, Eye, Lock, Unlock, TrendingUp, PlayCircle, RefreshCw, Award, Settings } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { supabase } from '../../services/supabase';
 import { ModuleBuilder } from '../../components/admin/ModuleBuilder';
@@ -21,6 +21,12 @@ interface Course {
     created_at: string;
     updated_at: string;
     module_count?: number;
+    diploma_requirements?: {
+        min_score_percent: number;
+        required_quizzes: 'all' | string[];
+        required_lessons: 'all' | string[];
+        diploma_template_id: string;
+    };
 }
 
 interface CourseModule {
@@ -40,6 +46,7 @@ export const AdminCourses: React.FC = () => {
     const [showCreateModal, setShowCreateModal] = useState(false);
     const [editingCourse, setEditingCourse] = useState<Course | null>(null);
     const [showModuleBuilder, setShowModuleBuilder] = useState(false);
+    const [showDiplomaModal, setShowDiplomaModal] = useState(false);
     const [selectedCourseId, setSelectedCourseId] = useState<string | null>(null);
 
     useEffect(() => {
@@ -59,7 +66,18 @@ export const AdminCourses: React.FC = () => {
                 `)
                 .order('display_order', { ascending: true });
 
-            if (error) throw error;
+            if (error) {
+                console.error('Supabase error fetching courses:', error);
+                // Fallback if relation fails: fetch courses without count
+                const { data: fallbackData, error: fallbackError } = await supabase
+                    .from('courses')
+                    .select('*')
+                    .order('display_order', { ascending: true });
+
+                if (fallbackError) throw fallbackError;
+                setCourses(fallbackData || []);
+                return;
+            }
 
             // Transform data to include module count
             const coursesWithCount = coursesData?.map(course => ({
@@ -302,47 +320,46 @@ export const AdminCourses: React.FC = () => {
                                     </div>
 
                                     {/* Actions */}
-                                    <div className="flex gap-2 mt-4 pt-4 border-t border-white/10">
+                                    <div className="grid grid-cols-2 gap-2 mt-4 pt-4 border-t border-white/10">
                                         <button
                                             onClick={() => {
                                                 setSelectedCourseId(course.id);
                                                 setShowModuleBuilder(true);
                                             }}
-                                            className="flex-1 py-2 bg-purple-500/10 hover:bg-purple-500/20 border border-purple-500/20 rounded-lg text-sm font-medium text-purple-400 transition-colors flex items-center justify-center gap-2"
+                                            className="col-span-2 py-3 bg-gradient-to-r from-purple-600/20 to-pink-600/20 hover:from-purple-600/30 hover:to-pink-600/30 border border-purple-500/30 rounded-lg text-sm font-bold text-white transition-all flex items-center justify-center gap-2 group-hover:shadow-lg"
                                         >
-                                            <Layout size={16} />
-                                            Gestisci Moduli
+                                            <Layout size={16} className="text-purple-400" />
+                                            Gestisci Contenuti
                                         </button>
+
                                         <button
                                             onClick={() => handleToggleStatus(course.id, course.status)}
-                                            className={`flex-1 py-2 rounded-lg font-semibold text-sm transition-all duration-300 ${course.status === 'published'
+                                            className={`py-2 rounded-lg font-semibold text-xs transition-all duration-300 flex items-center justify-center gap-1 ${course.status === 'published'
                                                 ? 'bg-green-600/20 border border-green-500/30 text-green-400 hover:bg-green-600/30'
                                                 : 'bg-white/5 border border-white/10 text-gray-400 hover:bg-white/10'
                                                 }`}
                                         >
-                                            {course.status === 'published' ? (
-                                                <>
-                                                    <Unlock size={14} className="inline mr-1" />
-                                                    Pubblicato
-                                                </>
-                                            ) : (
-                                                <>
-                                                    <Lock size={14} className="inline mr-1" />
-                                                    Bozza
-                                                </>
-                                            )}
+                                            {course.status === 'published' ? <Unlock size={14} /> : <Lock size={14} />}
+                                            {course.status === 'published' ? 'Pubblicato' : 'Bozza'}
                                         </button>
+
                                         <button
                                             onClick={() => { setEditingCourse(course); setShowCreateModal(true); }}
-                                            className="px-4 py-2 bg-white/5 border border-white/10 text-gray-300 rounded-lg hover:bg-white/10 transition-all duration-300"
+                                            className="py-2 bg-white/5 border border-white/10 text-gray-300 rounded-lg hover:bg-white/10 transition-all duration-300 flex items-center justify-center gap-1 text-xs font-semibold"
                                         >
-                                            <Pencil size={16} />
+                                            <Settings size={14} />
+                                            Dettagli
                                         </button>
+
                                         <button
-                                            onClick={() => handleDeleteCourse(course.id)}
-                                            className="px-4 py-2 bg-red-600/20 border border-red-500/30 text-red-400 rounded-lg hover:bg-red-600/30 transition-all duration-300"
+                                            onClick={() => { setEditingCourse(course); setShowDiplomaModal(true); }}
+                                            className={`col-span-2 py-2 border rounded-lg hover:bg-white/10 transition-all duration-300 flex items-center justify-center gap-2 text-xs font-bold ${course.diploma_requirements
+                                                    ? 'bg-amber-500/10 border-amber-500/30 text-amber-400'
+                                                    : 'bg-white/5 border-white/10 text-gray-500'
+                                                }`}
                                         >
-                                            <Trash2 size={16} />
+                                            <Award size={14} />
+                                            {course.diploma_requirements ? 'Diploma Attivo' : 'Configura Diploma'}
                                         </button>
                                     </div>
                                 </motion.div>
@@ -373,8 +390,131 @@ export const AdminCourses: React.FC = () => {
                         }}
                     />
                 )}
+                {showDiplomaModal && editingCourse && (
+                    <DiplomaSettingsModal
+                        course={editingCourse}
+                        onClose={() => setShowDiplomaModal(false)}
+                        onSave={() => {
+                            setShowDiplomaModal(false);
+                            fetchCourses();
+                        }}
+                    />
+                )}
             </AnimatePresence>
         </div>
+    );
+};
+
+// Diploma Settings Modal
+const DiplomaSettingsModal = ({
+    course,
+    onClose,
+    onSave
+}: {
+    course: Course;
+    onClose: () => void;
+    onSave: () => void;
+}) => {
+    const [form, setForm] = useState({
+        min_score_percent: course.diploma_requirements?.min_score_percent || 100,
+        required_quizzes: course.diploma_requirements?.required_quizzes || 'all',
+        required_lessons: course.diploma_requirements?.required_lessons || 'all',
+        diploma_template_id: course.diploma_requirements?.diploma_template_id || 'diploma_matrice_1_v1'
+    });
+    const [saving, setSaving] = useState(false);
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setSaving(true);
+        try {
+            const { error } = await supabase
+                .from('courses')
+                .update({ diploma_requirements: form })
+                .eq('id', course.id);
+
+            if (error) throw error;
+            onSave();
+        } catch (error) {
+            console.error('Error saving diploma settings:', error);
+            alert('Errore nel salvataggio');
+        } finally {
+            setSaving(false);
+        }
+    };
+
+    return (
+        <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/90 backdrop-blur-sm flex items-center justify-center z-[9999] p-4"
+            onClick={onClose}
+        >
+            <motion.div
+                initial={{ scale: 0.9, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.9, opacity: 0 }}
+                className="bg-zinc-900 border border-amber-500/30 rounded-2xl p-8 w-full max-w-lg shadow-2xl shadow-amber-900/20"
+                onClick={(e) => e.stopPropagation()}
+            >
+                <div className="flex justify-between items-center mb-6">
+                    <h2 className="text-2xl font-bold text-white flex items-center gap-2">
+                        <Award className="text-amber-500" />
+                        Configurazione Diploma
+                    </h2>
+                    <button onClick={onClose} className="text-gray-500 hover:text-white"><Settings size={20} /></button>
+                </div>
+
+                <form onSubmit={handleSubmit} className="space-y-6">
+                    <div>
+                        <label className="block text-sm font-semibold text-gray-400 mb-2">Punteggio Minimo (%)</label>
+                        <input
+                            type="number"
+                            value={form.min_score_percent}
+                            onChange={e => setForm(f => ({ ...f, min_score_percent: parseInt(e.target.value) }))}
+                            className="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-3 text-white text-lg focus:border-amber-500 focus:outline-none"
+                            min="0"
+                            max="100"
+                        />
+                    </div>
+
+                    <div>
+                        <label className="block text-sm font-semibold text-gray-400 mb-2">Template Diploma</label>
+                        <select
+                            value={form.diploma_template_id}
+                            onChange={e => setForm(f => ({ ...f, diploma_template_id: e.target.value }))}
+                            className="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-amber-500 focus:outline-none"
+                        >
+                            <option value="diploma_matrice_1_v1">Matrice 1 (Storytelling)</option>
+                            <option value="diploma_matrice_2_v1">Matrice 2 (Podcast)</option>
+                            <option value="diploma_ascension_v1">Ascension Box (Gold)</option>
+                        </select>
+                    </div>
+
+                    <div className="bg-amber-900/10 border border-amber-500/20 rounded-xl p-4">
+                        <p className="text-xs text-amber-400 mb-2 font-bold uppercase">Requisiti</p>
+                        <div className="space-y-2">
+                            <label className="flex items-center space-x-2 text-sm text-gray-300">
+                                <CheckCircle size={16} className="text-green-500" />
+                                <span>Tutti i Quiz Completati</span>
+                            </label>
+                            <label className="flex items-center space-x-2 text-sm text-gray-300">
+                                <CheckCircle size={16} className="text-green-500" />
+                                <span>Tutte le Lezioni Viste</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <button
+                        type="submit"
+                        disabled={saving}
+                        className="w-full py-3 bg-gradient-to-r from-amber-600 to-yellow-600 hover:from-amber-500 hover:to-yellow-500 text-white font-bold rounded-xl transition-all shadow-lg"
+                    >
+                        {saving ? 'Salvataggio...' : 'Salva Configurazione'}
+                    </button>
+                </form>
+            </motion.div>
+        </motion.div>
     );
 };
 
