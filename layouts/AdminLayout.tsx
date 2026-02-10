@@ -9,7 +9,8 @@ import {
     Menu,
     X,
     ShieldAlert,
-    ArrowLeft
+    ArrowLeft,
+    Calendar
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { BRANDING } from '../config/branding';
@@ -25,6 +26,7 @@ export const AdminLayout: React.FC = () => {
         { path: '/admin/users', label: 'Utenti (God View)', icon: <Users size={20} /> },
         { path: '/admin/finance', label: 'Finanze', icon: <DollarSign size={20} /> },
         { path: '/admin/courses', label: 'Corsi LMS', icon: <LayoutDashboard size={20} /> },
+        { path: '/admin/calendar', label: 'Calendario', icon: <Calendar size={20} /> },
         { path: '/admin/content', label: 'Contenuti', icon: <Settings size={20} /> },
         { path: '/admin/discounts', label: 'Sconti', icon: <ShieldAlert size={20} /> },
     ];

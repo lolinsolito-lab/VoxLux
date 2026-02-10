@@ -25,6 +25,7 @@
     "@tiptap/react": "^3.19.0",
     "@tiptap/starter-kit": "^3.19.0",
     "@types/three": "^0.181.0",
+    "date-fns": "^4.1.0",
     "framer-motion": "^12.23.25",
     "html2canvas": "^1.4.1",
     "jspdf": "^3.0.4",

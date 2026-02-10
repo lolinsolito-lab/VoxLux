@@ -36,6 +36,8 @@ import { AdminFinance } from './pages/admin/AdminFinance';
 import { AdminContent } from './pages/admin/AdminContent';
 import { AdminDiscounts } from './pages/admin/AdminDiscounts';
 import { AdminCourses } from './pages/admin/AdminCourses';
+import { AdminCalendar } from './pages/admin/AdminCalendar';
+import { BookingPage } from './pages/BookingPage';
 import { LegalGuard } from './components/LegalGuard';
 
 
@@ -129,6 +131,7 @@ const App: React.FC = () => {
               <Route path="content" element={<AdminContent />} />
               <Route path="discounts" element={<AdminDiscounts />} />
               <Route path="courses" element={<AdminCourses />} />
+              <Route path="calendar" element={<AdminCalendar />} />
             </Route>
           </Route>
 
@@ -141,6 +144,9 @@ const App: React.FC = () => {
 
           {/* Cinematic Manifesto */}
           <Route path="/manifesto" element={<ManifestoPage />} />
+
+          {/* Public Booking */}
+          <Route path="/book" element={<BookingPage />} />
 
           {/* Main App (Public) */}
           <Route path="/*" element={<MainApp />} />
