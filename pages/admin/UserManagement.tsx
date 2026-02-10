@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { supabase } from '../../services/supabase';
-import { Search, Shield, Ban, Unlock, Users, Mail, Calendar, TrendingUp, Crown, Zap, Award } from 'lucide-react';
+import { Search, Shield, Ban, Unlock, Users, Mail, Calendar, TrendingUp, Crown, Zap, Award, Trash2 } from 'lucide-react';
 
 interface UserProfile {
     id: string;
@@ -67,10 +67,28 @@ export const UserManagement: React.FC = () => {
         }
     };
 
-    const handleBanUser = async (userId: string) => {
-        if (!confirm('SEI SICURO? Bannare questo utente bloccherà il suo accesso.')) return;
-        console.log('Banning user:', userId);
-        alert('Funzionalità Ban in arrivo (Richiede Edge Function).');
+    const handleDeleteUser = async (userId: string) => {
+        if (!confirm('ATTENZIONE: Stai per eliminare definitivamente questo utente e tutti i suoi dati. Procedere?')) return;
+
+        try {
+            const { error } = await supabase.rpc('delete_user_by_admin', { target_user_id: userId });
+
+            if (error) throw error;
+
+            alert('Utente eliminato con successo.');
+            fetchUsers(); // Refresh list
+        } catch (error: any) {
+            console.error('Error deleting user:', error);
+            // Fallback: try deleting from public profile only if RPC fails permissions
+            try {
+                const { error: profileError } = await supabase.from('profiles').delete().eq('id', userId);
+                if (profileError) throw profileError;
+                alert('Profilo pubblico eliminato (Auth user potrebbe rimanere se mancano permessi RPC).');
+                fetchUsers();
+            } catch (fallbackError) {
+                alert('Errore eliminazione: ' + error.message);
+            }
+        }
     };
 
     const handleGrantAccess = async (userId: string) => {
@@ -326,11 +344,11 @@ export const UserManagement: React.FC = () => {
                                     Grant Access
                                 </button>
                                 <button
-                                    onClick={() => handleBanUser(user.id)}
+                                    onClick={() => handleDeleteUser(user.id)}
                                     className="p-2.5 bg-red-600/20 border border-red-500/30 text-red-400 rounded-xl hover:bg-red-600/30 transition-all duration-300"
-                                    title="Ban User"
+                                    title="Elimina Utente"
                                 >
-                                    <Ban size={16} />
+                                    <Trash2 size={16} />
                                 </button>
                             </div>
                         </motion.div>
