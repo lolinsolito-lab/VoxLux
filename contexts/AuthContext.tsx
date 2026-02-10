@@ -111,12 +111,21 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
                 .eq('user_id', userId)
                 .eq('status', 'active');
 
-            // Fetch user stats
-            const { data: stats } = await supabase
-                .from('user_stats')
-                .select('*')
-                .eq('user_id', userId)
-                .single();
+            // Fetch user stats (handle 406 if view doesn't exist yet)
+            let stats = null;
+            try {
+                const { data, error } = await supabase
+                    .from('user_stats')
+                    .select('*')
+                    .eq('user_id', userId)
+                    .single();
+
+                if (!error) {
+                    stats = data;
+                }
+            } catch (err) {
+                console.warn('User stats not available, using defaults:', err);
+            }
 
             const mappedUser: User = {
                 id: profile.id,
