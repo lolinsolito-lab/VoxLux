@@ -8,6 +8,8 @@ import { RegisterModal } from './RegisterModal';
 import { PricingCard } from './PricingCard';
 import { AscensionCard } from './AscensionCard';
 import { HeroFAQ } from './HeroFAQ';
+import { VoiceTestimonials } from './VoiceTestimonials';
+import { ExtrasPreview } from './ExtrasPreview';
 
 interface HeroProps {
   onEnter: (courseId: string) => void;
@@ -31,8 +33,8 @@ export const Hero: React.FC<HeroProps> = ({ onEnter }) => {
     }
   };
 
-  const storyDescription = "Il Protocollo Definitivo di Neuro-Narrativa. 10 Mondi e 30 Moduli per installare la tua autorità nei centri decisionali del cervello. Bypassa la logica e diventa la guida che il mercato sta disperatamente cercando.";
-  const podcastDescription = "Ingegneria Acustica e Design di Esperienze Immersive. Non un semplice podcast, ma un'arma di influenza. 10 Mondi per creare legami ossitocinici indissolubili.";
+  const storyDescription = "Impara a raccontare il tuo valore in modo che le persone smettano di scrollare e inizino ad ascoltare. 10 Moduli pratici per trasformare le tue idee in storie che convincono, vendono e restano in testa.";
+  const podcastDescription = "Crea un podcast con qualità broadcast professionale. Non basta avere qualcosa da dire — devi suonare come qualcuno che vale la pena ascoltare. 10 Moduli per voce, audio e strategia.";
 
   return (
     <div className="min-h-screen w-full bg-lux-black text-gray-200 relative">
@@ -117,18 +119,18 @@ export const Hero: React.FC<HeroProps> = ({ onEnter }) => {
               VOX LUX STRATEGY
             </h1>
             <p className="text-xl md:text-2xl text-blue-200/70 font-serif italic tracking-wide mb-12">
-              "Il portale per l'ascensione neuro-digitale."
+              "La comunicazione d'élite per chi merita di essere ascoltato."
             </p>
             <div className="max-w-2xl mx-auto mb-12 space-y-4">
               <p className="text-lg text-gray-300 leading-relaxed">
-                Benvenuto nell'universo dell'<span className="text-lux-cyan font-bold">Influenza Vocale Strategica</span>.
+                Storytelling strategico e Podcasting professionale per <span className="text-lux-cyan font-bold">costruire autorevolezza reale</span>.
               </p>
             </div>
             <button
               onClick={scrollToContent}
               className="group inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-lux-goldDim to-lux-gold text-lux-black text-sm tracking-[0.15em] font-bold uppercase hover:brightness-110 transition-all shadow-[0_0_30px_rgba(228,197,114,0.4)] rounded-sm"
             >
-              Esplora le Matrici
+              Scopri i Percorsi
               <ChevronDown className="w-5 h-5 animate-bounce" />
             </button>
           </div>
@@ -141,14 +143,14 @@ export const Hero: React.FC<HeroProps> = ({ onEnter }) => {
             id="matrice-1"
             type="sun"
             title={<>STORYTELLING<br />MASTERMIND</>}
-            subtitle="The Sun Archetype"
-            description="Il Protocollo Definitivo di Neuro-Narrativa."
+            subtitle="The Sun Archetype · Il Potere delle Storie"
+            description="Trasforma le tue idee in storie che convincono e vendono."
             features={[
-              "🧬 10 Mondi Neuro-Narrativi",
-              "🧠 Hacking dell'Amigdala",
-              "📜 'Hero's Journey' Protocol",
-              "🦁 Analisi Archetipale Estrema",
-              "🏆 Diploma 'Sun Walker' NFT"
+              "🧬 10 Moduli di Storytelling Strategico",
+              "🧠 Tecniche di Persuasione Narrativa",
+              "📜 Framework 'Hero's Journey' Applicato",
+              "🦁 Analisi del Tuo Stile Comunicativo",
+              "🏆 Certificato Digitale Verificato"
             ]}
             price="€597"
             priceFull="€997"
@@ -161,20 +163,21 @@ export const Hero: React.FC<HeroProps> = ({ onEnter }) => {
             id="matrice-2"
             type="moon"
             title={<>PODCAST<br />MASTERMIND</>}
-            subtitle="The Moon Archetype"
-            description="Ingegneria Acustica e Design Immersivo."
+            subtitle="The Moon Archetype · La Voce Professionale"
+            description="Crea un podcast professionale che ti posiziona come esperto."
             features={[
-              "🌑 10 Mondi Psico-Acustici",
-              "🎧 Audio-Engineering Ipnotico",
-              "🌊 Onde Cerebrali & Ritmo",
-              "🎙️ Setup da Studio Hollywood",
-              "🏆 Diploma 'Moon Walker' NFT"
+              "🌑 10 Moduli di Podcasting Professionale",
+              "🎧 Qualità Audio Broadcast",
+              "🌊 Ritmo, Pause e Voce Magnetica",
+              "🎙️ Setup Professionale Completo",
+              "🏆 Certificato Digitale Verificato"
             ]}
             price="€597"
             priceFull="€997"
             onEnter={onEnter}
           />
 
+          <ExtrasPreview />
           <HeroFAQ />
           <Footer />
         </div>
@@ -195,7 +198,7 @@ export const Hero: React.FC<HeroProps> = ({ onEnter }) => {
             VOX LUX STRATEGY
           </h1>
           <p className="text-lg text-blue-200/60 font-serif italic tracking-wide">
-            "Il portale per l'ascensione neuro-digitale."
+            "La comunicazione d'élite per chi merita di essere ascoltato."
           </p>
         </div>
 
@@ -207,14 +210,14 @@ export const Hero: React.FC<HeroProps> = ({ onEnter }) => {
               id="matrice-1"
               type="sun"
               title="STORYTELLING MASTERMIND"
-              subtitle="The Sun Archetype"
-              description="Il Protocollo Definitivo di Neuro-Narrativa per installare la tua autorità."
+              subtitle="The Sun Archetype · Il Potere delle Storie"
+              description="Trasforma le tue idee in storie che convincono e vendono."
               features={[
-                "🧬 10 Mondi Neuro-Narrativi",
-                "🧠 Hacking dell'Amigdala",
-                "📜 'Hero's Journey' Protocol",
-                "🦁 Analisi Archetipale Estrema",
-                "🏆 Diploma 'Sun Walker' NFT"
+                "🧬 10 Moduli di Storytelling Strategico",
+                "🧠 Tecniche di Persuasione Narrativa",
+                "📜 Framework 'Hero's Journey' Applicato",
+                "🦁 Analisi del Tuo Stile Comunicativo",
+                "🏆 Certificato Digitale Verificato"
               ]}
               price="€597"
               priceFull="€997"
@@ -230,14 +233,14 @@ export const Hero: React.FC<HeroProps> = ({ onEnter }) => {
               id="matrice-2"
               type="moon"
               title="PODCAST MASTERMIND"
-              subtitle="The Moon Archetype"
-              description="Ingegneria Acustica e Design di Esperienze Immersive per creare legami ossitocinici."
+              subtitle="The Moon Archetype · La Voce Professionale"
+              description="Crea un podcast professionale che ti posiziona come esperto."
               features={[
-                "🌑 10 Mondi Psico-Acustici",
-                "🎧 Audio-Engineering Ipnotico",
-                "🌊 Onde Cerebrali & Ritmo",
-                "🎙️ Setup da Studio Hollywood",
-                "🏆 Diploma 'Moon Walker' NFT"
+                "🌑 10 Moduli di Podcasting Professionale",
+                "🎧 Qualità Audio Broadcast",
+                "🌊 Ritmo, Pause e Voce Magnetica",
+                "🎙️ Setup Professionale Completo",
+                "🏆 Certificato Digitale Verificato"
               ]}
               price="€597"
               priceFull="€997"
@@ -254,6 +257,8 @@ export const Hero: React.FC<HeroProps> = ({ onEnter }) => {
         <div className="w-full py-2 mt-4 relative z-50 border-t border-white/5 bg-black/40 backdrop-blur-sm">
           <div className="max-w-7xl mx-auto px-6 text-center">
             <p className="text-stone-400 text-xs tracking-[0.2em] mb-2">GARANZIA DI QUALITÀ VOX LUX • PAGAMENTI SICURI STRIPE • ACCESSO IMMEDIATO</p>
+            <VoiceTestimonials />
+            <ExtrasPreview />
             <HeroFAQ />
             <Footer />
           </div>

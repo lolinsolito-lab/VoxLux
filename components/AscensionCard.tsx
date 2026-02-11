@@ -15,14 +15,14 @@ export const AscensionCard: React.FC<AscensionCardProps> = ({ onEnter, onHover, 
             </div>
 
             <h3 className="text-5xl font-display font-bold text-transparent bg-clip-text bg-gradient-to-b from-white via-indigo-100 to-indigo-500 mb-2 drop-shadow-[0_0_30px_rgba(99,102,241,1)]">ASCENSION</h3>
-            <p className="text-xs uppercase tracking-[0.5em] text-indigo-300 mb-10 font-bold border-b border-indigo-500/50 pb-2">The Singularity</p>
+            <p className="text-xs uppercase tracking-[0.5em] text-indigo-300 mb-10 font-bold border-b border-indigo-500/50 pb-2">Il Percorso Completo</p>
 
             <div className={`space-y-3 w-full text-left pl-8 mb-4 flex-grow ${isDesktop ? 'opacity-80 group-hover:opacity-100 transition-opacity' : 'opacity-100'} border-l-2 border-indigo-500/50 ml-6`}>
-                <div className="flex items-center gap-3 text-xs text-indigo-100 font-medium">⚛️ ACCESSO SINGOLARITÀ (Tutto)</div>
-                <div className="flex items-center gap-3 text-xs text-indigo-100 font-medium">🔱 Doppia Maestria (Sole + Luna)</div>
-                <div className="flex items-center gap-3 text-xs text-indigo-100 font-medium">🗝️ LE CRIPTE VOCALI (File Segreti)</div>
-                <div className="flex items-center gap-3 text-xs text-indigo-100 font-medium">💎 2x Diplomi Blockchain</div>
-                <div className="flex items-center gap-3 text-xs text-indigo-100 font-medium">👑 Accesso War Room (Vita)</div>
+                <div className="flex items-center gap-3 text-xs text-indigo-100 font-medium">⚛️ ACCESSO COMPLETO (Storytelling + Podcast)</div>
+                <div className="flex items-center gap-3 text-xs text-indigo-100 font-medium">🔱 20 Moduli Completi (10+10)</div>
+                <div className="flex items-center gap-3 text-xs text-indigo-100 font-medium">🗝️ Contenuti Esclusivi Riservati</div>
+                <div className="flex items-center gap-3 text-xs text-indigo-100 font-medium">💎 2x Certificati Digitali Verificati</div>
+                <div className="flex items-center gap-3 text-xs text-indigo-100 font-medium">👑 Community Privata (Accesso a Vita)</div>
             </div>
 
             <div className="mb-6 flex flex-col items-center">
@@ -32,7 +32,7 @@ export const AscensionCard: React.FC<AscensionCardProps> = ({ onEnter, onHover, 
             </div>
 
             <button className={`w-full py-5 bg-white text-black text-sm tracking-[0.3em] font-bold uppercase flex items-center justify-center gap-3 rounded-md shadow-[0_0_50px_white] mb-6 ${isDesktop ? 'hover:bg-indigo-100 hover:shadow-[0_0_60px_white]' : 'hover:scale-105'} transition-all`}>
-                {isDesktop ? "ACCEDI ALL'ASCENSIONE" : "Enter Vortex"} <ArrowRight className="w-5 h-5" />
+                {isDesktop ? "OTTIENI TUTTO AL MIGLIOR PREZZO" : "Scopri l'Offerta"} <ArrowRight className="w-5 h-5" />
             </button>
         </div>
     );
