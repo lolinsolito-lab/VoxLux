@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { MessageCircle, X, Send, User, LifeBuoy, ChevronDown, Paperclip, Loader2 } from 'lucide-react';
+import { MessageCircle, X, Send, User, LifeBuoy, ChevronDown, Paperclip, Loader2, RefreshCw } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { supabase } from '../services/supabase';
 import { useAuth } from '../contexts/AuthContext';
@@ -18,6 +18,15 @@ interface Message {
     created_at: string;
 }
 
+const SUPPORT_TOPICS = [
+    "Corso non si attiva dopo l'acquisto",
+    "Problema con il pagamento",
+    "Bug / Errore tecnico",
+    "Domanda sul contenuto",
+    "Richiesta Collaborazione",
+    "Altro"
+];
+
 export const SupportWidget: React.FC = () => {
     const { user } = useAuth();
     const [isOpen, setIsOpen] = useState(false);
@@ -26,8 +35,12 @@ export const SupportWidget: React.FC = () => {
     const [activeTicket, setActiveTicket] = useState<Ticket | null>(null);
     const [messages, setMessages] = useState<Message[]>([]);
     const [newMessage, setNewMessage] = useState('');
+
+    // New Ticket State
     const [newTicketSubject, setNewTicketSubject] = useState('');
+    const [selectedTopic, setSelectedTopic] = useState(SUPPORT_TOPICS[0]); // Default topic
     const [newTicketMessage, setNewTicketMessage] = useState('');
+
     const [loading, setLoading] = useState(false);
     const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -68,12 +81,14 @@ export const SupportWidget: React.FC = () => {
 
     const fetchTickets = async () => {
         if (!user) return;
+        setLoading(true);
         const { data } = await supabase
             .from('support_tickets')
             .select('*')
             .eq('user_id', user.id)
             .order('last_reply_at', { ascending: false });
         setTickets(data as any || []);
+        setLoading(false);
     };
 
     const fetchMessages = async (ticketId: string) => {
@@ -92,7 +107,11 @@ export const SupportWidget: React.FC = () => {
 
     const createTicket = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!user || !newTicketSubject.trim() || !newTicketMessage.trim()) return;
+        if (!user || !newTicketMessage.trim()) return;
+
+        // Construct effective subject
+        const effectiveSubject = selectedTopic === 'Altro' ? newTicketSubject : selectedTopic;
+        if (!effectiveSubject.trim()) return;
 
         setLoading(true);
         try {
@@ -101,7 +120,7 @@ export const SupportWidget: React.FC = () => {
                 .from('support_tickets')
                 .insert({
                     user_id: user.id,
-                    subject: newTicketSubject,
+                    subject: effectiveSubject,
                     status: 'open',
                     priority: 'normal'
                 })
@@ -125,6 +144,7 @@ export const SupportWidget: React.FC = () => {
             // Reset UI
             setNewTicketSubject('');
             setNewTicketMessage('');
+            setSelectedTopic(SUPPORT_TOPICS[0]); // Reset to default topic
             setActiveTicket(ticket as any);
             setView('chat');
         } catch (error) {
@@ -292,8 +312,8 @@ export const SupportWidget: React.FC = () => {
                                         {messages.map(msg => (
                                             <div key={msg.id} className={`flex ${msg.is_admin ? 'justify-start' : 'justify-end'}`}>
                                                 <div className={`max-w-[85%] p-3 rounded-2xl text-sm ${msg.is_admin
-                                                        ? 'bg-zinc-800 text-gray-200 rounded-tl-none'
-                                                        : 'bg-green-600 text-white rounded-tr-none'
+                                                    ? 'bg-zinc-800 text-gray-200 rounded-tl-none'
+                                                    : 'bg-green-600 text-white rounded-tr-none'
                                                     }`}>
                                                     <p>{msg.message}</p>
                                                 </div>

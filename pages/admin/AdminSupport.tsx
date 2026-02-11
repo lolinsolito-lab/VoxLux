@@ -1,6 +1,7 @@
+```
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MessageSquare, Send, CheckCircle, Clock, Search, Filter, User, MoreVertical, X, AlertCircle } from 'lucide-react';
+import { MessageSquare, Send, CheckCircle, Clock, Search, Filter, User, MoreVertical, X, AlertCircle, RefreshCw } from 'lucide-react';
 import { supabase } from '../../services/supabase';
 import { formatDistanceToNow } from 'date-fns';
 import { it } from 'date-fns/locale';
@@ -15,13 +16,7 @@ interface Ticket {
     category: string;
     created_at: string;
     last_reply_at: string;
-    user: {
-        email: string;
-        user_metadata: {
-            full_name?: string;
-            avatar_url?: string;
-        };
-    };
+    // Removed direct user join for stability across RLS
 }
 
 interface Message {
@@ -46,7 +41,7 @@ export const AdminSupport: React.FC = () => {
     // FETCH TICKETS
     useEffect(() => {
         fetchTickets();
-
+        
         // Subscribe to NEW tickets
         const channel = supabase
             .channel('admin-tickets')
@@ -66,8 +61,8 @@ export const AdminSupport: React.FC = () => {
 
         // Subscribe to NEW messages for this ticket
         const channel = supabase
-            .channel(`ticket-${selectedTicket.id}`)
-            .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'support_messages', filter: `ticket_id=eq.${selectedTicket.id}` }, (payload) => {
+            .channel(`ticket - ${ selectedTicket.id } `)
+            .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'support_messages', filter: `ticket_id = eq.${ selectedTicket.id } ` }, (payload) => {
                 setMessages(prev => [...prev, payload.new as Message]);
                 scrollToBottom();
             })
@@ -77,35 +72,16 @@ export const AdminSupport: React.FC = () => {
     }, [selectedTicket]);
 
     const fetchTickets = async () => {
+        setLoading(true);
         try {
-            // Join with auth.users is tricky in plain client client, usually we fetch users separately or use a view.
-            // For now, we will fetch tickets and then fetch user details if needed, 
-            // OR ideally we have a public profile table. 
-            // Let's assume we can get user email via a view or we just fetch basic ticket info and lazy load user.
-            // Actually, Supabase client cannot join auth.users directly securely usually.
-            // WORKAROUND: We will fetch tickets, and for each unique user_id, fetch profile/email via an RPC or separate query if possible.
-            // SIMPLIFICATION: We will just display user_id for now, or use the `profiles` table if linked.
-
-            // Let's try to fetch with profiles if they exist, otherwise just raw.
+            // Simplified fetch to avoid JOIN issues with auth.users if RLS is strict
             const { data, error } = await supabase
                 .from('support_tickets')
-                .select(`
-                    *,
-                    user:user_id (
-                        email
-                    )
-                `)
+                .select('*')
                 .order('last_reply_at', { ascending: false });
 
             if (error) throw error;
-
-            // Map the mysterious user object (Supabase returns it if foreign key exists, but auth.users is special)
-            // If fetching from auth.users fails (RLS), we might need a secure view. 
-            // Let's assume for ADMIN panel we have RLS to read users or we use `profiles` table.
-
-            // NOTE: In our previous tasks we didn't strictly link support_tickets to profiles table, but auth.users.
-            // Querying auth.users directly via client might return null if not permitted.
-            // Let's assume it works for Admin or we fallback.
+            
             setTickets(data as any || []);
         } catch (error) {
             console.error('Error fetching tickets:', error);
@@ -184,16 +160,26 @@ export const AdminSupport: React.FC = () => {
             <div className="w-1/3 border-r border-white/10 flex flex-col">
                 {/* Header */}
                 <div className="p-4 border-b border-white/10 bg-black/40">
-                    <h2 className="text-xl font-bold text-white mb-4">Supporto & Ticket</h2>
+                    <div className="flex justify-between items-center mb-4">
+                        <h2 className="text-xl font-bold text-white">Supporto & Ticket</h2>
+                        <button 
+                            onClick={() => fetchTickets()}
+                            className="p-2 bg-white/5 hover:bg-white/10 rounded-lg text-gray-400 hover:text-white transition-colors"
+                            title="Aggiorna lista"
+                        >
+                            <RefreshCw size={16} className={loading ? "animate-spin" : ""} />
+                        </button>
+                    </div>
                     <div className="flex gap-2">
                         {['all', 'open', 'resolved'].map(status => (
                             <button
                                 key={status}
                                 onClick={() => setFilterStatus(status)}
-                                className={`px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider transition-all ${filterStatus === status
-                                        ? 'bg-white text-black'
-                                        : 'bg-white/5 text-gray-400 hover:bg-white/10'
-                                    }`}
+                                className={`px - 3 py - 1.5 rounded - lg text - xs font - bold uppercase tracking - wider transition - all ${
+    filterStatus === status
+        ? 'bg-white text-black'
+        : 'bg-white/5 text-gray-400 hover:bg-white/10'
+} `}
                             >
                                 {status === 'all' ? 'Tutti' : status === 'open' ? 'Aperti' : 'Chiusi'}
                             </button>
@@ -218,21 +204,22 @@ export const AdminSupport: React.FC = () => {
                             <div
                                 key={ticket.id}
                                 onClick={() => setSelectedTicket(ticket)}
-                                className={`p-4 border-b border-white/5 cursor-pointer transition-all hover:bg-white/5 ${selectedTicket?.id === ticket.id ? 'bg-white/10 border-l-4 border-l-green-500' : ''
-                                    }`}
+                                className={`p - 4 border - b border - white / 5 cursor - pointer transition - all hover: bg - white / 5 ${
+    selectedTicket?.id === ticket.id ? 'bg-white/10 border-l-4 border-l-green-500' : ''
+} `}
                             >
                                 <div className="flex justify-between items-start mb-1">
-                                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded uppercase ${getStatusColor(ticket.status)}`}>
+                                    <span className={`text - [10px] font - bold px - 2 py - 0.5 rounded uppercase ${ getStatusColor(ticket.status) } `}>
                                         {ticket.status.replace('_', ' ')}
                                     </span>
                                     <span className="text-xs text-gray-500">
-                                        {formatDistanceToNow(new Date(ticket.last_reply_at), { addSuffix: true, locale: it })}
+                                        {ticket.last_reply_at && formatDistanceToNow(new Date(ticket.last_reply_at), { addSuffix: true, locale: it })}
                                     </span>
                                 </div>
                                 <h4 className="text-white font-medium truncate mb-1">{ticket.subject}</h4>
                                 <div className="flex items-center gap-2 text-xs text-gray-400">
                                     <User size={12} />
-                                    <span className="truncate">{ticket.user?.email || 'Utente Sconosciuto'}</span>
+                                    <span className="truncate font-mono text-gray-600">ID: {ticket.user_id.slice(0, 8)}...</span>
                                 </div>
                             </div>
                         ))
@@ -279,17 +266,18 @@ export const AdminSupport: React.FC = () => {
                                     initial={{ opacity: 0, y: 10 }}
                                     animate={{ opacity: 1, y: 0 }}
                                     key={msg.id}
-                                    className={`flex ${msg.is_admin ? 'justify-end' : 'justify-start'}`}
+                                    className={`flex ${ msg.is_admin ? 'justify-end' : 'justify-start' } `}
                                 >
                                     <div className={`
-                                        max-w-[70%] p-3 rounded-2xl text-sm leading-relaxed
-                                        ${msg.is_admin
-                                            ? 'bg-green-600 text-white rounded-br-none'
-                                            : 'bg-zinc-800 text-gray-200 rounded-bl-none'
-                                        }
-                                    `}>
+max - w - [70 %] p - 3 rounded - 2xl text - sm leading - relaxed
+                                        ${
+    msg.is_admin
+        ? 'bg-green-600 text-white rounded-br-none'
+        : 'bg-zinc-800 text-gray-200 rounded-bl-none'
+}
+`}>
                                         <p>{msg.message}</p>
-                                        <p className={`text-[10px] mt-1 text-right ${msg.is_admin ? 'text-green-200' : 'text-zinc-400'}`}>
+                                        <p className={`text - [10px] mt - 1 text - right ${ msg.is_admin ? 'text-green-200' : 'text-zinc-400' } `}>
                                             {new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                                         </p>
                                     </div>
