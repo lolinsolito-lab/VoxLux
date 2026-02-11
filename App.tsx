@@ -38,6 +38,7 @@ import { AdminDiscounts } from './pages/admin/AdminDiscounts';
 import { AdminCourses } from './pages/admin/AdminCourses';
 import { AdminCalendar } from './pages/admin/AdminCalendar';
 import { AdminSupport } from './pages/admin/AdminSupport';
+import { AdminFAQ } from './pages/admin/AdminFAQ';
 import { BookingPage } from './pages/BookingPage';
 import { LegalGuard } from './components/LegalGuard';
 
@@ -134,6 +135,7 @@ const App: React.FC = () => {
               <Route path="courses" element={<AdminCourses />} />
               <Route path="calendar" element={<AdminCalendar />} />
               <Route path="support" element={<AdminSupport />} />
+              <Route path="faq" element={<AdminFAQ />} />
             </Route>
           </Route>
 
