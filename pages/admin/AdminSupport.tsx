@@ -1,11 +1,17 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MessageSquare, Send, CheckCircle, Clock, Search, Filter, User, MoreVertical, X, AlertCircle, RefreshCw } from 'lucide-react';
+import { MessageSquare, Send, CheckCircle, Clock, Search, Filter, User, MoreVertical, X, AlertCircle, RefreshCw, Mail } from 'lucide-react';
 import { supabase } from '../../services/supabase';
 import { formatDistanceToNow } from 'date-fns';
 import { it } from 'date-fns/locale';
 
 // TYPES
+interface UserProfile {
+    email: string;
+    full_name: string;
+    avatar_url?: string;
+}
+
 interface Ticket {
     id: string;
     user_id: string;
@@ -15,7 +21,7 @@ interface Ticket {
     category: string;
     created_at: string;
     last_reply_at: string;
-    // Removed direct user join for stability across RLS
+    profiles?: UserProfile; // Joined profile data
 }
 
 interface Message {
@@ -73,10 +79,10 @@ export const AdminSupport: React.FC = () => {
     const fetchTickets = async () => {
         setLoading(true);
         try {
-            // Simplified fetch to avoid JOIN issues with auth.users if RLS is strict
+            // Updated fetch to JOIN profiles
             const { data, error } = await supabase
                 .from('support_tickets')
-                .select('*')
+                .select('*, profiles:user_id (email, full_name, avatar_url)')
                 .order('last_reply_at', { ascending: false });
 
             if (error) throw error;
@@ -152,6 +158,17 @@ export const AdminSupport: React.FC = () => {
         }
     };
 
+    // Helper to get user display name
+    const getUserName = (ticket: Ticket) => {
+        if (ticket.profiles?.full_name) return ticket.profiles.full_name;
+        if (ticket.profiles?.email) return ticket.profiles.email.split('@')[0];
+        return 'Utente Sconosciuto';
+    };
+
+    const getUserEmail = (ticket: Ticket) => {
+        return ticket.profiles?.email || 'Nessuna email';
+    };
+
     return (
         <div className="flex h-[calc(100vh-100px)] bg-black/50 border border-white/10 rounded-2xl overflow-hidden backdrop-blur-sm">
 
@@ -214,9 +231,14 @@ export const AdminSupport: React.FC = () => {
                                     </span>
                                 </div>
                                 <h4 className="text-white font-medium truncate mb-1">{ticket.subject}</h4>
-                                <div className="flex items-center gap-2 text-xs text-gray-400">
-                                    <User size={12} />
-                                    <span className="truncate font-mono text-gray-600">ID: {ticket.user_id.slice(0, 8)}...</span>
+                                <div className="flex items-center gap-2 text-xs text-gray-400 mt-2">
+                                    <div className="w-5 h-5 rounded-full bg-zinc-800 flex items-center justify-center text-[10px] font-bold text-gray-300">
+                                        {getUserName(ticket).charAt(0).toUpperCase()}
+                                    </div>
+                                    <span className="truncate font-medium text-gray-300">{getUserName(ticket)}</span>
+                                </div>
+                                <div className="flex items-center gap-2 text-[10px] text-gray-600 ml-7">
+                                    <span className="truncate">{getUserEmail(ticket)}</span>
                                 </div>
                             </div>
                         ))
@@ -231,10 +253,18 @@ export const AdminSupport: React.FC = () => {
                         {/* Chat Header */}
                         <div className="p-4 border-b border-white/10 bg-black/40 flex justify-between items-center">
                             <div>
-                                <h3 className="text-lg font-bold text-white">{selectedTicket.subject}</h3>
-                                <p className="text-sm text-gray-400 flex items-center gap-2">
-                                    Ticket ID: <span className="font-mono text-gray-500">#{selectedTicket.id.slice(0, 8)}</span>
-                                </p>
+                                <h3 className="text-lg font-bold text-white mb-1">{selectedTicket.subject}</h3>
+                                <div className="flex items-center gap-3 text-sm text-gray-400">
+                                    <div className="flex items-center gap-1.5 text-white">
+                                        <User size={14} />
+                                        <span className="font-bold">{getUserName(selectedTicket)}</span>
+                                    </div>
+                                    <span className="text-zinc-600">|</span>
+                                    <div className="flex items-center gap-1.5">
+                                        <Mail size={14} />
+                                        <span>{getUserEmail(selectedTicket)}</span>
+                                    </div>
+                                </div>
                             </div>
 
                             <div className="flex items-center gap-2">
