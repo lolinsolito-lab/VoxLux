@@ -32,7 +32,7 @@ export const Navigation: React.FC<NavigationProps> = ({ currentView, onNavigate,
           <Hexagon className="w-6 h-6 fill-lux-gold/10 text-lux-gold" />
           <div>
             <h1 className="text-lg md:text-2xl font-display font-bold text-lux-gold drop-shadow-[0_0_10px_rgba(228,197,114,0.3)] whitespace-nowrap">
-              VOX LUX
+              VOX AUREA
             </h1>
             <p className="text-[8px] md:text-[10px] text-lux-cyan/60 uppercase tracking-[0.25em] pl-1 hidden md:block">Ascension Portal</p>
           </div>

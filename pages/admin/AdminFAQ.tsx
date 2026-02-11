@@ -195,7 +195,7 @@ export const AdminFAQ: React.FC = () => {
                                             const questions = [
                                                 { category_match: 'Pagamenti', question: 'Posso chiedere il rimborso?', answer: '<p>Sì, offriamo una garanzia <strong>Soddisfatti o Rimborsati di 30 giorni</strong>. Se il protocollo non risuona con la tua frequenza, scrivici e ti rimborseremo, senza domande.</p>' },
                                                 { category_match: 'Contenuti', question: 'Quanto tempo ho accesso al materiale?', answer: '<p>L\'accesso è <strong>a vita</strong> (Lifetime). Include tutti gli aggiornamenti futuri della matrice che hai acquistato.</p>' },
-                                                { category_match: 'Contenuti', question: 'Riceverò un certificato?', answer: '<p>Assolutamente. Al completamento del percorso e superamento dell\'Esame della Singolarità, riceverai il <strong>Diploma NFT Vox Lux</strong> registrato su Blockchain.</p>' },
+                                                { category_match: 'Contenuti', question: 'Riceverò un certificato?', answer: '<p>Assolutamente. Al completamento del percorso riceverai il <strong>Certificato Digitale Verificato Vox Aurea</strong> con QR code di autenticazione. Inoltre, potrai richiedere l\'upgrade a NFT su blockchain.</p>' },
                                                 { category_match: 'Pagamenti', question: 'Posso pagare a rate?', answer: '<p>Sì, offriamo piani di pagamento flessibili tramite Klarna o PayPal in 3 rate senza interessi. Seleziona l\'opzione al checkout.</p>' }
                                             ];
 

@@ -1,20 +1,20 @@
 /**
- * VOX LUX STRATEGY - CENTRALIZED BRANDING CONFIG
+ * VOX AUREA - CENTRALIZED BRANDING CONFIG
  * 
  * Change the brand name here and it updates everywhere!
  */
 
 export const BRANDING = {
     // Main Brand Identity
-    name: 'VOX LUX STRATEGY',
-    shortName: 'Vox Lux',
-    tagline: 'Il portale per l\'ascensione neuro-digitale',
+    name: 'VOX AUREA',
+    shortName: 'Vox Aurea',
+    tagline: 'La comunicazione d\'élite per chi merita di essere ascoltato',
 
     // Product Names
     products: {
-        matrice1: 'MATRICE I: Storytelling Strategy Master',
-        matrice2: 'MATRICE II: Vox Podcast Master',
-        ascensionBox: 'ASCENSION BOX: The Singularity'
+        matrice1: 'Storytelling Mastermind',
+        matrice2: 'Podcast Mastermind',
+        ascensionBox: 'ASCENSION: Il Percorso Completo'
     },
 
     // Course Archetypes
@@ -25,8 +25,8 @@ export const BRANDING = {
 
     // Contact & Social
     contact: {
-        email: 'hello@voxlux.com',
-        website: 'https://vox-lux.vercel.app'
+        email: 'hello@voxaurea.com',
+        website: 'https://vox-aurea.vercel.app'
     },
 
     // Legal

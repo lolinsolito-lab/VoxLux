@@ -46,7 +46,7 @@ export const Hero: React.FC<HeroProps> = ({ onEnter }) => {
         {/* Logo / Brand (Mobile Only - Desktop has big title centered) */}
         <div className="flex items-center gap-2 lg:hidden">
           <Crown className="w-6 h-6 text-lux-gold" />
-          <span className="text-lux-gold font-display font-bold tracking-widest text-sm">VOX LUX</span>
+          <span className="text-lux-gold font-display font-bold tracking-widest text-sm">VOX AUREA</span>
         </div>
 
         {/* Desktop Placeholder (Invisible) to balance flex */}
@@ -116,8 +116,9 @@ export const Hero: React.FC<HeroProps> = ({ onEnter }) => {
               <Crown className="w-16 h-16 md:w-20 md:h-20 text-lux-gold drop-shadow-[0_0_20px_rgba(228,197,114,0.6)]" />
             </div>
             <h1 className="text-5xl md:text-7xl font-display font-bold text-transparent bg-clip-text bg-gradient-to-b from-lux-gold via-lux-goldDim to-lux-goldDark drop-shadow-2xl mb-6">
-              VOX LUX STRATEGY
+              VOX AUREA
             </h1>
+            <p className="text-xs uppercase tracking-[0.5em] text-stone-500 -mt-8 mb-6">STRATEGY</p>
             <p className="text-xl md:text-2xl text-blue-200/70 font-serif italic tracking-wide mb-12">
               "La comunicazione d'élite per chi merita di essere ascoltato."
             </p>
@@ -195,8 +196,9 @@ export const Hero: React.FC<HeroProps> = ({ onEnter }) => {
             <Crown className="w-12 h-12 text-lux-gold drop-shadow-[0_0_15px_rgba(228,197,114,0.6)]" />
           </div>
           <h1 className="text-6xl font-display font-bold text-transparent bg-clip-text bg-gradient-to-b from-lux-gold via-lux-goldDim to-lux-goldDark drop-shadow-2xl mb-4">
-            VOX LUX STRATEGY
+            VOX AUREA
           </h1>
+          <p className="text-xs uppercase tracking-[0.5em] text-stone-500 -mt-2 mb-2">STRATEGY</p>
           <p className="text-lg text-blue-200/60 font-serif italic tracking-wide">
             "La comunicazione d'élite per chi merita di essere ascoltato."
           </p>
@@ -256,7 +258,7 @@ export const Hero: React.FC<HeroProps> = ({ onEnter }) => {
         {/* Desktop Footer (Verified Placement) */}
         <div className="w-full py-2 mt-4 relative z-50 border-t border-white/5 bg-black/40 backdrop-blur-sm">
           <div className="max-w-7xl mx-auto px-6 text-center">
-            <p className="text-stone-400 text-xs tracking-[0.2em] mb-2">GARANZIA DI QUALITÀ VOX LUX • PAGAMENTI SICURI STRIPE • ACCESSO IMMEDIATO</p>
+            <p className="text-stone-400 text-xs tracking-[0.2em] mb-2">GARANZIA DI QUALITÀ VOX AUREA • PAGAMENTI SICURI STRIPE • ACCESSO IMMEDIATO</p>
             <VoiceTestimonials />
             <ExtrasPreview />
             <HeroFAQ />

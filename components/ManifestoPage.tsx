@@ -263,7 +263,7 @@ export const ManifestoPage: React.FC = () => {
                 <div className="absolute inset-0 z-50 flex flex-col items-center justify-center gap-12 bg-black/20 backdrop-blur-sm">
                     <motion.img
                         src="/logo.png"
-                        alt="VOX LUX Logo"
+                        alt="VOX AUREA Logo"
                         className="w-48 md:w-64 opacity-90 drop-shadow-[0_0_25px_rgba(234,179,8,0.5)]"
                         initial={{ opacity: 0, scale: 0.8, y: -20 }}
                         animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -308,7 +308,7 @@ export const ManifestoPage: React.FC = () => {
                         className="text-center"
                     >
                         <h1 className="text-8xl md:text-9xl font-black text-transparent bg-clip-text bg-gradient-to-b from-white via-yellow-200 to-yellow-600 mb-6 tracking-tighter drop-shadow-[0_0_60px_rgba(234,179,8,0.4)]">
-                            VOX LUX
+                            VOX AUREA
                         </h1>
                         <p className="text-yellow-500/80 tracking-[0.6em] uppercase mb-12 text-sm font-serif border-t border-b border-yellow-500/30 py-4 inline-block">
                             Il Protocollo Sovrano

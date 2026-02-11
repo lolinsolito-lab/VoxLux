@@ -44,13 +44,13 @@ import { LegalGuard } from './components/LegalGuard';
 import { HelpCenter } from './pages/HelpCenter';
 
 
-// 🌌 VOX LUX STRATEGY - ELITE CONSOLE SIGNATURE
+// 🌌 VOX AUREA - ELITE CONSOLE SIGNATURE
 console.log(
   "%c╔═══════════════════════════════════════════════════════╗",
   "color: #E4C572; font-family: monospace; font-size: 12px;"
 );
 console.log(
-  "%c║ %c   VOX LUX STRATEGY   %c                              ║",
+  "%c║ %c   VOX AUREA   %c                              ║",
   "color: #E4C572; font-family: monospace; font-size: 12px;",
   "background: linear-gradient(135deg, #E4C572 0%, #FFD700 100%); color: #00040A; padding: 4px 16px; font-size: 20px; font-weight: 900; letter-spacing: 3px; text-shadow: 0 2px 4px rgba(0,0,0,0.5);",
   "color: #E4C572; font-family: monospace; font-size: 12px;"

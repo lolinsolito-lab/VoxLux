@@ -295,7 +295,7 @@ export const DashboardPage: React.FC = () => {
                                 </div>
                                 {/* Tooltip */}
                                 <div className="absolute top-full mt-2 right-0 w-64 p-3 bg-black/90 border border-purple-500/30 rounded-lg text-xs text-gray-300 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50">
-                                    Status "Ascension" attivo. Accesso illimitato a tutti i protocolli Vox Lux.
+                                    Status "Ascension" attivo. Accesso illimitato a tutti i protocolli Vox Aurea.
                                 </div>
                             </div>
                         )}

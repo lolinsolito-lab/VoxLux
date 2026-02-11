@@ -214,7 +214,7 @@ export const ThankYouPage: React.FC = () => {
                 </div>
 
                 <div className="mt-8 text-center text-xs text-gray-600 tracking-widest uppercase">
-                    Vox Lux Strategy • Protocollo Sovrano
+                    Vox Aurea • Protocollo Sovrano
                 </div>
             </div>
 

@@ -34,7 +34,7 @@ export const RegisterModal: React.FC<RegisterModalProps> = ({ isOpen, onClose, o
 
                     <h3 className="text-2xl font-display font-bold text-white mb-2">Accesso Riservato</h3>
                     <p className="text-gray-400 text-sm mb-8 leading-relaxed">
-                        L'accesso a Vox Lux è un privilegio riservato. Non ci sono iscrizioni aperte.<br /><br />L'unico modo per entrare è possedere una <strong>Matrice</strong>.
+                        L'accesso a Vox Aurea è un privilegio riservato. Non ci sono iscrizioni aperte.<br /><br />L'unico modo per entrare è possedere una <strong>Matrice</strong>.
                     </p>
 
                     <div className="space-y-3">

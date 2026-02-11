@@ -34,7 +34,7 @@ export const TermsPage: React.FC = () => {
                 <section className="space-y-4 text-stone-300 leading-relaxed font-light border-l border-stone-800 pl-6">
                     <h2 className="text-2xl font-display text-white">2. Proprietà Intellettuale e Uso Personale</h2>
                     <p>
-                        Tutti i contenuti presenti su VOX LUX STRATEGY (video, audio, testi, script) sono protetti da copyright. L'acquisto garantisce una <strong>licenza personale, non trasferibile e non esclusiva</strong>.
+                        Tutti i contenuti presenti su VOX AUREA (video, audio, testi, script) sono protetti da copyright. L'acquisto garantisce una <strong>licenza personale, non trasferibile e non esclusiva</strong>.
                     </p>
                     <ul className="list-disc pl-5 space-y-2 mt-2">
                         <li>È SEVERAMENTE VIETATA la condivisione delle credenziali di accesso.</li>
@@ -46,7 +46,7 @@ export const TermsPage: React.FC = () => {
                 <section className="space-y-4 text-stone-300 leading-relaxed font-light border-l border-stone-800 pl-6">
                     <h2 className="text-2xl font-display text-white">3. Limitazione di Responsabilità</h2>
                     <p>
-                        VOX LUX STRATEGY fornisce contenuti formativi. I risultati non sono garantiti e dipendono dall'applicazione individuale delle strategie. L'azienda non è responsabile per decisioni di business prese sulla base delle informazioni fornite o per mancati guadagni.
+                        VOX AUREA fornisce contenuti formativi. I risultati non sono garantiti e dipendono dall'applicazione individuale delle strategie. L'azienda non è responsabile per decisioni di business prese sulla base delle informazioni fornite o per mancati guadagni.
                     </p>
                 </section>
 

@@ -187,7 +187,7 @@ export const CourseView: React.FC<CourseViewProps> = ({ courseId, onBack, onNavi
                 <button onClick={onBack}>
                     <ArrowLeft className="w-6 h-6 text-gray-400" />
                 </button>
-                <span className="text-sm font-bold tracking-widest text-lux-gold uppercase">Vox Lux Strategy</span>
+                <span className="text-sm font-bold tracking-widest text-lux-gold uppercase">Vox Aurea</span>
                 <button onClick={() => setSidebarOpen(!sidebarOpen)}>
                     {sidebarOpen ? <X className="w-6 h-6 text-white" /> : <Menu className="w-6 h-6 text-white" />}
                 </button>

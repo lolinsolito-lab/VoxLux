@@ -51,7 +51,7 @@ export const Splash: React.FC<SplashProps> = ({ onComplete }) => {
           {/* Brand Header */}
           <div className="mb-12 text-center animate-[fadeIn_1s_ease-out]">
             <h2 className="text-3xl md:text-5xl font-display font-bold text-transparent bg-clip-text bg-gradient-to-b from-lux-gold via-lux-goldDim to-lux-goldDark drop-shadow-2xl mb-4 tracking-widest">
-              VOX LUX STRATEGY
+              VOX AUREA
             </h2>
             <p className="text-xs md:text-sm text-blue-200/60 font-serif italic tracking-[0.2em]">
               "HUMAN VOICE MASTERY & AI STORYTELLING"
@@ -134,7 +134,7 @@ export const Splash: React.FC<SplashProps> = ({ onComplete }) => {
         {/* TEXT REVEAL */}
         <div className="text-center overflow-hidden">
           <h1 className="text-6xl md:text-8xl font-display font-bold text-transparent bg-clip-text bg-gradient-to-b from-white via-amber-100 to-amber-500 drop-shadow-2xl tracking-widest animate-[tracking_3s_ease-out_forwards]">
-            VOX LUX
+            VOX AUREA
           </h1>
           <div className="h-px w-full bg-gradient-to-r from-transparent via-cyan-400 to-transparent mt-6 mb-4 animate-[expandLine_2s_ease-out_forwards]"></div>
           <p className="text-sm md:text-lg text-cyan-200/80 uppercase tracking-[0.6em] font-light animate-[fadeIn_2s_ease-out_1s_both]">

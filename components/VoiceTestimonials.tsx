@@ -120,7 +120,7 @@ export const VoiceTestimonials: React.FC = () => {
                     </h2>
                     <p className="text-lg text-zinc-400 max-w-2xl mx-auto mb-8">
                         La differenza tra una voce che chiede permesso e una che comanda attenzione.
-                        Il risultato del Protocollo Vox Lux.
+                        Il risultato del Protocollo Vox Aurea.
                     </p>
 
                     {/* Filters */}
