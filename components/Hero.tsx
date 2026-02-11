@@ -10,6 +10,7 @@ import { AscensionCard } from './AscensionCard';
 import { HeroFAQ } from './HeroFAQ';
 import { VoiceTestimonials } from './VoiceTestimonials';
 import { ExtrasPreview } from './ExtrasPreview';
+import { StorytellingNarrative } from './StorytellingNarrative';
 
 interface HeroProps {
   onEnter: (courseId: string) => void;
@@ -137,6 +138,9 @@ export const Hero: React.FC<HeroProps> = ({ onEnter }) => {
           </div>
         </div>
 
+        {/* Storytelling Narrative Sections */}
+        <StorytellingNarrative />
+
         {/* Courses Section - Vertical Stack */}
         <div id="mobile-content" className="w-full px-6 py-24 space-y-20">
 
@@ -188,20 +192,28 @@ export const Hero: React.FC<HeroProps> = ({ onEnter }) => {
       {/* =====================================================================================
           DESKTOP VIEW (>= 1024px)
          ===================================================================================== */}
-      <div className="hidden lg:flex w-full min-h-screen flex-col justify-start items-center relative z-10 pt-36 pb-4 scale-90 origin-top">
+      <div className="hidden lg:flex w-full min-h-screen flex-col justify-start items-center relative z-10 pt-44 pb-4 origin-top">
 
         {/* Header */}
-        <div className="text-center mb-8 animate-[fadeIn_1s_ease-out]">
+        <div className="text-center mb-16 animate-[fadeIn_1s_ease-out]">
           <div className="inline-block mb-4 animate-float">
             <Crown className="w-12 h-12 text-lux-gold drop-shadow-[0_0_15px_rgba(228,197,114,0.6)]" />
           </div>
           <h1 className="text-6xl font-display font-bold text-transparent bg-clip-text bg-gradient-to-b from-lux-gold via-lux-goldDim to-lux-goldDark drop-shadow-2xl mb-4">
             VOX AUREA
           </h1>
-          <p className="text-xs uppercase tracking-[0.5em] text-stone-500 -mt-2 mb-2">STRATEGY</p>
+          <p className="text-xs uppercase tracking-[0.5em] text-stone-500 -mt-2 mb-4">STRATEGY</p>
           <p className="text-lg text-blue-200/60 font-serif italic tracking-wide">
             "La comunicazione d'élite per chi merita di essere ascoltato."
           </p>
+          <p className="text-sm text-gray-400 mt-3 max-w-xl mx-auto">
+            Storytelling strategico e Podcasting professionale per <span className="text-lux-cyan font-semibold">costruire autorevolezza reale</span>.
+          </p>
+        </div>
+
+        {/* Storytelling Narrative Sections */}
+        <div className="w-full max-w-7xl mx-auto">
+          <StorytellingNarrative />
         </div>
 
         {/* 3-Card Grid */}
