@@ -1,4 +1,3 @@
-```
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MessageSquare, Send, CheckCircle, Clock, Search, Filter, User, MoreVertical, X, AlertCircle, RefreshCw } from 'lucide-react';
@@ -41,7 +40,7 @@ export const AdminSupport: React.FC = () => {
     // FETCH TICKETS
     useEffect(() => {
         fetchTickets();
-        
+
         // Subscribe to NEW tickets
         const channel = supabase
             .channel('admin-tickets')
@@ -61,8 +60,8 @@ export const AdminSupport: React.FC = () => {
 
         // Subscribe to NEW messages for this ticket
         const channel = supabase
-            .channel(`ticket - ${ selectedTicket.id } `)
-            .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'support_messages', filter: `ticket_id = eq.${ selectedTicket.id } ` }, (payload) => {
+            .channel(`ticket-${selectedTicket.id}`)
+            .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'support_messages', filter: `ticket_id=eq.${selectedTicket.id}` }, (payload) => {
                 setMessages(prev => [...prev, payload.new as Message]);
                 scrollToBottom();
             })
@@ -81,7 +80,7 @@ export const AdminSupport: React.FC = () => {
                 .order('last_reply_at', { ascending: false });
 
             if (error) throw error;
-            
+
             setTickets(data as any || []);
         } catch (error) {
             console.error('Error fetching tickets:', error);
@@ -162,7 +161,7 @@ export const AdminSupport: React.FC = () => {
                 <div className="p-4 border-b border-white/10 bg-black/40">
                     <div className="flex justify-between items-center mb-4">
                         <h2 className="text-xl font-bold text-white">Supporto & Ticket</h2>
-                        <button 
+                        <button
                             onClick={() => fetchTickets()}
                             className="p-2 bg-white/5 hover:bg-white/10 rounded-lg text-gray-400 hover:text-white transition-colors"
                             title="Aggiorna lista"
@@ -175,11 +174,10 @@ export const AdminSupport: React.FC = () => {
                             <button
                                 key={status}
                                 onClick={() => setFilterStatus(status)}
-                                className={`px - 3 py - 1.5 rounded - lg text - xs font - bold uppercase tracking - wider transition - all ${
-    filterStatus === status
-        ? 'bg-white text-black'
-        : 'bg-white/5 text-gray-400 hover:bg-white/10'
-} `}
+                                className={`px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider transition-all ${filterStatus === status
+                                        ? 'bg-white text-black'
+                                        : 'bg-white/5 text-gray-400 hover:bg-white/10'
+                                    }`}
                             >
                                 {status === 'all' ? 'Tutti' : status === 'open' ? 'Aperti' : 'Chiusi'}
                             </button>
@@ -204,12 +202,11 @@ export const AdminSupport: React.FC = () => {
                             <div
                                 key={ticket.id}
                                 onClick={() => setSelectedTicket(ticket)}
-                                className={`p - 4 border - b border - white / 5 cursor - pointer transition - all hover: bg - white / 5 ${
-    selectedTicket?.id === ticket.id ? 'bg-white/10 border-l-4 border-l-green-500' : ''
-} `}
+                                className={`p-4 border-b border-white/5 cursor-pointer transition-all hover:bg-white/5 ${selectedTicket?.id === ticket.id ? 'bg-white/10 border-l-4 border-l-green-500' : ''
+                                    }`}
                             >
                                 <div className="flex justify-between items-start mb-1">
-                                    <span className={`text - [10px] font - bold px - 2 py - 0.5 rounded uppercase ${ getStatusColor(ticket.status) } `}>
+                                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded uppercase ${getStatusColor(ticket.status)}`}>
                                         {ticket.status.replace('_', ' ')}
                                     </span>
                                     <span className="text-xs text-gray-500">
@@ -266,18 +263,14 @@ export const AdminSupport: React.FC = () => {
                                     initial={{ opacity: 0, y: 10 }}
                                     animate={{ opacity: 1, y: 0 }}
                                     key={msg.id}
-                                    className={`flex ${ msg.is_admin ? 'justify-end' : 'justify-start' } `}
+                                    className={`flex ${msg.is_admin ? 'justify-end' : 'justify-start'}`}
                                 >
-                                    <div className={`
-max - w - [70 %] p - 3 rounded - 2xl text - sm leading - relaxed
-                                        ${
-    msg.is_admin
-        ? 'bg-green-600 text-white rounded-br-none'
-        : 'bg-zinc-800 text-gray-200 rounded-bl-none'
-}
-`}>
+                                    <div className={`max-w-[70%] p-3 rounded-2xl text-sm leading-relaxed ${msg.is_admin
+                                            ? 'bg-green-600 text-white rounded-br-none'
+                                            : 'bg-zinc-800 text-gray-200 rounded-bl-none'
+                                        }`}>
                                         <p>{msg.message}</p>
-                                        <p className={`text - [10px] mt - 1 text - right ${ msg.is_admin ? 'text-green-200' : 'text-zinc-400' } `}>
+                                        <p className={`text-[10px] mt-1 text-right ${msg.is_admin ? 'text-green-200' : 'text-zinc-400'}`}>
                                             {new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                                         </p>
                                     </div>
