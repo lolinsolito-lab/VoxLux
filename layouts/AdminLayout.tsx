@@ -10,7 +10,8 @@ import {
     X,
     ShieldAlert,
     ArrowLeft,
-    Calendar
+    Calendar,
+    MessageSquare,
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { BRANDING } from '../config/branding';
@@ -29,6 +30,7 @@ export const AdminLayout: React.FC = () => {
         { path: '/admin/calendar', label: 'Calendario', icon: <Calendar size={20} /> },
         { path: '/admin/content', label: 'Contenuti', icon: <Settings size={20} /> },
         { path: '/admin/discounts', label: 'Sconti', icon: <ShieldAlert size={20} /> },
+        { path: '/admin/support', label: 'Supporto', icon: <MessageSquare size={20} /> },
     ];
 
     const isActive = (path: string) => location.pathname === path;
