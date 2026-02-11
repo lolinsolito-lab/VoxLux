@@ -45,13 +45,13 @@ export const AdminSupport: React.FC = () => {
 
     // FETCH TICKETS
     useEffect(() => {
-        fetchTickets();
+        fetchTicketsAndProfiles();
 
         // Subscribe to NEW tickets
         const channel = supabase
             .channel('admin-tickets')
             .on('postgres_changes', { event: '*', schema: 'public', table: 'support_tickets' }, () => {
-                fetchTickets();
+                fetchTicketsAndProfiles();
             })
             .subscribe();
 
@@ -76,24 +76,55 @@ export const AdminSupport: React.FC = () => {
         return () => { channel.unsubscribe(); };
     }, [selectedTicket]);
 
-    const fetchTickets = async () => {
+    const fetchTicketsAndProfiles = async () => {
         setLoading(true);
         try {
-            // Updated fetch to JOIN profiles
-            const { data, error } = await supabase
+            // 1. Fetch Tickets (Raw, no join)
+            const { data: ticketsData, error: ticketsError } = await supabase
                 .from('support_tickets')
-                .select('*, profiles:user_id (email, full_name, avatar_url)')
+                .select('*')
                 .order('last_reply_at', { ascending: false });
 
-            if (error) throw error;
+            if (ticketsError) throw ticketsError;
 
-            setTickets(data as any || []);
+            if (!ticketsData || ticketsData.length === 0) {
+                setTickets([]);
+                setLoading(false);
+                return;
+            }
+
+            // 2. Extract User IDs
+            const userIds = Array.from(new Set(ticketsData.map(t => t.user_id)));
+
+            // 3. Fetch Profiles manually
+            const { data: profilesData, error: profilesError } = await supabase
+                .from('profiles')
+                .select('id, email, full_name, avatar_url')
+                .in('id', userIds);
+
+            if (profilesError) console.warn('Error fetching profiles:', profilesError);
+
+            // 4. Merge Data
+            const profilesMap = new Map();
+            profilesData?.forEach(p => profilesMap.set(p.id, p));
+
+            const mergedTickets = ticketsData.map(ticket => ({
+                ...ticket,
+                profiles: profilesMap.get(ticket.user_id) || { email: 'Sconosciuto', full_name: 'Utente' } // Fallback
+            }));
+
+            setTickets(mergedTickets as Ticket[]);
         } catch (error) {
             console.error('Error fetching tickets:', error);
         } finally {
             setLoading(false);
         }
     };
+
+    // Kept for refresh button
+    const fetchTickets = fetchTicketsAndProfiles;
+
+    // Legacy function stub if needed, but fetchTicketsAndProfiles replaces it.
 
     const fetchMessages = async (ticketId: string) => {
         const { data } = await supabase
@@ -192,8 +223,8 @@ export const AdminSupport: React.FC = () => {
                                 key={status}
                                 onClick={() => setFilterStatus(status)}
                                 className={`px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider transition-all ${filterStatus === status
-                                        ? 'bg-white text-black'
-                                        : 'bg-white/5 text-gray-400 hover:bg-white/10'
+                                    ? 'bg-white text-black'
+                                    : 'bg-white/5 text-gray-400 hover:bg-white/10'
                                     }`}
                             >
                                 {status === 'all' ? 'Tutti' : status === 'open' ? 'Aperti' : 'Chiusi'}
@@ -296,8 +327,8 @@ export const AdminSupport: React.FC = () => {
                                     className={`flex ${msg.is_admin ? 'justify-end' : 'justify-start'}`}
                                 >
                                     <div className={`max-w-[70%] p-3 rounded-2xl text-sm leading-relaxed ${msg.is_admin
-                                            ? 'bg-green-600 text-white rounded-br-none'
-                                            : 'bg-zinc-800 text-gray-200 rounded-bl-none'
+                                        ? 'bg-green-600 text-white rounded-br-none'
+                                        : 'bg-zinc-800 text-gray-200 rounded-bl-none'
                                         }`}>
                                         <p>{msg.message}</p>
                                         <p className={`text-[10px] mt-1 text-right ${msg.is_admin ? 'text-green-200' : 'text-zinc-400'}`}>
