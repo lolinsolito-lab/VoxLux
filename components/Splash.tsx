@@ -50,11 +50,12 @@ export const Splash: React.FC<SplashProps> = ({ onComplete }) => {
 
           {/* Brand Header */}
           <div className="mb-12 text-center animate-[fadeIn_1s_ease-out]">
-            <h2 className="text-3xl md:text-5xl font-display font-bold text-transparent bg-clip-text bg-gradient-to-b from-lux-gold via-lux-goldDim to-lux-goldDark drop-shadow-2xl mb-4 tracking-widest">
+            <h2 className="text-3xl md:text-5xl font-display font-bold text-transparent bg-clip-text bg-gradient-to-b from-lux-gold via-lux-goldDim to-lux-goldDark drop-shadow-2xl mb-2 tracking-widest">
               VOX AUREA
             </h2>
+            <p className="text-[10px] uppercase tracking-[0.5em] text-stone-500 mb-6">STRATEGY</p>
             <p className="text-xs md:text-sm text-blue-200/60 font-serif italic tracking-[0.2em]">
-              "HUMAN VOICE MASTERY & AI STORYTELLING"
+              "La comunicazione d'élite per chi merita di essere ascoltato."
             </p>
           </div>
 
@@ -69,7 +70,7 @@ export const Splash: React.FC<SplashProps> = ({ onComplete }) => {
             <button
               className="relative px-12 py-4 bg-black/80 border border-lux-gold/30 text-lux-gold font-display font-bold tracking-[0.3em] uppercase text-sm hover:bg-lux-gold hover:text-black transition-all duration-500 shadow-[0_0_30px_rgba(250,204,21,0.1)] group-hover:shadow-[0_0_50px_rgba(250,204,21,0.4)] group-hover:scale-105"
             >
-              Enter Experience
+              Inizia l'Esperienza
             </button>
 
             {/* Decorative Lines */}
@@ -78,7 +79,7 @@ export const Splash: React.FC<SplashProps> = ({ onComplete }) => {
           </div>
 
           <p className="mt-8 text-[10px] text-gray-500 uppercase tracking-[0.2em] animate-pulse">
-            Audio & Visual Immersion
+            Attiva l'audio per l'esperienza completa
           </p>
         </div>
       )}
@@ -90,7 +91,7 @@ export const Splash: React.FC<SplashProps> = ({ onComplete }) => {
         <div className="w-[600px] h-[600px] rounded-full border border-indigo-500/10 animate-[spin_4s_linear_infinite]"></div>
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] rounded-full border border-indigo-500/20 animate-[spin_3s_linear_infinite_reverse]"></div>
         {/* Particles sucking in */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-cyan-400 animate-pulse tracking-[1em] text-xs font-mono opacity-50 text-center w-full">INITIALIZING INSOLITO EXPERIENCE...</div>
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-cyan-400 animate-pulse tracking-[1em] text-xs font-mono opacity-50 text-center w-full">INIZIALIZZAZIONE IN CORSO...</div>
       </div>
 
       {/* ==================================================================================
@@ -136,10 +137,8 @@ export const Splash: React.FC<SplashProps> = ({ onComplete }) => {
           <h1 className="text-6xl md:text-8xl font-display font-bold text-transparent bg-clip-text bg-gradient-to-b from-white via-amber-100 to-amber-500 drop-shadow-2xl tracking-widest animate-[tracking_3s_ease-out_forwards]">
             VOX AUREA
           </h1>
-          <div className="h-px w-full bg-gradient-to-r from-transparent via-cyan-400 to-transparent mt-6 mb-4 animate-[expandLine_2s_ease-out_forwards]"></div>
-          <p className="text-sm md:text-lg text-cyan-200/80 uppercase tracking-[0.6em] font-light animate-[fadeIn_2s_ease-out_1s_both]">
-            Domina l'Arte dell'Ascolto
-          </p>
+          <p className="text-xs uppercase tracking-[0.5em] text-stone-500 mt-2 animate-[fadeIn_2s_ease-out_0.5s_both]">STRATEGY</p>
+          <div className="h-px w-full bg-gradient-to-r from-transparent via-cyan-400 to-transparent mt-4 mb-4 animate-[expandLine_2s_ease-out_forwards]"></div>
         </div>
       </div>
 
