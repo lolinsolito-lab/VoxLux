@@ -32,9 +32,10 @@ interface BonusProduct {
 
 
 import { createCheckoutSession, STRIPE_PRODUCTS, CourseId } from '../services/stripe';
-import { Lock, ShoppingCart, CheckCircle, Crown, X, Settings, Shield } from 'lucide-react';
+import { Lock, ShoppingCart, CheckCircle, Crown, X, Settings, Shield, HelpCircle } from 'lucide-react';
 import { ProfileSettings } from './ProfileSettings';
 import { SupportWidget } from './SupportWidget';
+import { FAQModal } from './FAQModal';
 
 // Secret admin email - only this email can see GOD MODE button
 const ADMIN_EMAIL = 'jaramichael@hotmail.com';
@@ -55,6 +56,7 @@ export const DashboardPage: React.FC = () => {
     const [showSuccessModal, setShowSuccessModal] = useState(false);
     const [purchasedCourseName, setPurchasedCourseName] = useState('');
     const [showProfileSettings, setShowProfileSettings] = useState(false);
+    const [showFAQModal, setShowFAQModal] = useState(false);
 
     useEffect(() => {
         if (user) {
@@ -297,6 +299,13 @@ export const DashboardPage: React.FC = () => {
                                 </div>
                             </div>
                         )}
+                        <button
+                            onClick={() => setShowFAQModal(true)}
+                            className="p-2 text-gray-400 hover:text-white transition-colors border border-white/10 rounded-lg hover:border-yellow-500/50 bg-white/5"
+                            title="Domande Frequenti"
+                        >
+                            <HelpCircle size={18} />
+                        </button>
                         <button
                             onClick={() => setShowProfileSettings(true)}
                             className="p-2 text-gray-400 hover:text-yellow-500 transition-colors border border-white/10 rounded-lg hover:border-yellow-500/50"
@@ -655,6 +664,9 @@ export const DashboardPage: React.FC = () => {
                 isOpen={showProfileSettings}
                 onClose={() => setShowProfileSettings(false)}
             />
+
+            {/* FAQ Modal */}
+            <FAQModal isOpen={showFAQModal} onClose={() => setShowFAQModal(false)} />
 
             {/* SUPPORT WIDGET - Always available for logged in users */}
             <SupportWidget />
