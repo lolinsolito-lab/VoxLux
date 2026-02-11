@@ -274,16 +274,38 @@ export const SupportWidget: React.FC = () => {
                             {view === 'new' && (
                                 <form onSubmit={createTicket} className="p-4 space-y-4">
                                     <div>
-                                        <label className="text-xs text-gray-400 block mb-1">Oggetto</label>
-                                        <input
-                                            type="text"
-                                            value={newTicketSubject}
-                                            onChange={e => setNewTicketSubject(e.target.value)}
-                                            className="w-full bg-zinc-900 border border-zinc-700 rounded-lg p-2 text-white text-sm focus:border-green-500 outline-none"
-                                            placeholder="Es. Problema accesso modulo 2..."
-                                            required
-                                        />
+                                        <label className="text-xs text-gray-400 block mb-1">Argomento</label>
+                                        <div className="relative">
+                                            <select
+                                                value={selectedTopic}
+                                                onChange={(e) => setSelectedTopic(e.target.value)}
+                                                className="w-full bg-zinc-900 border border-zinc-700 rounded-lg p-2 text-white text-sm focus:border-green-500 outline-none appearance-none cursor-pointer"
+                                            >
+                                                {SUPPORT_TOPICS.map(topic => (
+                                                    <option key={topic} value={topic}>{topic}</option>
+                                                ))}
+                                            </select>
+                                            <ChevronDown className="absolute right-3 top-3 text-gray-500 pointer-events-none" size={16} />
+                                        </div>
                                     </div>
+
+                                    {selectedTopic === 'Altro' && (
+                                        <motion.div
+                                            initial={{ opacity: 0, height: 0 }}
+                                            animate={{ opacity: 1, height: 'auto' }}
+                                            className="overflow-hidden"
+                                        >
+                                            <label className="text-xs text-gray-400 block mb-1">Specifica Oggetto</label>
+                                            <input
+                                                type="text"
+                                                value={newTicketSubject}
+                                                onChange={e => setNewTicketSubject(e.target.value)}
+                                                className="w-full bg-zinc-900 border border-zinc-700 rounded-lg p-2 text-white text-sm focus:border-green-500 outline-none"
+                                                placeholder="Breve descrizione..."
+                                                required
+                                            />
+                                        </motion.div>
+                                    )}
                                     <div>
                                         <label className="text-xs text-gray-400 block mb-1">Messaggio</label>
                                         <textarea
