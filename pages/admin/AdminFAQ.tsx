@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
     HelpCircle, Plus, Search, Edit2, Trash2,
-    Save, X, ChevronDown, ChevronRight, GripVertical, Check
+    Save, X, ChevronDown, ChevronRight, GripVertical, Check, RefreshCw
 } from 'lucide-react';
 import { supabase } from '../../services/supabase';
 
@@ -145,8 +145,8 @@ export const AdminFAQ: React.FC = () => {
                                 initial={{ opacity: 0, x: -20 }}
                                 animate={{ opacity: 1, x: 0 }}
                                 className={`p-4 rounded-xl cursor-pointer border transition-all group relative ${selectedCategory === cat.id
-                                        ? 'bg-amber-500/10 border-amber-500/50 text-amber-200'
-                                        : 'bg-zinc-900 border-white/5 hover:border-white/10 text-zinc-400'
+                                    ? 'bg-amber-500/10 border-amber-500/50 text-amber-200'
+                                    : 'bg-zinc-900 border-white/5 hover:border-white/10 text-zinc-400'
                                     }`}
                             >
                                 <div className="flex justify-between items-center">
@@ -186,14 +186,57 @@ export const AdminFAQ: React.FC = () => {
                                     {activeQuestions.length} articoli
                                 </span>
                             </h2>
-                            <button
-                                onClick={() => { setEditingQuestion({ is_public: true }); setIsQuestionModalOpen(true); }}
-                                disabled={!selectedCategory}
-                                className="px-4 py-2 bg-amber-600 hover:bg-amber-500 text-white rounded-lg font-bold flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
-                            >
-                                <Plus size={18} />
-                                Nuova Domanda
-                            </button>
+                            <div className="flex gap-2">
+                                <button
+                                    onClick={async () => {
+                                        if (!confirm('Vuoi inizializzare le FAQ di default? Questo aggiungerà le domande pubbliche mancanti.')) return;
+                                        setLoading(true);
+                                        try {
+                                            const questions = [
+                                                { category_match: 'Pagamenti', question: 'Posso chiedere il rimborso?', answer: '<p>Sì, offriamo una garanzia <strong>Soddisfatti o Rimborsati di 30 giorni</strong>. Se il protocollo non risuona con la tua frequenza, scrivici e ti rimborseremo, senza domande.</p>' },
+                                                { category_match: 'Contenuti', question: 'Quanto tempo ho accesso al materiale?', answer: '<p>L\'accesso è <strong>a vita</strong> (Lifetime). Include tutti gli aggiornamenti futuri della matrice che hai acquistato.</p>' },
+                                                { category_match: 'Contenuti', question: 'Riceverò un certificato?', answer: '<p>Assolutamente. Al completamento del percorso e superamento dell\'Esame della Singolarità, riceverai il <strong>Diploma NFT Vox Lux</strong> registrato su Blockchain.</p>' },
+                                                { category_match: 'Pagamenti', question: 'Posso pagare a rate?', answer: '<p>Sì, offriamo piani di pagamento flessibili tramite Klarna o PayPal in 3 rate senza interessi. Seleziona l\'opzione al checkout.</p>' }
+                                            ];
+
+                                            // Get all categories to map IDs
+                                            const { data: cats } = await supabase.from('faq_categories').select('id, title');
+
+                                            for (const q of questions) {
+                                                const cat = cats?.find(c => c.title.includes(q.category_match));
+                                                if (cat) {
+                                                    await supabase.from('faq_questions').insert({
+                                                        category_id: cat.id,
+                                                        question: q.question,
+                                                        answer_html: q.answer,
+                                                        is_public: true,
+                                                        order_index: 0
+                                                    });
+                                                }
+                                            }
+                                            alert('FAQ Inizializzate con successo!');
+                                            fetchData();
+                                        } catch (e) {
+                                            console.error(e);
+                                            alert('Errore durante l\'inizializzazione.');
+                                        } finally {
+                                            setLoading(false);
+                                        }
+                                    }}
+                                    className="px-4 py-2 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 rounded-lg font-bold flex items-center gap-2 text-sm border border-white/10"
+                                >
+                                    <RefreshCw size={16} />
+                                    Inizializza Default
+                                </button>
+                                <button
+                                    onClick={() => { setEditingQuestion({ is_public: true }); setIsQuestionModalOpen(true); }}
+                                    disabled={!selectedCategory}
+                                    className="px-4 py-2 bg-amber-600 hover:bg-amber-500 text-white rounded-lg font-bold flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                                >
+                                    <Plus size={18} />
+                                    Nuova Domanda
+                                </button>
+                            </div>
                         </div>
 
                         {/* QUESTIONS LIST */}

@@ -237,15 +237,30 @@ export const SupportWidget: React.FC = () => {
                             {/* VIEW: LIST */}
                             {view === 'list' && (
                                 <div className="p-4 space-y-4">
+                                    <div className="space-y-2 mb-4">
+                                        <h3 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Come possiamo aiutarti?</h3>
+                                        <div className="grid grid-cols-2 gap-2">
+                                            {SUPPORT_TOPICS.slice(0, 4).map(topic => (
+                                                <button
+                                                    key={topic}
+                                                    onClick={() => { setSelectedTopic(topic); setView('new'); }}
+                                                    className="p-2 bg-zinc-900 border border-zinc-800 rounded-lg text-xs text-gray-300 hover:text-white hover:border-green-500/50 hover:bg-green-900/10 transition-all text-left"
+                                                >
+                                                    {topic}
+                                                </button>
+                                            ))}
+                                        </div>
+                                    </div>
+
                                     <button
-                                        onClick={() => setView('new')}
+                                        onClick={() => { setSelectedTopic(SUPPORT_TOPICS[0]); setView('new'); }}
                                         className="w-full py-3 bg-white/5 hover:bg-white/10 border border-white/10 hover:border-green-500/50 rounded-xl text-sm font-bold text-white transition-all flex items-center justify-center gap-2"
                                     >
                                         <MessageCircle size={16} />
-                                        Nuova Richiesta
+                                        Nuova Richiesta Personalizzata
                                     </button>
 
-                                    <div className="space-y-2">
+                                    <div className="space-y-2 mt-4 border-t border-white/5 pt-4">
                                         <h3 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">I tuoi Ticket</h3>
                                         {tickets.length === 0 ? (
                                             <p className="text-center text-sm text-gray-600 py-4">Nessuna conversazione attiva.</p>
@@ -366,7 +381,7 @@ export const SupportWidget: React.FC = () => {
                         </div>
                     </motion.div>
                 )}
-            </AnimatePresence>
+            </AnimatePresence >
         </>
     );
 };
