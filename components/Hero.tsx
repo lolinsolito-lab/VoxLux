@@ -7,6 +7,7 @@ import { Footer } from './Footer';
 import { RegisterModal } from './RegisterModal';
 import { PricingCard } from './PricingCard';
 import { AscensionCard } from './AscensionCard';
+import { HeroFAQ } from './HeroFAQ';
 
 interface HeroProps {
   onEnter: (courseId: string) => void;
@@ -174,6 +175,7 @@ export const Hero: React.FC<HeroProps> = ({ onEnter }) => {
             onEnter={onEnter}
           />
 
+          <HeroFAQ />
           <Footer />
         </div>
       </div>
@@ -252,6 +254,7 @@ export const Hero: React.FC<HeroProps> = ({ onEnter }) => {
         <div className="w-full py-2 mt-4 relative z-50 border-t border-white/5 bg-black/40 backdrop-blur-sm">
           <div className="max-w-7xl mx-auto px-6 text-center">
             <p className="text-stone-400 text-xs tracking-[0.2em] mb-2">GARANZIA DI QUALITÀ VOX LUX • PAGAMENTI SICURI STRIPE • ACCESSO IMMEDIATO</p>
+            <HeroFAQ />
             <Footer />
           </div>
         </div>

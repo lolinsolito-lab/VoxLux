@@ -41,6 +41,7 @@ import { AdminSupport } from './pages/admin/AdminSupport';
 import { AdminFAQ } from './pages/admin/AdminFAQ';
 import { BookingPage } from './pages/BookingPage';
 import { LegalGuard } from './components/LegalGuard';
+import { HelpCenter } from './pages/HelpCenter';
 
 
 // 🌌 VOX LUX STRATEGY - ELITE CONSOLE SIGNATURE
@@ -239,6 +240,7 @@ const MainApp: React.FC = () => {
               {currentView === View.TTS && <TextToSpeech />}
               {currentView === View.TRANSCRIBE && <AudioTranscribe />}
               {currentView === View.GENERAL_TASK && <GeneralTask />}
+              {currentView === View.SUPPORT && <HelpCenter />}
             </main>
           </div>
         );

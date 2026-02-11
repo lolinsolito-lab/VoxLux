@@ -14,7 +14,8 @@ export enum View {
   VIDEO_ANALYZE = 'VIDEO_ANALYZE',
   TTS = 'TTS',
   TRANSCRIBE = 'TRANSCRIBE',
-  GENERAL_TASK = 'GENERAL_TASK'
+  GENERAL_TASK = 'GENERAL_TASK',
+  SUPPORT = 'SUPPORT'
 }
 
 export interface NavItem {
