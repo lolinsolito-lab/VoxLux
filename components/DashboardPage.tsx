@@ -34,6 +34,7 @@ interface BonusProduct {
 import { createCheckoutSession, STRIPE_PRODUCTS, CourseId } from '../services/stripe';
 import { Lock, ShoppingCart, CheckCircle, Crown, X, Settings, Shield } from 'lucide-react';
 import { ProfileSettings } from './ProfileSettings';
+import { SupportWidget } from './SupportWidget';
 
 // Secret admin email - only this email can see GOD MODE button
 const ADMIN_EMAIL = 'jaramichael@hotmail.com';
@@ -167,10 +168,7 @@ export const DashboardPage: React.FC = () => {
     };
 
     const handleBuyCourse = async (courseId: CourseId) => {
-        const checkout_url = await createCheckoutSession(courseId, user?.email);
-        if (checkout_url) {
-            window.location.href = checkout_url;
-        }
+        await createCheckoutSession(courseId, user?.email);
     };
 
     const handlePurchaseExtra = async (bonusId: string) => {
@@ -657,6 +655,9 @@ export const DashboardPage: React.FC = () => {
                 isOpen={showProfileSettings}
                 onClose={() => setShowProfileSettings(false)}
             />
+
+            {/* SUPPORT WIDGET - Always available for logged in users */}
+            <SupportWidget />
         </div>
     );
 };
