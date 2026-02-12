@@ -194,8 +194,12 @@ export const DashboardPage: React.FC = () => {
     };
 
     const handleLogout = async () => {
+        // Prevent splash screen from reappearing on logout
+        if (typeof window !== 'undefined') {
+            sessionStorage.setItem('vox_splash_seen', 'true');
+        }
         await logout();
-        navigate('/login', { replace: true });
+        navigate('/', { replace: true });
     };
 
     const handleBuyCourse = async (courseId: CourseId) => {
