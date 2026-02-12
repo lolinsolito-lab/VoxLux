@@ -114,29 +114,32 @@ export const FounderSection: React.FC = () => {
                                             initial={{ scale: 0.9, y: 20 }}
                                             animate={{ scale: 1, y: 0 }}
                                             exit={{ opacity: 0, scale: 0.9, y: 20 }}
-                                            className="relative bg-stone-950 border border-lux-gold/30 rounded-xl overflow-hidden shadow-[0_0_50px_rgba(228,197,114,0.3)] w-full max-w-[320px]"
+                                            className="relative bg-stone-950 border border-lux-gold/30 rounded-xl overflow-hidden shadow-[0_0_50px_rgba(228,197,114,0.3)] w-full max-w-[340px] flex flex-col"
                                             onClick={(e) => e.stopPropagation()}
                                         >
-                                            <div className="h-[280px] w-full relative grayscale">
-                                                <div className="absolute inset-0 bg-gradient-to-t from-stone-950 via-stone-950/80 to-transparent opacity-90" />
+                                            {/* Photo Section - Full Visibility */}
+                                            <div className="h-[350px] w-full relative grayscale border-b border-lux-gold/10">
+                                                <div className="absolute inset-0 bg-gradient-to-t from-stone-950/20 to-transparent" />
                                                 <img src="/assets/founder.png" alt="Michael Jara" className="w-full h-full object-cover" />
                                                 <button
                                                     onClick={() => setIsHovered(false)}
-                                                    className="absolute top-4 right-4 text-white/50 hover:text-white bg-black/50 rounded-full p-2"
+                                                    className="absolute top-4 right-4 text-white bg-black/50 hover:bg-black/80 rounded-full p-2 transition-colors border border-white/10"
                                                 >
                                                     <X size={20} />
                                                 </button>
                                             </div>
-                                            <div className="absolute bottom-0 left-0 right-0 p-6 text-left z-10 bg-stone-950/50 backdrop-blur-md">
-                                                <p className="text-white font-bold text-lg leading-tight mb-2">L'Arte dell'Ascesa</p>
-                                                <p className="text-stone-300 text-xs leading-relaxed italic border-l-2 border-lux-gold pl-3 drop-shadow-md">
+
+                                            {/* Text Section - Below Photo */}
+                                            <div className="p-6 text-left bg-stone-950 relative z-10">
+                                                <p className="text-white font-bold text-xl leading-tight mb-3">L'Arte dell'Ascesa</p>
+                                                <p className="text-stone-300 text-sm leading-relaxed italic border-l-2 border-lux-gold pl-4 drop-shadow-md">
                                                     "Ho lanciato imprese che hanno toccato il cielo e altre che mi hanno insegnato a rialzarmi.
                                                     Non esiste fallimento per chi ha la virtù di persistere.
                                                     La mia voce non è un dono, è una conquista."
                                                 </p>
-                                                <div className="flex items-center gap-2 mt-4">
-                                                    <span className="text-lux-gold font-bold text-lg">10+</span>
-                                                    <span className="text-[10px] text-stone-400 uppercase tracking-widest">Anni di Strategia</span>
+                                                <div className="flex items-center gap-3 mt-5 pt-4 border-t border-white/5">
+                                                    <span className="text-lux-gold font-bold text-xl">10+</span>
+                                                    <span className="text-[11px] text-stone-400 uppercase tracking-widest font-semibold">Anni di Strategia</span>
                                                 </div>
                                             </div>
                                         </motion.div>
