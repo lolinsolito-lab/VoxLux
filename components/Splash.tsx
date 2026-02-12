@@ -88,10 +88,10 @@ export const Splash: React.FC<SplashProps> = ({ onComplete }) => {
           PHASE 1: THE IMPLOSION (Gathering Energy)
          ================================================================================== */}
       <div className={`absolute transition-all duration-500 ${phase >= 2 || !started ? 'opacity-0 scale-0' : 'opacity-100 scale-100'}`}>
-        <div className="w-[600px] h-[600px] rounded-full border border-indigo-500/10 animate-[spin_4s_linear_infinite]"></div>
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] rounded-full border border-indigo-500/20 animate-[spin_3s_linear_infinite_reverse]"></div>
+        <div className="w-[80vw] max-w-[600px] h-[80vw] max-h-[600px] rounded-full border border-indigo-500/10 animate-[spin_4s_linear_infinite]"></div>
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[55vw] max-w-[400px] h-[55vw] max-h-[400px] rounded-full border border-indigo-500/20 animate-[spin_3s_linear_infinite_reverse]"></div>
         {/* Particles sucking in */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-cyan-400 animate-pulse tracking-[1em] text-xs font-mono opacity-50 text-center w-full">INIZIALIZZAZIONE IN CORSO...</div>
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-cyan-400 animate-pulse tracking-[0.3em] md:tracking-[1em] text-[10px] md:text-xs font-mono opacity-50 text-center w-full px-4">INIZIALIZZAZIONE IN CORSO...</div>
       </div>
 
       {/* ==================================================================================

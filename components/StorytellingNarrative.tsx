@@ -118,7 +118,7 @@ export const StorytellingNarrative: React.FC = () => {
                         <p className="text-xs uppercase tracking-[0.4em] text-red-400/80 mb-4 font-bold">
                             Il vero problema
                         </p>
-                        <h2 className="text-3xl md:text-5xl font-display font-bold text-white mb-6 leading-tight">
+                        <h2 className="text-3xl md:text-5xl lg:text-6xl font-display font-bold text-white mb-6 leading-tight">
                             Hai le competenze.<br />
                             <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-400 to-orange-400">
                                 Ti manca la voce.
@@ -145,10 +145,10 @@ export const StorytellingNarrative: React.FC = () => {
                                     <div className="w-12 h-12 rounded-lg bg-red-500/10 border border-red-500/20 flex items-center justify-center mb-6">
                                         <point.icon className="w-6 h-6 text-red-400" />
                                     </div>
-                                    <h3 className="text-xl font-display font-bold text-white mb-3">
+                                    <h3 className="text-xl lg:text-2xl font-display font-bold text-white mb-3">
                                         {point.title}
                                     </h3>
-                                    <p className="text-stone-400 text-sm leading-relaxed">
+                                    <p className="text-stone-400 text-sm lg:text-base leading-relaxed">
                                         {point.description}
                                     </p>
                                 </div>
@@ -176,7 +176,7 @@ export const StorytellingNarrative: React.FC = () => {
                         <p className="text-xs uppercase tracking-[0.4em] text-lux-gold/80 mb-4 font-bold">
                             La trasformazione
                         </p>
-                        <h2 className="text-3xl md:text-5xl font-display font-bold text-white mb-6 leading-tight">
+                        <h2 className="text-3xl md:text-5xl lg:text-6xl font-display font-bold text-white mb-6 leading-tight">
                             Da ignorato a<br />
                             <span className="text-transparent bg-clip-text bg-gradient-to-r from-lux-gold to-amber-300">
                                 punto di riferimento.
@@ -280,13 +280,13 @@ export const StorytellingNarrative: React.FC = () => {
                         <p className="text-xs uppercase tracking-[0.4em] text-lux-cyan/80 mb-4 font-bold">
                             Uno sguardo dentro
                         </p>
-                        <h2 className="text-3xl md:text-5xl font-display font-bold text-white mb-6 leading-tight">
+                        <h2 className="text-3xl md:text-5xl lg:text-6xl font-display font-bold text-white mb-6 leading-tight">
                             20 Mondi da esplorare.<br />
                             <span className="text-transparent bg-clip-text bg-gradient-to-r from-lux-cyan to-blue-400">
                                 Eccone un assaggio.
                             </span>
                         </h2>
-                        <p className="text-stone-400 max-w-xl mx-auto text-sm leading-relaxed">
+                        <p className="text-stone-400 max-w-xl mx-auto text-sm lg:text-base leading-relaxed">
                             Ogni Mastermind è composto da 10 Mondi — moduli immersivi che trasformano la teoria in abilità reali, passo dopo passo.
                         </p>
                     </motion.div>
@@ -296,8 +296,8 @@ export const StorytellingNarrative: React.FC = () => {
                         <button
                             onClick={() => setActiveTab('storytelling')}
                             className={`px-6 py-2.5 rounded-full text-xs uppercase tracking-widest font-bold transition-all duration-300 ${activeTab === 'storytelling'
-                                    ? 'bg-lux-gold/20 text-lux-gold border border-lux-gold/30 shadow-[0_0_15px_rgba(228,197,114,0.15)]'
-                                    : 'bg-white/5 text-stone-500 border border-white/10 hover:text-stone-300'
+                                ? 'bg-lux-gold/20 text-lux-gold border border-lux-gold/30 shadow-[0_0_15px_rgba(228,197,114,0.15)]'
+                                : 'bg-white/5 text-stone-500 border border-white/10 hover:text-stone-300'
                                 }`}
                         >
                             <BookOpen className="w-3.5 h-3.5 inline mr-2 -mt-0.5" />
@@ -306,8 +306,8 @@ export const StorytellingNarrative: React.FC = () => {
                         <button
                             onClick={() => setActiveTab('podcast')}
                             className={`px-6 py-2.5 rounded-full text-xs uppercase tracking-widest font-bold transition-all duration-300 ${activeTab === 'podcast'
-                                    ? 'bg-blue-500/20 text-blue-300 border border-blue-400/30 shadow-[0_0_15px_rgba(96,165,250,0.15)]'
-                                    : 'bg-white/5 text-stone-500 border border-white/10 hover:text-stone-300'
+                                ? 'bg-blue-500/20 text-blue-300 border border-blue-400/30 shadow-[0_0_15px_rgba(96,165,250,0.15)]'
+                                : 'bg-white/5 text-stone-500 border border-white/10 hover:text-stone-300'
                                 }`}
                         >
                             <Mic className="w-3.5 h-3.5 inline mr-2 -mt-0.5" />
@@ -331,8 +331,8 @@ export const StorytellingNarrative: React.FC = () => {
                                     <motion.div
                                         key={`${activeTab}-${i}`}
                                         className={`group relative p-6 rounded-xl border transition-all duration-500 ${activeTab === 'storytelling'
-                                                ? 'bg-gradient-to-b from-amber-900/[0.06] to-transparent border-lux-gold/10 hover:border-lux-gold/25'
-                                                : 'bg-gradient-to-b from-blue-900/[0.06] to-transparent border-blue-400/10 hover:border-blue-400/25'
+                                            ? 'bg-gradient-to-b from-amber-900/[0.06] to-transparent border-lux-gold/10 hover:border-lux-gold/25'
+                                            : 'bg-gradient-to-b from-blue-900/[0.06] to-transparent border-blue-400/10 hover:border-blue-400/25'
                                             }`}
                                         initial={{ opacity: 0, y: 20 }}
                                         animate={{ opacity: 1, y: 0 }}

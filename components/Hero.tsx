@@ -120,11 +120,11 @@ export const Hero: React.FC<HeroProps> = ({ onEnter }) => {
               VOX AUREA
             </h1>
             <p className="text-xs uppercase tracking-[0.5em] text-stone-500 -mt-8 mb-6">STRATEGY</p>
-            <p className="text-xl md:text-2xl text-blue-200/70 font-serif italic tracking-wide mb-12">
+            <p className="text-lg md:text-2xl text-blue-200/70 font-serif italic tracking-wide mb-8">
               "La comunicazione d'élite per chi merita di essere ascoltato."
             </p>
             <div className="max-w-2xl mx-auto mb-12 space-y-4">
-              <p className="text-lg text-gray-300 leading-relaxed">
+              <p className="text-base md:text-lg text-gray-300 leading-relaxed">
                 Storytelling strategico e Podcasting professionale per <span className="text-lux-cyan font-bold">costruire autorevolezza reale</span>.
               </p>
             </div>
@@ -195,18 +195,18 @@ export const Hero: React.FC<HeroProps> = ({ onEnter }) => {
       <div className="hidden lg:flex w-full min-h-screen flex-col justify-start items-center relative z-10 pt-44 pb-4 origin-top">
 
         {/* Header */}
-        <div className="text-center mb-16 animate-[fadeIn_1s_ease-out]">
-          <div className="inline-block mb-4 animate-float">
-            <Crown className="w-12 h-12 text-lux-gold drop-shadow-[0_0_15px_rgba(228,197,114,0.6)]" />
+        <div className="text-center mb-20 animate-[fadeIn_1s_ease-out]">
+          <div className="inline-block mb-6 animate-float">
+            <Crown className="w-14 h-14 text-lux-gold drop-shadow-[0_0_15px_rgba(228,197,114,0.6)]" />
           </div>
-          <h1 className="text-6xl font-display font-bold text-transparent bg-clip-text bg-gradient-to-b from-lux-gold via-lux-goldDim to-lux-goldDark drop-shadow-2xl mb-4">
+          <h1 className="text-7xl xl:text-8xl font-display font-bold text-transparent bg-clip-text bg-gradient-to-b from-lux-gold via-lux-goldDim to-lux-goldDark drop-shadow-2xl mb-4">
             VOX AUREA
           </h1>
-          <p className="text-xs uppercase tracking-[0.5em] text-stone-500 -mt-2 mb-4">STRATEGY</p>
-          <p className="text-lg text-blue-200/60 font-serif italic tracking-wide">
+          <p className="text-sm uppercase tracking-[0.5em] text-stone-500 -mt-2 mb-6">STRATEGY</p>
+          <p className="text-xl xl:text-2xl text-blue-200/60 font-serif italic tracking-wide">
             "La comunicazione d'élite per chi merita di essere ascoltato."
           </p>
-          <p className="text-sm text-gray-400 mt-3 max-w-xl mx-auto">
+          <p className="text-base text-gray-400 mt-4 max-w-2xl mx-auto leading-relaxed">
             Storytelling strategico e Podcasting professionale per <span className="text-lux-cyan font-semibold">costruire autorevolezza reale</span>.
           </p>
         </div>

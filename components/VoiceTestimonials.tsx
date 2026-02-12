@@ -19,7 +19,7 @@ const TESTIMONIALS: Testimonial[] = [
         id: '1',
         name: 'Marco V.',
         role: 'Consulente Finanziario',
-        result: 'Ha chiuso un deal da €15k in 20 minuti',
+        result: 'Primo pitch andato: deal da €15k chiuso',
         avatar_initials: 'MV',
         before_url: '/audio/testimonials/marco_before.mp3',
         after_url: '/audio/testimonials/marco_after.mp3',
@@ -29,7 +29,7 @@ const TESTIMONIALS: Testimonial[] = [
         id: '2',
         name: 'Giulia R.',
         role: 'Life Coach',
-        result: 'Podcast passato da 200 a 3.000 ascolti',
+        result: 'Podcast cresciuto da 200 a 3.000 ascolti',
         avatar_initials: 'GR',
         before_url: '/audio/testimonials/giulia_before.mp3',
         after_url: '/audio/testimonials/giulia_after.mp3',
@@ -39,7 +39,7 @@ const TESTIMONIALS: Testimonial[] = [
         id: '3',
         name: 'Alessandro B.',
         role: 'CEO Startup',
-        result: 'Investitori convinti al primo pitch',
+        result: 'Primo pitch con investitori: risultato positivo',
         avatar_initials: 'AB',
         before_url: '/audio/testimonials/alex_before.mp3',
         after_url: '/audio/testimonials/alex_after.mp3',
@@ -49,7 +49,7 @@ const TESTIMONIALS: Testimonial[] = [
         id: '4',
         name: 'Davide C.',
         role: 'Speaker Radiofonico',
-        result: 'Voce profonda e controllata in 30 giorni',
+        result: 'Voce più controllata e profonda dopo 30 giorni',
         avatar_initials: 'DC',
         before_url: '/audio/testimonials/davide_before.mp3',
         after_url: '/audio/testimonials/davide_after.mp3',
@@ -111,20 +111,23 @@ export const VoiceTestimonials: React.FC = () => {
 
                 {/* Header */}
                 <div className="text-center mb-12">
-                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-lux-gold/10 border border-lux-gold/20 text-lux-gold text-xs uppercase tracking-widest mb-4">
+                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs uppercase tracking-widest mb-4">
                         <Mic size={14} />
-                        <span>Voice of the Sovereign</span>
+                        <span>Protocollo Beta</span>
                     </div>
                     <h2 className="text-4xl md:text-5xl font-display font-bold text-transparent bg-clip-text bg-gradient-to-b from-white to-white/60 mb-6">
-                        Non Crederci. <span className="text-lux-gold font-serif italic">Ascolta.</span>
+                        I Primi Risultati. <span className="text-lux-gold font-serif italic">Reali.</span>
                     </h2>
-                    <p className="text-lg text-zinc-400 max-w-2xl mx-auto mb-8">
-                        La differenza tra una voce che chiede permesso e una che comanda attenzione.
-                        Il risultato del Protocollo Vox Aurea.
+                    <p className="text-base md:text-lg text-zinc-400 max-w-2xl mx-auto mb-4">
+                        Abbiamo testato la metodologia Vox Aurea con un gruppo selezionato di beta tester.
+                        Ecco cosa è cambiato nella loro comunicazione.
+                    </p>
+                    <p className="text-xs text-zinc-600 uppercase tracking-widest">
+                        Risultati del programma beta • Primi 4 partecipanti
                     </p>
 
                     {/* Filters */}
-                    <div className="inline-flex bg-zinc-900 p-1 rounded-lg border border-white/10">
+                    <div className="inline-flex bg-zinc-900 p-1 rounded-lg border border-white/10 mt-6">
                         {(['all', 'storytelling', 'podcasting'] as const).map((f) => (
                             <button
                                 key={f}
@@ -191,7 +194,7 @@ export const VoiceTestimonials: React.FC = () => {
                                 <div className="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-12">
                                     <div>
                                         <h3 className="text-2xl font-bold text-white mb-2">{activeTestimonial?.result}</h3>
-                                        <p className="text-zinc-500">Risultato verificato • Protocollo Matrice</p>
+                                        <p className="text-zinc-500">Risultato beta • Metodologia Vox Aurea</p>
                                     </div>
 
                                     {/* Toggle Switch */}
@@ -252,7 +255,7 @@ export const VoiceTestimonials: React.FC = () => {
                                     </button>
 
                                     <div className="mt-6 text-xs uppercase tracking-[0.2em] text-zinc-500 font-bold">
-                                        {isPlaying ? (mode === 'after' ? 'Frequenza Sovrana' : 'Frequenza Fantasma') : 'Premi Play per Ascoltare'}
+                                        {isPlaying ? (mode === 'after' ? 'Audio Post-Protocollo' : 'Audio Pre-Protocollo') : 'Premi Play per Ascoltare'}
                                     </div>
                                 </div>
 
