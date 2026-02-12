@@ -126,3 +126,32 @@ export interface Module {
   is_locked: boolean;
   lessons: Lesson[];
 }
+
+// --- PHASE 2: QUIZ & DIPLOMA TYPES ---
+
+export interface QuizQuestion {
+  id: string;
+  text: string;
+  options: string[];
+  correctAnswer: number; // Index of correct option
+  explanation?: string; // Shown after answer
+}
+
+export interface QuizData {
+  questions: QuizQuestion[];
+  passingScore: number; // 0-100
+  timeLimitMinutes?: number;
+}
+
+export interface Diploma {
+  id: string;
+  userId: string;
+  courseId: string;
+  certificateCode: string;
+  issuedAt: string;
+  metadata: {
+    userName: string;
+    courseTitle: string;
+    score?: number;
+  };
+}
