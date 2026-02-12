@@ -281,13 +281,13 @@ export const StorytellingNarrative: React.FC = () => {
                             Uno sguardo dentro
                         </p>
                         <h2 className="text-3xl md:text-5xl lg:text-6xl font-display font-bold text-white mb-6 leading-tight">
-                            20 Mondi da esplorare.<br />
+                            10 Moduli per Mastermind.<br />
                             <span className="text-transparent bg-clip-text bg-gradient-to-r from-lux-cyan to-blue-400">
                                 Eccone un assaggio.
                             </span>
                         </h2>
                         <p className="text-stone-400 max-w-xl mx-auto text-sm lg:text-base leading-relaxed">
-                            Ogni Mastermind è composto da 10 Mondi — moduli immersivi che trasformano la teoria in abilità reali, passo dopo passo.
+                            Ogni Mastermind è composto da 10 moduli pratici + 3 bonus esclusivi che trasformano la teoria in abilità reali.
                         </p>
                     </motion.div>
 
@@ -370,7 +370,7 @@ export const StorytellingNarrative: React.FC = () => {
                         viewport={{ once: true }}
                         transition={{ duration: 0.8, delay: 0.5 }}
                     >
-                        + altri 7 Mondi per ciascun Mastermind. Il percorso completo ti aspetta sotto.
+                        + altri 7 moduli + 3 bonus esclusivi per ogni Mastermind. Scopri tutto sotto.
                     </motion.p>
                 </div>
             </section>
