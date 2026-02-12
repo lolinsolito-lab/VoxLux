@@ -13,40 +13,46 @@ import {
 const painPoints = [
     {
         icon: EyeOff,
+        num: "01",
         title: "Sei invisibile",
-        description: "Pubblichi contenuti, parli in pubblico, scrivi post... ma nessuno ti ascolta davvero. Il problema non sei tu — è come comunichi."
+        subtitle: "Il silenzio che uccide le carriere.",
+        description: "Pubblichi, parli, scrivi — ma è come gridare in una stanza vuota. Il tuo feed è un cimitero di contenuti ignorati. Non è colpa del tuo talento. È che nessuno ti ha insegnato a trasformare competenza in magnetismo."
     },
     {
         icon: Target,
+        num: "02",
         title: "I tuoi competitor vincono",
-        description: "Hanno meno competenze di te, ma sanno raccontarsi meglio. I clienti scelgono chi li fa sentire qualcosa, non chi è più preparato."
+        subtitle: "E hanno la metà delle tue competenze.",
+        description: "Li guardi online e pensi: 'Ma io ne so dieci volte di più.' Eppure sono loro che firmano contratti, chiudono deal, riempiono le aule. Il segreto? Non sanno di più — sanno raccontarsi meglio."
     },
     {
         icon: Zap,
+        num: "03",
         title: "La tua voce non comanda",
-        description: "Quando parli, le persone scrollano. Quando presenti, annuiscono ma non comprano. Ti manca l'elemento che trasforma parole in autorevolezza."
+        subtitle: "Le persone ascoltano ma non agiscono.",
+        description: "Annuiscono, dicono 'interessante', poi scrollano via. Il tuo messaggio arriva alla testa ma non al cuore. Ti manca l'elemento che trasforma parole in decisioni — e decisioni in fatturato."
     }
 ];
 
 /* ─────────────────────────────────────────────
    SECTION 2 — "LA TRASFORMAZIONE"
-   Before → After visual contrast
+   Before → After visual contrast — storytelling mode
    ───────────────────────────────────────────── */
 
 const beforeItems = [
-    "Post che nessuno legge fino in fondo",
-    "Presentazioni che annoiano",
-    "Contenuti generici e dimenticabili",
-    "Voce piatta e poco convincente",
-    "Autorevolezza percepita zero"
+    "Scrivi un post, lo pubblichi con cura — 3 like. Uno è tua madre.",
+    "Presenti il tuo progetto e vedi gli occhi scivolare verso gli smartphone.",
+    "I tuoi contenuti si perdono nel feed come lacrime nella pioggia.",
+    "Parli e le persone aspettano che finisci. Non che dici qualcosa di importante.",
+    "L'autorevolezza? Un concetto astratto. La gente ti vede come 'uno dei tanti'."
 ];
 
 const afterItems = [
-    "Storie che bloccano lo scroll",
-    "Pitch che fanno firmare contratti",
-    "Messaggi che restano in testa per giorni",
-    "Una voce che comanda attenzione",
-    "Riconosciuto come punto di riferimento"
+    "Pubblichi una storia e ti scrivono 'non riesco a smettere di leggerti'.",
+    "Presenti e la stanza è in silenzio — quello buono, quello ipnotico.",
+    "I tuoi messaggi restano in testa per giorni. Le persone ti citano.",
+    "La tua voce entra nelle ossa. Quando parli, la gente chiude le altre tab.",
+    "Non sei più 'uno dei tanti'. Sei il punto di riferimento del settore."
 ];
 
 /* ─────────────────────────────────────────────
@@ -118,23 +124,32 @@ export const StorytellingNarrative: React.FC = () => {
                         {painPoints.map((point, i) => (
                             <motion.div
                                 key={i}
-                                className="group relative p-8 rounded-xl bg-white/[0.02] border border-white/[0.06] hover:border-red-400/20 transition-all duration-500"
-                                initial={{ opacity: 0, y: 40 }}
-                                whileInView={{ opacity: 1, y: 0 }}
+                                className="group relative p-8 md:p-10 rounded-2xl bg-gradient-to-b from-white/[0.03] to-transparent border border-white/[0.08] hover:border-red-400/25 transition-all duration-700 overflow-hidden"
+                                initial={{ opacity: 0, y: 40, scale: 0.95 }}
+                                whileInView={{ opacity: 1, y: 0, scale: 1 }}
                                 viewport={{ once: true, margin: "-30px" }}
-                                transition={{ duration: 0.6, delay: i * 0.15 }}
+                                transition={{ duration: 0.7, delay: i * 0.15 }}
                             >
-                                {/* Subtle glow on hover */}
-                                <div className="absolute inset-0 rounded-xl bg-gradient-to-b from-red-900/0 to-red-900/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                                {/* Top glow line */}
+                                <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-red-500/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+                                {/* Background glow */}
+                                <div className="absolute inset-0 rounded-2xl bg-gradient-to-b from-red-950/0 to-red-950/10 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
 
                                 <div className="relative z-10">
-                                    <div className="w-12 h-12 rounded-lg bg-red-500/10 border border-red-500/20 flex items-center justify-center mb-6">
-                                        <point.icon className="w-6 h-6 text-red-400" />
+                                    {/* Number + Icon row */}
+                                    <div className="flex items-center gap-4 mb-6">
+                                        <div className="w-14 h-14 rounded-2xl bg-red-500/10 border border-red-500/15 flex items-center justify-center group-hover:bg-red-500/15 group-hover:border-red-500/25 transition-all duration-500 shadow-[0_0_20px_rgba(239,68,68,0.08)]">
+                                            <point.icon className="w-7 h-7 text-red-400" />
+                                        </div>
+                                        <span className="text-5xl font-display font-black text-red-500/[0.07] group-hover:text-red-500/[0.12] transition-colors duration-700">{point.num}</span>
                                     </div>
-                                    <h3 className="text-xl lg:text-2xl font-display font-bold text-white mb-3">
+                                    <h3 className="text-xl lg:text-2xl font-display font-bold text-white mb-2">
                                         {point.title}
                                     </h3>
-                                    <p className="text-stone-400 text-sm lg:text-base leading-relaxed">
+                                    <p className="text-red-300/50 text-sm italic mb-4 font-medium">
+                                        {point.subtitle}
+                                    </p>
+                                    <p className="text-stone-400 text-sm lg:text-base leading-[1.8]">
                                         {point.description}
                                     </p>
                                 </div>
@@ -204,20 +219,20 @@ export const StorytellingNarrative: React.FC = () => {
                                     <p className="text-stone-500 text-xs tracking-wide">Come comunichi oggi</p>
                                 </div>
                             </div>
-                            <ul className="relative z-10 space-y-5">
+                            <ul className="relative z-10 space-y-6">
                                 {beforeItems.map((item, i) => (
                                     <motion.li
                                         key={i}
-                                        className="flex items-start gap-4 group/item"
+                                        className="flex items-start gap-4"
                                         initial={{ opacity: 0, x: -15 }}
                                         whileInView={{ opacity: 1, x: 0 }}
                                         viewport={{ once: true }}
-                                        transition={{ duration: 0.4, delay: i * 0.08 }}
+                                        transition={{ duration: 0.5, delay: i * 0.1 }}
                                     >
-                                        <div className="w-7 h-7 rounded-lg bg-red-500/10 border border-red-500/15 flex items-center justify-center flex-shrink-0 mt-0.5">
+                                        <div className="w-7 h-7 rounded-lg bg-red-500/10 border border-red-500/15 flex items-center justify-center flex-shrink-0 mt-1">
                                             <XCircle className="w-4 h-4 text-red-400/70" />
                                         </div>
-                                        <span className="text-stone-400 text-sm md:text-base leading-relaxed">{item}</span>
+                                        <span className="text-stone-400 text-sm md:text-[15px] leading-relaxed italic">{item}</span>
                                     </motion.li>
                                 ))}
                             </ul>
@@ -248,20 +263,20 @@ export const StorytellingNarrative: React.FC = () => {
                                     <p className="text-stone-500 text-xs tracking-wide">Come comunicherai</p>
                                 </div>
                             </div>
-                            <ul className="relative z-10 space-y-5">
+                            <ul className="relative z-10 space-y-6">
                                 {afterItems.map((item, i) => (
                                     <motion.li
                                         key={i}
-                                        className="flex items-start gap-4 group/item"
+                                        className="flex items-start gap-4"
                                         initial={{ opacity: 0, x: 15 }}
                                         whileInView={{ opacity: 1, x: 0 }}
                                         viewport={{ once: true }}
-                                        transition={{ duration: 0.4, delay: i * 0.08 }}
+                                        transition={{ duration: 0.5, delay: i * 0.1 }}
                                     >
-                                        <div className="w-7 h-7 rounded-lg bg-lux-gold/10 border border-lux-gold/20 flex items-center justify-center flex-shrink-0 mt-0.5 shadow-[0_0_10px_rgba(228,197,114,0.1)]">
+                                        <div className="w-7 h-7 rounded-lg bg-lux-gold/10 border border-lux-gold/20 flex items-center justify-center flex-shrink-0 mt-1 shadow-[0_0_10px_rgba(228,197,114,0.1)]">
                                             <CheckCircle2 className="w-4 h-4 text-lux-gold" />
                                         </div>
-                                        <span className="text-stone-200 text-sm md:text-base leading-relaxed">{item}</span>
+                                        <span className="text-stone-200 text-sm md:text-[15px] leading-relaxed italic">{item}</span>
                                     </motion.li>
                                 ))}
                             </ul>
