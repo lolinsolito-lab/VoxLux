@@ -96,6 +96,37 @@ export const BackgroundMusic: React.FC<BackgroundMusicProps> = ({ src }) => {
         }
     };
 
+    // Helper: Smooth Volume Fade
+    const fadeVolume = (audio: HTMLAudioElement, target: number, onComplete?: () => void) => {
+        const step = 0.02;
+        const interval = 50; // ms
+
+        const fade = setInterval(() => {
+            // Check if audio element still exists
+            if (!audio) {
+                clearInterval(fade);
+                return;
+            }
+
+            const current = audio.volume;
+
+            // Close enough to target?
+            if (Math.abs(current - target) < step) {
+                audio.volume = target;
+                clearInterval(fade);
+                if (onComplete) onComplete();
+                return;
+            }
+
+            // Adjust volume
+            if (current < target) {
+                audio.volume = Math.min(1, current + step);
+            } else {
+                audio.volume = Math.max(0, current - step);
+            }
+        }, interval);
+    };
+
     if (!shouldPlay && audioRef.current?.paused) return null;
 
     return (
