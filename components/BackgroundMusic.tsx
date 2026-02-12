@@ -97,7 +97,7 @@ export const BackgroundMusic: React.FC<BackgroundMusicProps> = ({ src }) => {
     };
 
     // Helper: Smooth Volume Fade
-    const fadeVolume = (audio: HTMLAudioElement, target: number, onComplete?: () => void) => {
+    function fadeVolume(audio: HTMLAudioElement, target: number, onComplete?: () => void) {
         const step = 0.02;
         const interval = 50; // ms
 
@@ -125,7 +125,7 @@ export const BackgroundMusic: React.FC<BackgroundMusicProps> = ({ src }) => {
                 audio.volume = Math.max(0, current - step);
             }
         }, interval);
-    };
+    }
 
     if (!shouldPlay && audioRef.current?.paused) return null;
 
