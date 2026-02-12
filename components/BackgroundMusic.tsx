@@ -45,8 +45,9 @@ export const BackgroundMusic: React.FC<BackgroundMusicProps> = ({ src }) => {
         setUserInteracted(true); // Treat mute toggle as interaction
         if (audioRef.current) {
             if (!isMuted) {
-                // Muting
-                audioRef.current.volume = 0;
+                // Muting - PAUSE formatting for mobile
+                audioRef.current.pause();
+                audioRef.current.currentTime = 0; // Optional: reset or keep position? Keep position usually better but pause is key.
             } else {
                 // Unmuting
                 audioRef.current.play();

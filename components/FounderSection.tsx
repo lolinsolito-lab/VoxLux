@@ -50,6 +50,7 @@ export const FounderSection: React.FC = () => {
                             className="relative cursor-pointer group"
                             onMouseEnter={() => setIsHovered(true)}
                             onMouseLeave={() => setIsHovered(false)}
+                            onClick={() => setIsHovered(!isHovered)}
                         >
                             <p className="text-lux-gold font-display font-bold text-2xl tracking-wide uppercase transition-all duration-300 group-hover:text-white group-hover:scale-105">
                                 Michael Jara

@@ -189,8 +189,8 @@ export const StorytellingNarrative: React.FC = () => {
                     {/* Before / After Columns */}
                     <div className="relative grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-0">
 
-                        {/* VS Divider - Desktop only */}
-                        <div className="hidden md:flex absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-20 flex-col items-center gap-3">
+                        {/* VS Divider - Visible on both Mobile & Desktop */}
+                        <div className="flex absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-20 flex-col items-center gap-3">
                             <div className="w-px h-16 bg-gradient-to-b from-transparent via-white/20 to-transparent" />
                             <div className="w-12 h-12 rounded-full bg-black border-2 border-white/20 flex items-center justify-center shadow-[0_0_30px_rgba(255,255,255,0.1)]">
                                 <span className="text-xs font-bold text-white/60 tracking-wider">VS</span>
@@ -304,7 +304,7 @@ export const StorytellingNarrative: React.FC = () => {
                             Uno sguardo dentro
                         </p>
                         <h2 className="text-3xl md:text-5xl lg:text-6xl font-display font-bold text-white mb-6 leading-tight">
-                            10 Moduli per Mastermind.<br />
+                            10 Moduli per Mastermind<br />
                             <span className="text-transparent bg-clip-text bg-gradient-to-r from-lux-cyan to-blue-400">
                                 Eccone un assaggio.
                             </span>
