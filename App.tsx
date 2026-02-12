@@ -25,6 +25,7 @@ import { CourseViewWrapper } from './components/CourseViewWrapper';
 import { AscensionViewWrapper } from './components/AscensionViewWrapper';
 import { ThankYouPage } from './components/ThankYouPage';
 import { TermsPage } from './components/TermsPage';
+import { CookieBanner } from './components/CookieBanner';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { createCheckoutSession, CourseId } from './services/stripe';
 import { BackgroundMusic } from './components/BackgroundMusic';
@@ -156,6 +157,7 @@ const App: React.FC = () => {
           {/* Main App (Public) */}
           <Route path="/*" element={<MainApp />} />
         </Routes>
+        <CookieBanner />
       </BrowserRouter>
     </AuthProvider>
   );
