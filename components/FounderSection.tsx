@@ -79,7 +79,7 @@ export const FounderSection: React.FC = () => {
                                             animate={{ opacity: 1, y: 0, scale: 1 }}
                                             exit={{ opacity: 0, y: 20, scale: 0.95 }}
                                             transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                                            className="fixed md:absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 md:top-auto md:bottom-full md:left-1/2 md:-translate-x-1/2 md:translate-y-0 md:mb-6 w-[300px] md:w-[320px] z-50"
+                                            className="fixed md:absolute top-[45%] left-1/2 -translate-x-1/2 -translate-y-1/2 md:top-auto md:bottom-full md:left-1/2 md:-translate-x-1/2 md:translate-y-0 md:mb-6 w-[300px] md:w-[320px] z-50"
                                         >
                                             <div className="bg-stone-950 border border-lux-gold/30 rounded-xl overflow-hidden shadow-[0_0_50px_rgba(228,197,114,0.3)] relative">
                                                 {/* Image with stronger gradient for text readability */}

@@ -39,97 +39,62 @@ export const BackgroundMusic: React.FC<BackgroundMusicProps> = ({ src }) => {
         }
     }, [shouldPlay, userInteracted, isMuted, location.pathname]);
 
-    // Handle Mute Toggle
-    const toggleMute = () => {
-        setIsMuted(!isMuted);
-        setUserInteracted(true); // Treat mute toggle as interaction
-        if (audioRef.current) {
-            if (!isMuted) {
-                // Muting - PAUSE formatting for mobile
-                audioRef.current.pause();
-                audioRef.current.currentTime = 0; // Optional: reset or keep position? Keep position usually better but pause is key.
-            } else {
-                // Unmuting
-                audioRef.current.play();
-                fadeVolume(audioRef.current, 0.4);
-            }
-        }
-    };
-
-    // Helper: Smooth Volume Fade
-    const fadeVolume = (audio: HTMLAudioElement, target: number, onComplete?: () => void) => {
-        const step = 0.02;
-        const interval = 50; // ms
-
-        const fade = setInterval(() => {
-            // Check if audio element still exists
-            if (!audio) {
-                clearInterval(fade);
-                return;
-            }
-
-            const current = audio.volume;
-
-            // Close enough to target?
-            if (Math.abs(current - target) < step) {
-                audio.volume = target;
-                clearInterval(fade);
-                if (onComplete) onComplete();
-                return;
-            }
-
-            // Adjust volume
-            if (current < target) {
-                audio.volume = Math.min(1, current + step);
-            } else {
-                audio.volume = Math.max(0, current - step);
-            }
-        }, interval);
-    };
-
-    // Auto-start on first interaction (Click anywhere)
+    // Auto-start interaction handler
     useEffect(() => {
-        const handleFirstInteraction = () => {
-            // STRICT MUTE CHECK: If muted, do NOT start playing
-            if (isMuted) return;
+        const handleInteraction = () => {
+            // If already interacted OR muted, ignore everything
+            if (userInteracted || isMuted) return;
 
-            if (!userInteracted && audioRef.current && shouldPlay) {
-                // Try to play
+            if (audioRef.current && shouldPlay) {
                 const playPromise = audioRef.current.play();
-
                 if (playPromise !== undefined) {
                     playPromise
                         .then(() => {
-                            // SUCCESS: Interaction accepted
                             console.log("Audio started successfully");
-                            setUserInteracted(true); // INTERACTION CONFIRMED
+                            setUserInteracted(true);
                             fadeVolume(audioRef.current!, 0.4);
-
-                            // Only remove listeners if it ACTUALLY worked
-                            ['click', 'mousemove', 'keydown', 'touchstart', 'scroll'].forEach(event =>
-                                window.removeEventListener(event, handleFirstInteraction)
-                            );
                         })
                         .catch(error => {
-                            // FAIL: Browser blocked it (likely "interaction required")
-                            // We do NOT remove listeners, so we try again on the next event (e.g. the actual click)
-                            console.log("Autoplay deferred (waiting for gesture):", error);
+                            console.log("Autoplay deferred:", error);
                         });
                 }
             }
         };
 
-        // Listen for ANY interaction to start music asap
-        ['click', 'mousemove', 'keydown', 'touchstart', 'scroll'].forEach(event =>
-            window.addEventListener(event, handleFirstInteraction)
-        );
+        // Add listeners only if NOT interacted and NOT muted
+        if (!userInteracted && !isMuted) {
+            ['click', 'mousemove', 'keydown', 'touchstart', 'scroll'].forEach(event =>
+                window.addEventListener(event, handleInteraction, { once: true }) // Use { once: true } for cleaner removal
+            );
+        }
 
         return () => {
             ['click', 'mousemove', 'keydown', 'touchstart', 'scroll'].forEach(event =>
-                window.removeEventListener(event, handleFirstInteraction)
+                window.removeEventListener(event, handleInteraction)
             );
         };
-    }, [userInteracted, shouldPlay]);
+    }, [userInteracted, isMuted, shouldPlay]);
+
+    // Handle Mute Toggle
+    const toggleMute = () => {
+        if (isMuted) {
+            // UNMUTE
+            setIsMuted(false);
+            setUserInteracted(true); // Manually set interacted so listeners don't re-attach weirdly
+            if (audioRef.current) {
+                audioRef.current.play();
+                fadeVolume(audioRef.current, 0.4);
+            }
+        } else {
+            // MUTE
+            setIsMuted(true);
+            setUserInteracted(true); // Ensure no more auto-listeners fire
+            if (audioRef.current) {
+                audioRef.current.pause();
+                audioRef.current.currentTime = 0;
+            }
+        }
+    };
 
     if (!shouldPlay && audioRef.current?.paused) return null;
 
