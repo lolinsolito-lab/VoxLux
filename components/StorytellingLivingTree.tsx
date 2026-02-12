@@ -15,12 +15,12 @@ interface StorytellingLivingTreeProps {
 // 1-3-3-2-1 Configuration (Bottom to Top)
 const MAP_NODES = [
     // ROW 1: BASE (1)
-    { x: 50, y: 78, scale: 1.2 },  // 1. Origine (Moved UP from 85 - Visible)
+    { x: 50, y: 74, scale: 1.2 },  // 1. Origine (Lifted to 74% for better clearance)
 
     // ROW 2: LOWER TRIAD (3)
-    { x: 20, y: 64, scale: 1.0 },  // 2. Library (Moved UP from 70)
-    { x: 50, y: 64, scale: 1.0 },  // 3. Workshop
-    { x: 80, y: 64, scale: 1.0 },  // 4. Echo
+    { x: 20, y: 62, scale: 1.0 },  // 2. Library (Lifted to 62%)
+    { x: 50, y: 62, scale: 1.0 },  // 3. Workshop
+    { x: 80, y: 62, scale: 1.0 },  // 4. Echo
 
     // ROW 3: MIDDLE TRIAD (3)
     { x: 20, y: 48, scale: 1.1 },  // 5. Fortress (Centered)
