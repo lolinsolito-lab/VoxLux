@@ -323,59 +323,59 @@ export const AdminSupport: React.FC = () => {
                                     </button>
                                 </div>
                             </div>
-
-                            {/* Messages Area */}
-                            <div className="flex-1 overflow-y-auto p-6 space-y-4">
-                                {messages.map((msg) => (
-                                    <motion.div
-                                        initial={{ opacity: 0, y: 10 }}
-                                        animate={{ opacity: 1, y: 0 }}
-                                        key={msg.id}
-                                        className={`flex ${msg.is_admin ? 'justify-end' : 'justify-start'}`}
-                                    >
-                                        <div className={`max-w-[70%] p-3 rounded-2xl text-sm leading-relaxed ${msg.is_admin
-                                            ? 'bg-green-600 text-white rounded-br-none'
-                                            : 'bg-zinc-800 text-gray-200 rounded-bl-none'
-                                            }`}>
-                                            <p>{msg.message}</p>
-                                            <p className={`text-[10px] mt-1 text-right ${msg.is_admin ? 'text-green-200' : 'text-zinc-400'}`}>
-                                                {new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                                            </p>
-                                        </div>
-                                    </motion.div>
-                                ))}
-                                <div ref={messagesEndRef} />
-                            </div>
-
-                            {/* Input Area */}
-                            <form onSubmit={sendMessage} className="p-4 border-t border-white/10 bg-black/40">
-                                <div className="relative">
-                                    <input
-                                        type="text"
-                                        value={newMessage}
-                                        onChange={(e) => setNewMessage(e.target.value)}
-                                        placeholder="Scrivi una risposta..."
-                                        className="w-full bg-zinc-900 border border-zinc-700 rounded-xl py-3 pl-4 pr-12 text-white focus:outline-none focus:border-green-500 transition-colors"
-                                    />
-                                    <button
-                                        type="submit"
-                                        disabled={!newMessage.trim()}
-                                        className="absolute right-2 top-2 p-1.5 bg-green-600 text-white rounded-lg hover:bg-green-500 disabled:opacity-50 disabled:hover:bg-green-600 transition-colors"
-                                    >
-                                        <Send size={18} />
-                                    </button>
-                                </div>
-                            </form>
-                        </>
-                        ) : (
-                        <div className="flex-1 flex flex-col items-center justify-center text-gray-500">
-                            <div className="w-16 h-16 bg-zinc-900 rounded-full flex items-center justify-center mb-4">
-                                <MessageSquare size={32} className="opacity-50" />
-                            </div>
-                            <p className="text-lg">Seleziona un ticket per vedere la chat</p>
                         </div>
-                )}
+
+                        {/* Messages Area */}
+                        <div className="flex-1 overflow-y-auto p-6 space-y-4">
+                            {messages.map((msg) => (
+                                <motion.div
+                                    initial={{ opacity: 0, y: 10 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    key={msg.id}
+                                    className={`flex ${msg.is_admin ? 'justify-end' : 'justify-start'}`}
+                                >
+                                    <div className={`max-w-[70%] p-3 rounded-2xl text-sm leading-relaxed ${msg.is_admin
+                                        ? 'bg-green-600 text-white rounded-br-none'
+                                        : 'bg-zinc-800 text-gray-200 rounded-bl-none'
+                                        }`}>
+                                        <p>{msg.message}</p>
+                                        <p className={`text-[10px] mt-1 text-right ${msg.is_admin ? 'text-green-200' : 'text-zinc-400'}`}>
+                                            {new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                        </p>
+                                    </div>
+                                </motion.div>
+                            ))}
+                            <div ref={messagesEndRef} />
+                        </div>
+
+                        {/* Input Area */}
+                        <form onSubmit={sendMessage} className="p-4 border-t border-white/10 bg-black/40">
+                            <div className="relative">
+                                <input
+                                    type="text"
+                                    value={newMessage}
+                                    onChange={(e) => setNewMessage(e.target.value)}
+                                    placeholder="Scrivi una risposta..."
+                                    className="w-full bg-zinc-900 border border-zinc-700 rounded-xl py-3 pl-4 pr-12 text-white focus:outline-none focus:border-green-500 transition-colors"
+                                />
+                                <button
+                                    type="submit"
+                                    disabled={!newMessage.trim()}
+                                    className="absolute right-2 top-2 p-1.5 bg-green-600 text-white rounded-lg hover:bg-green-500 disabled:opacity-50 disabled:hover:bg-green-600 transition-colors"
+                                >
+                                    <Send size={18} />
+                                </button>
+                            </div>
+                        </form>
+                    </>
+                ) : (
+                    <div className="flex-1 flex flex-col items-center justify-center text-gray-500">
+                        <div className="w-16 h-16 bg-zinc-900 rounded-full flex items-center justify-center mb-4">
+                            <MessageSquare size={32} className="opacity-50" />
+                        </div>
+                        <p className="text-lg">Seleziona un ticket per vedere la chat</p>
                     </div>
+                )}
             </div>
         </div>
     );
