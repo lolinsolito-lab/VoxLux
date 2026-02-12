@@ -11,6 +11,7 @@ import { HeroFAQ } from './HeroFAQ';
 import { VoiceTestimonials } from './VoiceTestimonials';
 import { ExtrasPreview } from './ExtrasPreview';
 import { StorytellingNarrative } from './StorytellingNarrative';
+import { FounderSection } from './FounderSection';
 
 interface HeroProps {
   onEnter: (courseId: string) => void;
@@ -194,6 +195,8 @@ export const Hero: React.FC<HeroProps> = ({ onEnter }) => {
             onEnter={onEnter}
           />
 
+          <VoiceTestimonials />
+          <FounderSection />
           <ExtrasPreview />
           <HeroFAQ />
           <Footer />
@@ -296,6 +299,7 @@ export const Hero: React.FC<HeroProps> = ({ onEnter }) => {
           <div className="max-w-7xl mx-auto px-6 text-center">
             <p className="text-stone-400 text-xs tracking-[0.2em] mb-2">GARANZIA DI QUALITÀ VOX AUREA • PAGAMENTI SICURI STRIPE • ACCESSO IMMEDIATO</p>
             <VoiceTestimonials />
+            <FounderSection />
             <ExtrasPreview />
             <HeroFAQ />
             <Footer />
