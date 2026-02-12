@@ -111,9 +111,9 @@ export const StorytellingNarrative: React.FC = () => {
                             Il vero problema
                         </p>
                         <h2 className="text-3xl md:text-5xl lg:text-6xl font-display font-bold text-white mb-6 leading-tight">
-                            Hai le competenze.<br />
+                            Hai le competenze<br />
                             <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-400 to-orange-400">
-                                Ti manca la voce.
+                                Ti manca la voce
                             </span>
                         </h2>
                         <div className="w-16 h-px bg-gradient-to-r from-transparent via-red-400/50 to-transparent mx-auto"></div>
@@ -178,9 +178,9 @@ export const StorytellingNarrative: React.FC = () => {
                             La trasformazione
                         </p>
                         <h2 className="text-3xl md:text-5xl lg:text-6xl font-display font-bold text-white mb-6 leading-tight">
-                            Da ignorato a<br />
+                            Da rumore di fondo a<br />
                             <span className="text-transparent bg-clip-text bg-gradient-to-r from-lux-gold to-amber-300">
-                                punto di riferimento.
+                                frequenza dominante
                             </span>
                         </h2>
                         <div className="w-16 h-px bg-gradient-to-r from-transparent via-lux-gold/50 to-transparent mx-auto"></div>
