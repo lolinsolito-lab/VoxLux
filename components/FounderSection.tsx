@@ -83,14 +83,15 @@ export const FounderSection: React.FC = () => {
 
                                             {/* Text Overlay */}
                                             <div className="absolute bottom-0 left-0 right-0 p-6 text-left">
-                                                <p className="text-white font-bold text-lg leading-tight mb-1">Resilienza Pura</p>
-                                                <p className="text-stone-400 text-xs leading-relaxed">
-                                                    "Ho lanciato diverse startup. Alcune sono volate, altre si sono schiantate.
-                                                    Ma non mi arrendo. Mai."
+                                                <p className="text-white font-bold text-lg leading-tight mb-2">L'Architect del Caos</p>
+                                                <p className="text-stone-400 text-xs leading-relaxed italic border-l-2 border-lux-gold pl-3">
+                                                    "Ho costruito imperi dal nulla e li ho visti bruciare.
+                                                    Non è fallimento, è raffinazione.
+                                                    Ogni crollo ha eliminato il superfluo, lasciando solo ciò che è indistruttibile."
                                                 </p>
-                                                <div className="flex items-center gap-2 mt-3">
+                                                <div className="flex items-center gap-2 mt-4">
                                                     <span className="text-lux-gold font-bold text-lg">10+</span>
-                                                    <span className="text-[10px] text-stone-500 uppercase tracking-widest">Anni di esperienza</span>
+                                                    <span className="text-[10px] text-stone-500 uppercase tracking-widest">Anni di Strategia</span>
                                                 </div>
                                             </div>
                                         </div>
