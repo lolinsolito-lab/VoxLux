@@ -172,37 +172,52 @@ export const StorytellingNarrative: React.FC = () => {
                     </motion.div>
 
                     {/* Before / After Columns */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
+                    <div className="relative grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-0">
+
+                        {/* VS Divider - Desktop only */}
+                        <div className="hidden md:flex absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-20 flex-col items-center gap-3">
+                            <div className="w-px h-16 bg-gradient-to-b from-transparent via-white/20 to-transparent" />
+                            <div className="w-12 h-12 rounded-full bg-black border-2 border-white/20 flex items-center justify-center shadow-[0_0_30px_rgba(255,255,255,0.1)]">
+                                <span className="text-xs font-bold text-white/60 tracking-wider">VS</span>
+                            </div>
+                            <div className="w-px h-16 bg-gradient-to-b from-transparent via-white/20 to-transparent" />
+                        </div>
 
                         {/* BEFORE */}
                         <motion.div
-                            className="relative rounded-xl p-8 bg-white/[0.02] border border-white/[0.06]"
-                            initial={{ opacity: 0, x: -30 }}
-                            whileInView={{ opacity: 1, x: 0 }}
+                            className="relative rounded-2xl p-8 md:p-10 md:mr-6 bg-gradient-to-br from-red-950/20 via-black/40 to-black/20 border border-red-500/10 backdrop-blur-sm overflow-hidden group"
+                            initial={{ opacity: 0, x: -40, scale: 0.95 }}
+                            whileInView={{ opacity: 1, x: 0, scale: 1 }}
                             viewport={{ once: true, margin: "-30px" }}
                             transition={{ duration: 0.7 }}
                         >
-                            <div className="flex items-center gap-3 mb-8">
-                                <div className="w-10 h-10 rounded-full bg-red-500/10 border border-red-500/20 flex items-center justify-center">
-                                    <EyeOff className="w-5 h-5 text-red-400" />
+                            {/* Subtle red glow */}
+                            <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-red-500/30 to-transparent" />
+                            <div className="absolute -top-20 -left-20 w-40 h-40 bg-red-500/5 rounded-full blur-3xl" />
+
+                            <div className="relative z-10 flex items-center gap-4 mb-8">
+                                <div className="w-14 h-14 rounded-2xl bg-red-500/10 border border-red-500/20 flex items-center justify-center shadow-[0_0_20px_rgba(239,68,68,0.15)]">
+                                    <EyeOff className="w-7 h-7 text-red-400" />
                                 </div>
                                 <div>
-                                    <p className="text-xs uppercase tracking-widest text-red-400/80 font-bold">PRIMA</p>
-                                    <p className="text-stone-500 text-xs">Come comunichi oggi</p>
+                                    <p className="text-sm uppercase tracking-widest text-red-400 font-bold">PRIMA</p>
+                                    <p className="text-stone-500 text-xs tracking-wide">Come comunichi oggi</p>
                                 </div>
                             </div>
-                            <ul className="space-y-4">
+                            <ul className="relative z-10 space-y-5">
                                 {beforeItems.map((item, i) => (
                                     <motion.li
                                         key={i}
-                                        className="flex items-start gap-3 text-stone-400 text-sm"
-                                        initial={{ opacity: 0, x: -10 }}
+                                        className="flex items-start gap-4 group/item"
+                                        initial={{ opacity: 0, x: -15 }}
                                         whileInView={{ opacity: 1, x: 0 }}
                                         viewport={{ once: true }}
-                                        transition={{ duration: 0.4, delay: i * 0.1 }}
+                                        transition={{ duration: 0.4, delay: i * 0.08 }}
                                     >
-                                        <XCircle className="w-4 h-4 text-red-400/60 mt-0.5 flex-shrink-0" />
-                                        <span>{item}</span>
+                                        <div className="w-7 h-7 rounded-lg bg-red-500/10 border border-red-500/15 flex items-center justify-center flex-shrink-0 mt-0.5">
+                                            <XCircle className="w-4 h-4 text-red-400/70" />
+                                        </div>
+                                        <span className="text-stone-400 text-sm md:text-base leading-relaxed">{item}</span>
                                     </motion.li>
                                 ))}
                             </ul>
@@ -210,36 +225,43 @@ export const StorytellingNarrative: React.FC = () => {
 
                         {/* AFTER */}
                         <motion.div
-                            className="relative rounded-xl p-8 bg-gradient-to-b from-lux-gold/[0.04] to-transparent border border-lux-gold/10"
-                            initial={{ opacity: 0, x: 30 }}
-                            whileInView={{ opacity: 1, x: 0 }}
+                            className="relative rounded-2xl p-8 md:p-10 md:ml-6 bg-gradient-to-br from-amber-950/20 via-lux-gold/[0.03] to-black/20 border border-lux-gold/20 backdrop-blur-sm overflow-hidden group"
+                            initial={{ opacity: 0, x: 40, scale: 0.95 }}
+                            whileInView={{ opacity: 1, x: 0, scale: 1 }}
                             viewport={{ once: true, margin: "-30px" }}
-                            transition={{ duration: 0.7 }}
+                            transition={{ duration: 0.7, delay: 0.1 }}
                         >
-                            {/* Gold glow effect */}
-                            <div className="absolute -top-1 -left-1 -right-1 h-px bg-gradient-to-r from-transparent via-lux-gold/40 to-transparent"></div>
+                            {/* Gold glow effects */}
+                            <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-lux-gold/50 to-transparent" />
+                            <div className="absolute -top-20 -right-20 w-40 h-40 bg-lux-gold/5 rounded-full blur-3xl" />
+                            <div className="absolute bottom-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-lux-gold/20 to-transparent" />
 
-                            <div className="flex items-center gap-3 mb-8">
-                                <div className="w-10 h-10 rounded-full bg-lux-gold/10 border border-lux-gold/20 flex items-center justify-center">
-                                    <Eye className="w-5 h-5 text-lux-gold" />
+                            {/* Shimmer overlay */}
+                            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-lux-gold/[0.02] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-1000" />
+
+                            <div className="relative z-10 flex items-center gap-4 mb-8">
+                                <div className="w-14 h-14 rounded-2xl bg-lux-gold/10 border border-lux-gold/25 flex items-center justify-center shadow-[0_0_20px_rgba(228,197,114,0.2)]">
+                                    <Eye className="w-7 h-7 text-lux-gold" />
                                 </div>
                                 <div>
-                                    <p className="text-xs uppercase tracking-widest text-lux-gold/80 font-bold">DOPO VOX AUREA</p>
-                                    <p className="text-stone-500 text-xs">Come comunicherai</p>
+                                    <p className="text-sm uppercase tracking-widest text-lux-gold font-bold">DOPO VOX AUREA</p>
+                                    <p className="text-stone-500 text-xs tracking-wide">Come comunicherai</p>
                                 </div>
                             </div>
-                            <ul className="space-y-4">
+                            <ul className="relative z-10 space-y-5">
                                 {afterItems.map((item, i) => (
                                     <motion.li
                                         key={i}
-                                        className="flex items-start gap-3 text-stone-300 text-sm"
-                                        initial={{ opacity: 0, x: 10 }}
+                                        className="flex items-start gap-4 group/item"
+                                        initial={{ opacity: 0, x: 15 }}
                                         whileInView={{ opacity: 1, x: 0 }}
                                         viewport={{ once: true }}
-                                        transition={{ duration: 0.4, delay: i * 0.1 }}
+                                        transition={{ duration: 0.4, delay: i * 0.08 }}
                                     >
-                                        <CheckCircle2 className="w-4 h-4 text-lux-gold mt-0.5 flex-shrink-0" />
-                                        <span>{item}</span>
+                                        <div className="w-7 h-7 rounded-lg bg-lux-gold/10 border border-lux-gold/20 flex items-center justify-center flex-shrink-0 mt-0.5 shadow-[0_0_10px_rgba(228,197,114,0.1)]">
+                                            <CheckCircle2 className="w-4 h-4 text-lux-gold" />
+                                        </div>
+                                        <span className="text-stone-200 text-sm md:text-base leading-relaxed">{item}</span>
                                     </motion.li>
                                 ))}
                             </ul>
