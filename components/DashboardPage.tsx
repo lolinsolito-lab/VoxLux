@@ -69,6 +69,7 @@ export const DashboardPage: React.FC = () => {
     const [purchasedCourseName, setPurchasedCourseName] = useState('');
     const [showProfileSettings, setShowProfileSettings] = useState(false);
     const [showFAQModal, setShowFAQModal] = useState(false);
+    const [showSmartUpgradeModal, setShowSmartUpgradeModal] = useState(false);
 
     // Resume Logic
     const [lastActive, setLastActive] = useState<LastActiveWorld | null>(null);
@@ -298,9 +299,6 @@ export const DashboardPage: React.FC = () => {
             </div>
         );
     }
-
-    // Smart Upgrade State
-    const [showSmartUpgradeModal, setShowSmartUpgradeModal] = useState(false);
 
     // Smart Upgrade Logic
     const hasMatrice1 = purchases.some(p => p.course_id === 'matrice-1');
