@@ -63,7 +63,7 @@ export const FounderSection: React.FC = () => {
                         {/* Photo Container */}
                         <div className="relative w-full h-full overflow-hidden rounded-sm grayscale hover:grayscale-0 transition-all duration-700 ease-in-out shadow-2xl">
                             <img
-                                src="/assets/founder.jpg"
+                                src="/assets/founder.png"
                                 alt="Michael Jara - Founder"
                                 className="w-full h-full object-cover transform scale-105 group-hover:scale-100 transition-transform duration-700"
                             />
