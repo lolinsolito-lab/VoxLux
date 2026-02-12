@@ -71,9 +71,9 @@ export const FounderSection: React.FC = () => {
                                         className="absolute bottom-full left-1/2 -translate-x-1/2 mb-6 w-[280px] md:w-[320px] z-50 pointer-events-none"
                                     >
                                         <div className="bg-stone-950 border border-lux-gold/30 rounded-xl overflow-hidden shadow-[0_0_50px_rgba(228,197,114,0.3)] relative">
-                                            {/* Image */}
+                                            {/* Image with stronger gradient for text readability */}
                                             <div className="h-[320px] w-full relative grayscale">
-                                                <div className="absolute inset-0 bg-gradient-to-t from-stone-950 via-transparent to-transparent opacity-80" />
+                                                <div className="absolute inset-0 bg-gradient-to-t from-stone-950 via-stone-950/80 to-transparent opacity-90" />
                                                 <img
                                                     src="/assets/founder.png"
                                                     alt="Michael Jara"
@@ -82,16 +82,16 @@ export const FounderSection: React.FC = () => {
                                             </div>
 
                                             {/* Text Overlay */}
-                                            <div className="absolute bottom-0 left-0 right-0 p-6 text-left">
-                                                <p className="text-white font-bold text-lg leading-tight mb-2">L'Architect del Caos</p>
-                                                <p className="text-stone-400 text-xs leading-relaxed italic border-l-2 border-lux-gold pl-3">
-                                                    "Ho costruito imperi dal nulla e li ho visti bruciare.
-                                                    Non è fallimento, è raffinazione.
-                                                    Ogni crollo ha eliminato il superfluo, lasciando solo ciò che è indistruttibile."
+                                            <div className="absolute bottom-0 left-0 right-0 p-6 text-left z-10">
+                                                <p className="text-white font-bold text-lg leading-tight mb-2">L'Arte dell'Ascesa</p>
+                                                <p className="text-stone-300 text-xs leading-relaxed italic border-l-2 border-lux-gold pl-3 drop-shadow-md">
+                                                    "Ho lanciato imprese che hanno toccato il cielo e altre che mi hanno insegnato a rialzarmi.
+                                                    Non esiste fallimento per chi ha la virtù di persistere.
+                                                    La mia voce non è un dono, è una conquista."
                                                 </p>
                                                 <div className="flex items-center gap-2 mt-4">
                                                     <span className="text-lux-gold font-bold text-lg">10+</span>
-                                                    <span className="text-[10px] text-stone-500 uppercase tracking-widest">Anni di Strategia</span>
+                                                    <span className="text-[10px] text-stone-400 uppercase tracking-widest">Anni di Strategia</span>
                                                 </div>
                                             </div>
                                         </div>
