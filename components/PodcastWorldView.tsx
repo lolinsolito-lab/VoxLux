@@ -514,7 +514,7 @@ export const PodcastWorldView: React.FC<PodcastWorldViewProps> = ({ worldId, con
                 </div>
 
                 {/* MAIN CONTENT CARD */}
-                <div className="flex-1 flex items-center justify-center p-4 md:p-12 relative">
+                <div className="flex-1 flex items-center justify-center p-4 md:p-12 relative overflow-y-auto pointer-events-auto w-full">
                     <aWeb.div style={uiSpring} className="relative w-full max-w-5xl pointer-events-auto">
                         <div className="bg-black/60 backdrop-blur-xl border border-white/10 rounded-3xl overflow-hidden shadow-2xl relative">
                             {/* Glow Lines */}

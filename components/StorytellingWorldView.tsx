@@ -325,7 +325,7 @@ export const StorytellingWorldView: React.FC<StorytellingWorldViewProps> = ({ wo
 
                 {/* CENTRAL CONTENT CARD - Grid Centering for absolute stability */}
                 <div
-                    className="absolute inset-0 z-10 grid place-items-center w-full h-full p-4 md:p-12 pointer-events-none overflow-y-auto"
+                    className="absolute inset-0 z-10 grid place-items-center w-full h-full p-4 md:p-12 pointer-events-auto overflow-y-auto"
                     style={{ scrollbarGutter: 'stable' }}
                 >
                     <aWeb.div

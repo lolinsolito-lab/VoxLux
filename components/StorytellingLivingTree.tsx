@@ -15,24 +15,24 @@ interface StorytellingLivingTreeProps {
 // 1-3-3-2-1 Configuration (Bottom to Top)
 const MAP_NODES = [
     // ROW 1: BASE (1)
-    { x: 50, y: 85, scale: 1.2 },  // 1. Origine (Moved up from 90)
+    { x: 50, y: 78, scale: 1.2 },  // 1. Origine (Moved UP from 85 - Visible)
 
     // ROW 2: LOWER TRIAD (3)
-    { x: 20, y: 70, scale: 1.0 },  // 2. Library (Left)
-    { x: 50, y: 70, scale: 1.0 },  // 3. Workshop (Center)
-    { x: 80, y: 70, scale: 1.0 },  // 4. Echo (Right)
+    { x: 20, y: 64, scale: 1.0 },  // 2. Library (Moved UP from 70)
+    { x: 50, y: 64, scale: 1.0 },  // 3. Workshop
+    { x: 80, y: 64, scale: 1.0 },  // 4. Echo
 
     // ROW 3: MIDDLE TRIAD (3)
-    { x: 20, y: 50, scale: 1.1 },  // 5. Fortress (Left)
-    { x: 50, y: 50, scale: 1.1 },  // 6. Sanctuary (Center)
-    { x: 80, y: 50, scale: 1.1 },  // 7. Value (Right)
+    { x: 20, y: 48, scale: 1.1 },  // 5. Fortress (Centered)
+    { x: 50, y: 48, scale: 1.1 },  // 6. Sanctuary
+    { x: 80, y: 48, scale: 1.1 },  // 7. Value
 
     // ROW 4: UPPER PAIR (2)
-    { x: 35, y: 30, scale: 1.1 },  // 8. Time (Left)
-    { x: 65, y: 30, scale: 1.1 },  // 9. Loyalty (Right)
+    { x: 35, y: 32, scale: 1.1 },  // 8. Time (Moved DOWN from 30)
+    { x: 65, y: 32, scale: 1.1 },  // 9. Loyalty
 
     // ROW 5: CROWN (1)
-    { x: 50, y: 15, scale: 1.3 }    // 10. Mastery (Moved down from 8)
+    { x: 50, y: 18, scale: 1.3 }    // 10. Mastery (Moved DOWN from 15)
 ];
 
 // CONNECTIONS (Graph Edges - Flowing Upwards)
