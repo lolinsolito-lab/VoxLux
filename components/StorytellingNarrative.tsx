@@ -305,11 +305,14 @@ export const StorytellingNarrative: React.FC = () => {
                     <AnimatePresence mode="wait">
                         <motion.div
                             key={`${activeTab}-${showAll}`}
-                            className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4"
+                            className={`grid gap-4 ${showAll
+                                ? 'grid-cols-1 md:grid-cols-3 lg:grid-cols-5 max-w-5xl'
+                                : 'grid-cols-1 md:grid-cols-3 max-w-3xl'
+                                } mx-auto`}
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             exit={{ opacity: 0, y: -20 }}
-                            transition={{ duration: 0.4 }}
+                            transition={{ duration: 0.5 }}
                         >
                             {modulesData
                                 .filter(m => m.type === activeTab)
@@ -317,22 +320,22 @@ export const StorytellingNarrative: React.FC = () => {
                                 .map((mod, i) => (
                                     <motion.div
                                         key={`${activeTab}-${mod.num}`}
-                                        className={`group relative p-5 rounded-xl border transition-all duration-500 ${activeTab === 'storytelling'
-                                            ? 'bg-gradient-to-b from-amber-900/[0.06] to-transparent border-lux-gold/10 hover:border-lux-gold/25'
-                                            : 'bg-gradient-to-b from-blue-900/[0.06] to-transparent border-blue-400/10 hover:border-blue-400/25'
+                                        className={`group relative rounded-xl border transition-all duration-500 ${showAll ? 'p-5' : 'p-6'} ${activeTab === 'storytelling'
+                                            ? 'bg-gradient-to-b from-amber-900/[0.08] to-transparent border-lux-gold/15 hover:border-lux-gold/35 hover:shadow-[0_0_20px_rgba(228,197,114,0.06)]'
+                                            : 'bg-gradient-to-b from-blue-900/[0.08] to-transparent border-blue-400/15 hover:border-blue-400/35 hover:shadow-[0_0_20px_rgba(96,165,250,0.06)]'
                                             }`}
-                                        initial={{ opacity: 0, y: 20 }}
-                                        animate={{ opacity: 1, y: 0 }}
-                                        transition={{ duration: 0.4, delay: i * 0.06 }}
+                                        initial={{ opacity: 0, y: 20, scale: 0.95 }}
+                                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                                        transition={{ duration: 0.4, delay: i * 0.05 }}
                                     >
-                                        <div className={`text-4xl font-display font-black mb-2 ${activeTab === 'storytelling' ? 'text-lux-gold/10' : 'text-blue-400/10'
+                                        <div className={`${showAll ? 'text-4xl' : 'text-5xl'} font-display font-black mb-2 ${activeTab === 'storytelling' ? 'text-lux-gold/12' : 'text-blue-400/12'
                                             }`}>
                                             {mod.num}
                                         </div>
-                                        <h3 className="text-base lg:text-lg font-display font-bold text-white mb-1">
+                                        <h3 className={`${showAll ? 'text-base lg:text-lg' : 'text-lg lg:text-xl'} font-display font-bold text-white mb-1.5`}>
                                             {mod.title}
                                         </h3>
-                                        <p className="text-stone-400 text-xs leading-relaxed">
+                                        <p className={`text-stone-400 ${showAll ? 'text-xs' : 'text-sm'} leading-relaxed`}>
                                             {mod.desc}
                                         </p>
                                     </motion.div>

@@ -10,28 +10,51 @@ interface AscensionCardProps {
 export const AscensionCard: React.FC<AscensionCardProps> = ({ onEnter, onHover, isDesktop = false }) => {
     const content = (
         <div className="relative z-10 p-6 w-full flex flex-col items-center h-full justify-center">
-            <div className={`w-28 h-28 rounded-full border-2 border-indigo-400/30 flex items-center justify-center bg-indigo-950/60 mb-6 ${isDesktop ? 'group-hover:border-white group-hover:rotate-180 transition-all duration-700 shadow-[0_0_40px_rgba(99,102,241,0.5)]' : 'shadow-[0_0_60px_rgba(99,102,241,0.7)]'} mt-6`}>
-                <Box className={`w-14 h-14 ${isDesktop ? 'text-indigo-300 group-hover:text-white' : 'text-white animate-pulse'}`} />
+            <div className={`w-24 h-24 rounded-full border-2 border-indigo-400/30 flex items-center justify-center bg-indigo-950/60 mb-4 ${isDesktop ? 'group-hover:border-white group-hover:rotate-180 transition-all duration-700 shadow-[0_0_40px_rgba(99,102,241,0.5)]' : 'shadow-[0_0_60px_rgba(99,102,241,0.7)]'} mt-4`}>
+                <Box className={`w-12 h-12 ${isDesktop ? 'text-indigo-300 group-hover:text-white' : 'text-white animate-pulse'}`} />
             </div>
 
-            <h3 className="text-5xl font-display font-bold text-transparent bg-clip-text bg-gradient-to-b from-white via-indigo-100 to-indigo-500 mb-2 drop-shadow-[0_0_30px_rgba(99,102,241,1)]">ASCENSION</h3>
-            <p className="text-xs uppercase tracking-[0.5em] text-indigo-300 mb-10 font-bold border-b border-indigo-500/50 pb-2">Il Percorso Completo</p>
+            <h3 className="text-4xl font-display font-bold text-transparent bg-clip-text bg-gradient-to-b from-white via-indigo-100 to-indigo-500 mb-1 drop-shadow-[0_0_30px_rgba(99,102,241,1)]">ASCENSION</h3>
+            <p className="text-xs uppercase tracking-[0.5em] text-indigo-300 mb-6 font-bold border-b border-indigo-500/50 pb-2">Il Percorso Completo</p>
 
-            <div className={`space-y-3 w-full text-left pl-8 mb-4 flex-grow ${isDesktop ? 'opacity-80 group-hover:opacity-100 transition-opacity' : 'opacity-100'} border-l-2 border-indigo-500/50 ml-6`}>
+            {/* Core Access */}
+            <div className={`space-y-2.5 w-full text-left pl-6 mb-4 ${isDesktop ? 'opacity-80 group-hover:opacity-100 transition-opacity' : 'opacity-100'} border-l-2 border-indigo-500/50 ml-4`}>
                 <div className="flex items-center gap-3 text-xs text-indigo-100 font-medium">⚛️ ACCESSO COMPLETO (Storytelling + Podcast)</div>
                 <div className="flex items-center gap-3 text-xs text-indigo-100 font-medium">🔱 20 Moduli Completi (10+10)</div>
-                <div className="flex items-center gap-3 text-xs text-indigo-100 font-medium">🗝️ Contenuti Esclusivi Riservati</div>
-                <div className="flex items-center gap-3 text-xs text-indigo-100 font-medium">💎 2x Certificati Digitali Verificati</div>
+                <div className="flex items-center gap-3 text-xs text-indigo-100 font-medium">💎 2x Certificati Digitali + QR</div>
                 <div className="flex items-center gap-3 text-xs text-indigo-100 font-medium">👑 Community Privata (Accesso a Vita)</div>
             </div>
 
-            <div className="mb-6 flex flex-col items-center">
-                <span className="text-white text-4xl font-bold drop-shadow-[0_0_10px_rgba(255,255,255,0.5)]">€997</span>
-                <span className="text-indigo-300 text-sm line-through mt-1">€1.994</span>
-                <span className="text-emerald-400 text-xs font-bold mt-2 uppercase tracking-wide animate-pulse">RISPARMIO 50%</span>
+            {/* Divider */}
+            <div className="w-[80%] h-px bg-gradient-to-r from-transparent via-indigo-500/40 to-transparent my-3" />
+
+            {/* Bonus Section */}
+            <div className="w-full px-6 mb-4">
+                <p className="text-xs font-bold text-indigo-200 mb-2.5 flex items-center gap-2">
+                    <Zap className="w-3.5 h-3.5 text-emerald-400" />
+                    7 BONUS INCLUSI:
+                </p>
+                <div className="space-y-1.5 text-[11px] text-indigo-200/70 pl-5">
+                    <p>📄 Swipe Files Pro Edition</p>
+                    <p>🔥 Framework Viralità Garantita</p>
+                    <p>📚 Template Storytelling Esclusivi</p>
+                    <p>🎙️ Masterclass: AI Voice Cloning</p>
+                    <p>📝 10 Script AI Podcast</p>
+                    <p>🎧 Audio Branding Toolkit</p>
+                    <p className="text-emerald-300/80 font-semibold">⭐ Bonus Esclusivo Ascension</p>
+                </div>
             </div>
 
-            <button className={`w-full py-5 bg-white text-black text-sm tracking-[0.3em] font-bold uppercase flex items-center justify-center gap-3 rounded-md shadow-[0_0_50px_white] mb-6 ${isDesktop ? 'hover:bg-indigo-100 hover:shadow-[0_0_60px_white]' : 'hover:scale-105'} transition-all`}>
+            {/* Divider */}
+            <div className="w-[80%] h-px bg-gradient-to-r from-transparent via-indigo-500/40 to-transparent mb-4" />
+
+            <div className="mb-4 flex flex-col items-center">
+                <span className="text-white text-4xl font-bold drop-shadow-[0_0_20px_rgba(255,255,255,0.6)]">€997</span>
+                <span className="text-indigo-300 text-sm line-through mt-1">€1.994</span>
+                <span className="text-emerald-400 text-xs font-bold mt-1.5 uppercase tracking-wide animate-pulse">RISPARMIO 50%</span>
+            </div>
+
+            <button className={`w-full py-4 bg-white text-black text-sm tracking-[0.3em] font-bold uppercase flex items-center justify-center gap-3 rounded-md shadow-[0_0_50px_white] mb-4 ${isDesktop ? 'hover:bg-indigo-100 hover:shadow-[0_0_60px_white]' : 'hover:scale-105'} transition-all`}>
                 {isDesktop ? "OTTIENI TUTTO AL MIGLIOR PREZZO" : "Scopri l'Offerta"} <ArrowRight className="w-5 h-5" />
             </button>
         </div>
