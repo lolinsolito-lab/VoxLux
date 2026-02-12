@@ -70,11 +70,34 @@ export const PricingCard: React.FC<PricingCardProps> = ({
     // Feature List Component
     const FeatureList = () => (
         <ul className="w-full text-left space-y-3 mb-8 px-4">
-            {features.map((feature, i) => (
-                <li key={i} className={`flex items-start gap-2 text-xs ${isSun ? 'text-yellow-100/80' : 'text-stone-300'} font-medium`}>
-                    <span className="leading-relaxed">{feature}</span>
-                </li>
-            ))}
+            {features.map((feature, i) => {
+                // Separator line
+                if (feature.startsWith('─')) {
+                    return <li key={i} className="!my-2"><div className={`h-px ${isSun ? 'bg-yellow-500/20' : 'bg-blue-400/20'}`} /></li>;
+                }
+                // Bonus header
+                if (feature.startsWith('🎁')) {
+                    return (
+                        <li key={i} className={`flex items-start gap-2 text-xs font-bold ${isSun ? 'text-yellow-200' : 'text-blue-200'}`}>
+                            <span className="leading-relaxed">{feature}</span>
+                        </li>
+                    );
+                }
+                // Indented bonus items
+                if (feature.startsWith('   ')) {
+                    return (
+                        <li key={i} className={`flex items-start gap-2 text-xs ${isSun ? 'text-yellow-100/60' : 'text-stone-400'} font-medium pl-3`}>
+                            <span className="leading-relaxed">{feature.trim()}</span>
+                        </li>
+                    );
+                }
+                // Regular feature
+                return (
+                    <li key={i} className={`flex items-start gap-2 text-xs ${isSun ? 'text-yellow-100/80' : 'text-stone-300'} font-medium`}>
+                        <span className="leading-relaxed">{feature}</span>
+                    </li>
+                );
+            })}
         </ul>
     );
 

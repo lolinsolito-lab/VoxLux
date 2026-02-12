@@ -155,7 +155,13 @@ export const Hero: React.FC<HeroProps> = ({ onEnter }) => {
               "🧠 Tecniche di Persuasione Narrativa",
               "📜 Framework 'Hero's Journey' Applicato",
               "🦁 Analisi del Tuo Stile Comunicativo",
-              "🏆 Certificato Digitale Verificato"
+              "──────────",
+              "🎁 +3 Bonus Inclusi:",
+              "   📄 Swipe Files Pro Edition",
+              "   🔥 Framework Viralità Garantita",
+              "   📚 Template Storytelling Esclusivi",
+              "──────────",
+              "🏆 Certificato Digitale Verificato + QR"
             ]}
             price="€597"
             priceFull="€997"
@@ -175,7 +181,13 @@ export const Hero: React.FC<HeroProps> = ({ onEnter }) => {
               "🎧 Qualità Audio Broadcast",
               "🌊 Ritmo, Pause e Voce Magnetica",
               "🎙️ Setup Professionale Completo",
-              "🏆 Certificato Digitale Verificato"
+              "──────────",
+              "🎁 +3 Bonus Inclusi:",
+              "   🎙️ Masterclass: AI Voice Cloning",
+              "   📝 10 Script AI Podcast",
+              "   🎧 Audio Branding Toolkit",
+              "──────────",
+              "🏆 Certificato Digitale Verificato + QR"
             ]}
             price="€597"
             priceFull="€997"
@@ -231,7 +243,13 @@ export const Hero: React.FC<HeroProps> = ({ onEnter }) => {
                 "🧠 Tecniche di Persuasione Narrativa",
                 "📜 Framework 'Hero's Journey' Applicato",
                 "🦁 Analisi del Tuo Stile Comunicativo",
-                "🏆 Certificato Digitale Verificato"
+                "──────────",
+                "🎁 +3 Bonus Inclusi:",
+                "   📄 Swipe Files Pro Edition",
+                "   🔥 Framework Viralità Garantita",
+                "   📚 Template Storytelling Esclusivi",
+                "──────────",
+                "🏆 Certificato Digitale Verificato + QR"
               ]}
               price="€597"
               priceFull="€997"
@@ -254,7 +272,13 @@ export const Hero: React.FC<HeroProps> = ({ onEnter }) => {
                 "🎧 Qualità Audio Broadcast",
                 "🌊 Ritmo, Pause e Voce Magnetica",
                 "🎙️ Setup Professionale Completo",
-                "🏆 Certificato Digitale Verificato"
+                "──────────",
+                "🎁 +3 Bonus Inclusi:",
+                "   🎙️ Masterclass: AI Voice Cloning",
+                "   📝 10 Script AI Podcast",
+                "   🎧 Audio Branding Toolkit",
+                "──────────",
+                "🏆 Certificato Digitale Verificato + QR"
               ]}
               price="€597"
               priceFull="€997"

@@ -51,46 +51,31 @@ const afterItems = [
 
 /* ─────────────────────────────────────────────
    SECTION 3 — "DENTRO IL PERCORSO"
-   Preview of what's inside the Masterminds
+   All 10 real modules per Mastermind
    ───────────────────────────────────────────── */
 
-const worldsPreview = [
-    {
-        world: "01",
-        title: "L'Identità Narrativa",
-        desc: "Scopri la storia che solo tu puoi raccontare.",
-        type: "storytelling" as const
-    },
-    {
-        world: "02",
-        title: "Il Framework Persuasivo",
-        desc: "La struttura usata da TED Talk e brand da miliardi.",
-        type: "storytelling" as const
-    },
-    {
-        world: "03",
-        title: "Emozione Calibrata",
-        desc: "Come far provare esattamente quello che vuoi.",
-        type: "storytelling" as const
-    },
-    {
-        world: "01",
-        title: "La Voce che Comanda",
-        desc: "Setup vocale professionale da zero.",
-        type: "podcast" as const
-    },
-    {
-        world: "02",
-        title: "Architettura Audio",
-        desc: "Qualità broadcast con qualsiasi budget.",
-        type: "podcast" as const
-    },
-    {
-        world: "03",
-        title: "Magnetismo Vocale",
-        desc: "Ritmo, pause e tono che ipnotizzano.",
-        type: "podcast" as const
-    }
+const modulesData = [
+    { num: "01", title: "L'Identità Narrativa", desc: "Scopri la storia che solo tu puoi raccontare.", type: "storytelling" as const },
+    { num: "02", title: "Presenza", desc: "Il tronco solido della tua comunicazione.", type: "storytelling" as const },
+    { num: "03", title: "Visione", desc: "Crea immagini mentali impossibili da ignorare.", type: "storytelling" as const },
+    { num: "04", title: "Frequenza", desc: "Ritmo, respiro e l'onda narrativa perfetta.", type: "storytelling" as const },
+    { num: "05", title: "Archetipi", desc: "Le maschere universali che muovono le emozioni.", type: "storytelling" as const },
+    { num: "06", title: "Tattica", desc: "Ganci, open loops e plot twist strategici.", type: "storytelling" as const },
+    { num: "07", title: "Empatia", desc: "Tono, subtesto e intimità narrativa.", type: "storytelling" as const },
+    { num: "08", title: "Ascensione", desc: "Il climax, la svolta e la risoluzione.", type: "storytelling" as const },
+    { num: "09", title: "Rivelazione", desc: "De-cliché, improvvisazione e la tua verità.", type: "storytelling" as const },
+    { num: "10", title: "Maestria", desc: "Autorità, eredità e il tuo capolavoro.", type: "storytelling" as const },
+
+    { num: "01", title: "Fondazione Acustica", desc: "Setup vocale professionale da zero.", type: "podcast" as const },
+    { num: "02", title: "Psicologia Vocale", desc: "Come la tua voce influenza chi ascolta.", type: "podcast" as const },
+    { num: "03", title: "Architettura Sonora", desc: "Qualità broadcast con qualsiasi budget.", type: "podcast" as const },
+    { num: "04", title: "Editing Strategico", desc: "Taglia, ricomponi e rendi magnetico.", type: "podcast" as const },
+    { num: "05", title: "Produzione & Mix", desc: "Mix professionale per ogni piattaforma.", type: "podcast" as const },
+    { num: "06", title: "Sound Design Emozionale", desc: "Suoni che creano atmosfera e immersione.", type: "podcast" as const },
+    { num: "07", title: "Interviste & Storytelling", desc: "Conduci conversazioni che lasciano il segno.", type: "podcast" as const },
+    { num: "08", title: "Distribuzione Globale", desc: "Pubblica ovunque e costruisci audience.", type: "podcast" as const },
+    { num: "09", title: "Monetizzazione Audio", desc: "Trasforma ascolti in ricavi concreti.", type: "podcast" as const },
+    { num: "10", title: "AI Voice & Legacy", desc: "Il futuro della voce e la tua eredità sonora.", type: "podcast" as const },
 ];
 
 /* ─────────────────────────────────────────────
@@ -99,6 +84,7 @@ const worldsPreview = [
 
 export const StorytellingNarrative: React.FC = () => {
     const [activeTab, setActiveTab] = useState<'storytelling' | 'podcast'>('storytelling');
+    const [showAll, setShowAll] = useState(false);
 
     return (
         <div className="w-full relative">
@@ -315,52 +301,67 @@ export const StorytellingNarrative: React.FC = () => {
                         </button>
                     </div>
 
-                    {/* World Cards Grid */}
+                    {/* Module Cards Grid */}
                     <AnimatePresence mode="wait">
                         <motion.div
-                            key={activeTab}
-                            className="grid grid-cols-1 md:grid-cols-3 gap-5"
+                            key={`${activeTab}-${showAll}`}
+                            className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4"
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             exit={{ opacity: 0, y: -20 }}
                             transition={{ duration: 0.4 }}
                         >
-                            {worldsPreview
-                                .filter(w => w.type === activeTab)
-                                .map((world, i) => (
+                            {modulesData
+                                .filter(m => m.type === activeTab)
+                                .slice(0, showAll ? 10 : 3)
+                                .map((mod, i) => (
                                     <motion.div
-                                        key={`${activeTab}-${i}`}
-                                        className={`group relative p-6 rounded-xl border transition-all duration-500 ${activeTab === 'storytelling'
+                                        key={`${activeTab}-${mod.num}`}
+                                        className={`group relative p-5 rounded-xl border transition-all duration-500 ${activeTab === 'storytelling'
                                             ? 'bg-gradient-to-b from-amber-900/[0.06] to-transparent border-lux-gold/10 hover:border-lux-gold/25'
                                             : 'bg-gradient-to-b from-blue-900/[0.06] to-transparent border-blue-400/10 hover:border-blue-400/25'
                                             }`}
                                         initial={{ opacity: 0, y: 20 }}
                                         animate={{ opacity: 1, y: 0 }}
-                                        transition={{ duration: 0.4, delay: i * 0.1 }}
+                                        transition={{ duration: 0.4, delay: i * 0.06 }}
                                     >
-                                        {/* World Number */}
-                                        <div className={`text-5xl font-display font-black mb-3 ${activeTab === 'storytelling' ? 'text-lux-gold/10' : 'text-blue-400/10'
+                                        <div className={`text-4xl font-display font-black mb-2 ${activeTab === 'storytelling' ? 'text-lux-gold/10' : 'text-blue-400/10'
                                             }`}>
-                                            {world.world}
+                                            {mod.num}
                                         </div>
-
-                                        <h3 className="text-lg font-display font-bold text-white mb-2">
-                                            {world.title}
+                                        <h3 className="text-base lg:text-lg font-display font-bold text-white mb-1">
+                                            {mod.title}
                                         </h3>
-                                        <p className="text-stone-400 text-sm leading-relaxed">
-                                            {world.desc}
+                                        <p className="text-stone-400 text-xs leading-relaxed">
+                                            {mod.desc}
                                         </p>
-
-                                        {/* "More" hint */}
-                                        <div className={`mt-4 flex items-center gap-1 text-xs font-bold uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity duration-300 ${activeTab === 'storytelling' ? 'text-lux-gold/60' : 'text-blue-400/60'
-                                            }`}>
-                                            è solo l'inizio
-                                            <ArrowRight className="w-3 h-3" />
-                                        </div>
                                     </motion.div>
                                 ))}
                         </motion.div>
                     </AnimatePresence>
+
+                    {/* Expand / Collapse Button */}
+                    <div className="text-center mt-8">
+                        <button
+                            onClick={() => setShowAll(!showAll)}
+                            className={`inline-flex items-center gap-2 px-6 py-3 rounded-full text-sm font-bold uppercase tracking-wider transition-all duration-300 border ${activeTab === 'storytelling'
+                                ? 'border-lux-gold/20 text-lux-gold/80 hover:bg-lux-gold/10 hover:border-lux-gold/40'
+                                : 'border-blue-400/20 text-blue-300/80 hover:bg-blue-500/10 hover:border-blue-400/40'
+                                }`}
+                        >
+                            {showAll ? (
+                                <>
+                                    Mostra meno
+                                    <ArrowRight className="w-4 h-4 rotate-[-90deg] transition-transform" />
+                                </>
+                            ) : (
+                                <>
+                                    Scopri tutti i 10 moduli
+                                    <ArrowRight className="w-4 h-4 rotate-90 transition-transform" />
+                                </>
+                            )}
+                        </button>
+                    </div>
 
                     {/* Bottom teaser */}
                     <motion.p
@@ -370,7 +371,7 @@ export const StorytellingNarrative: React.FC = () => {
                         viewport={{ once: true }}
                         transition={{ duration: 0.8, delay: 0.5 }}
                     >
-                        + altri 7 moduli + 3 bonus esclusivi per ogni Mastermind. Scopri tutto sotto.
+                        + 3 bonus esclusivi inclusi in ogni Mastermind. Scopri i dettagli sotto.
                     </motion.p>
                 </div>
             </section>
