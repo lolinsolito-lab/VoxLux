@@ -193,10 +193,10 @@ export const AdminCalendar: React.FC = () => {
     const WeekDays = ['Domenica', 'Lunedì', 'Martedì', 'Mercoledì', 'Giovedì', 'Venerdì', 'Sabato'];
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 text-white p-8">
+        <div className="min-h-full bg-gradient-to-br from-gray-900 via-black to-gray-900 text-white p-4 md:p-8 pb-20">
             <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="mb-8 flex justify-between items-end">
                 <div>
-                    <h1 className="text-5xl font-black tracking-tight mb-2">CALENDAR <span className="bg-gradient-to-r from-purple-400 via-pink-500 to-purple-600 bg-clip-text text-transparent">MANAGER</span></h1>
+                    <h1 className="text-3xl md:text-5xl font-black tracking-tight mb-2">CALENDAR <span className="bg-gradient-to-r from-purple-400 via-pink-500 to-purple-600 bg-clip-text text-transparent">MANAGER</span></h1>
                     <p className="text-gray-400 text-lg">Gestione Appuntamenti e Disponibilità</p>
                 </div>
             </motion.div>
@@ -247,7 +247,7 @@ const TypeFormModal = ({ type, onClose, onSave }: { type: AppointmentType | null
     };
     return (
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={onClose}>
-            <div className="bg-zinc-900 border border-white/10 rounded-2xl p-8 w-full max-w-md shadow-2xl" onClick={e => e.stopPropagation()}>
+            <div className="bg-zinc-900 border border-white/10 rounded-2xl p-6 md:p-8 w-full max-w-md shadow-2xl max-h-[100dvh] overflow-y-auto" onClick={e => e.stopPropagation()}>
                 <h2 className="text-2xl font-bold mb-6">{type ? 'Modifica Sessione' : 'Nuova Sessione'}</h2>
                 <form onSubmit={handleSubmit} className="space-y-4">
                     <div><label className="text-xs font-bold text-gray-500 uppercase">Titolo</label><input required type="text" value={form.title} onChange={e => setForm(f => ({ ...f, title: e.target.value }))} className="w-full bg-black/50 border border-white/10 rounded-lg p-3 mt-1 focus:border-purple-500 outline-none" placeholder="es. Coaching 1h" /></div>

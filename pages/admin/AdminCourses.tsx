@@ -163,15 +163,15 @@ export const AdminCourses: React.FC = () => {
     }
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 text-white p-8">
+        <div className="min-h-full bg-gradient-to-br from-gray-900 via-black to-gray-900 text-white p-4 md:p-8 pb-20">
             {/* Header */}
             <motion.div
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
                 className="mb-10"
             >
-                <div className="flex justify-between items-center mb-2">
-                    <h1 className="text-5xl font-black tracking-tight">
+                <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 gap-4">
+                    <h1 className="text-3xl md:text-5xl font-black tracking-tight">
                         LMS <span className="bg-gradient-to-r from-purple-400 via-pink-500 to-purple-600 bg-clip-text text-transparent">ADMIN</span>
                     </h1>
                     <div className="flex gap-3">
@@ -354,8 +354,8 @@ export const AdminCourses: React.FC = () => {
                                         <button
                                             onClick={() => { setEditingCourse(course); setShowDiplomaModal(true); }}
                                             className={`col-span-2 py-2 border rounded-lg hover:bg-white/10 transition-all duration-300 flex items-center justify-center gap-2 text-xs font-bold ${course.diploma_requirements
-                                                    ? 'bg-amber-500/10 border-amber-500/30 text-amber-400'
-                                                    : 'bg-white/5 border-white/10 text-gray-500'
+                                                ? 'bg-amber-500/10 border-amber-500/30 text-amber-400'
+                                                : 'bg-white/5 border-white/10 text-gray-500'
                                                 }`}
                                         >
                                             <Award size={14} />
@@ -454,7 +454,7 @@ const DiplomaSettingsModal = ({
                 initial={{ scale: 0.9, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 exit={{ scale: 0.9, opacity: 0 }}
-                className="bg-zinc-900 border border-amber-500/30 rounded-2xl p-8 w-full max-w-lg shadow-2xl shadow-amber-900/20"
+                className="bg-zinc-900 border border-amber-500/30 rounded-2xl p-6 md:p-8 w-full max-w-lg shadow-2xl shadow-amber-900/20 max-h-[100dvh] overflow-y-auto"
                 onClick={(e) => e.stopPropagation()}
             >
                 <div className="flex justify-between items-center mb-6">
@@ -602,7 +602,7 @@ const CourseFormModal = ({
                 initial={{ scale: 0.9, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 exit={{ scale: 0.9, opacity: 0 }}
-                className="bg-gradient-to-br from-gray-900 to-black border border-purple-500/30 rounded-2xl p-8 w-full max-w-2xl max-h-[90vh] overflow-y-auto"
+                className="bg-gradient-to-br from-gray-900 to-black border border-purple-500/30 rounded-2xl p-6 md:p-8 w-full max-w-2xl max-h-[100dvh] md:max-h-[90vh] overflow-y-auto"
                 onClick={(e) => e.stopPropagation()}
                 onSubmit={handleSubmit}
             >

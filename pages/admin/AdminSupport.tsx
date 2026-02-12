@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MessageSquare, Send, CheckCircle, Clock, Search, Filter, User, MoreVertical, X, AlertCircle, RefreshCw, Mail } from 'lucide-react';
+import { MessageSquare, Send, CheckCircle, Clock, Search, Filter, User, MoreVertical, X, AlertCircle, RefreshCw, Mail, ChevronLeft } from 'lucide-react';
 import { supabase } from '../../services/supabase';
 import { formatDistanceToNow } from 'date-fns';
 import { it } from 'date-fns/locale';
@@ -201,10 +201,10 @@ export const AdminSupport: React.FC = () => {
     };
 
     return (
-        <div className="flex h-[calc(100vh-100px)] bg-black/50 border border-white/10 rounded-2xl overflow-hidden backdrop-blur-sm">
+        <div className="flex flex-col md:flex-row h-[calc(100vh-100px)] bg-black/50 border border-white/10 rounded-2xl overflow-hidden backdrop-blur-sm">
 
             {/* LEFT SIDEBAR: TICKET LIST */}
-            <div className="w-1/3 border-r border-white/10 flex flex-col">
+            <div className={`w-full md:w-1/3 border-b md:border-r md:border-b-0 border-white/10 flex flex-col h-full bg-black/60 md:bg-transparent ${selectedTicket ? 'hidden md:flex' : 'flex'}`}>
                 {/* Header */}
                 <div className="p-4 border-b border-white/10 bg-black/40">
                     <div className="flex justify-between items-center mb-4">
@@ -278,96 +278,104 @@ export const AdminSupport: React.FC = () => {
             </div>
 
             {/* RIGHT SIDEBAR: CHAT */}
-            <div className="flex-1 flex flex-col bg-gray-900/30">
+            <div className={`flex-1 flex-col bg-gray-900/30 w-full md:w-auto ${selectedTicket ? 'flex' : 'hidden md:flex'}`}>
                 {selectedTicket ? (
                     <>
                         {/* Chat Header */}
                         <div className="p-4 border-b border-white/10 bg-black/40 flex justify-between items-center">
-                            <div>
-                                <h3 className="text-lg font-bold text-white mb-1">{selectedTicket.subject}</h3>
-                                <div className="flex items-center gap-3 text-sm text-gray-400">
-                                    <div className="flex items-center gap-1.5 text-white">
-                                        <User size={14} />
-                                        <span className="font-bold">{getUserName(selectedTicket)}</span>
+                            <div className="flex items-center gap-3">
+                                <button
+                                    onClick={() => setSelectedTicket(null)}
+                                    className="md:hidden p-2 -ml-2 text-gray-400 hover:text-white"
+                                >
+                                    <ChevronLeft size={24} />
+                                </button>
+                                <div>
+                                    <h3 className="text-lg font-bold text-white mb-1 line-clamp-1">{selectedTicket.subject}</h3>
+                                    <div className="flex items-center gap-3 text-sm text-gray-400">
+                                        <div className="flex items-center gap-1.5 text-white">
+                                            <User size={14} />
+                                            <span className="font-bold">{getUserName(selectedTicket)}</span>
+                                        </div>
+                                        <span className="text-zinc-600">|</span>
+                                        <div className="flex items-center gap-1.5">
+                                            <Mail size={14} />
+                                            <span>{getUserEmail(selectedTicket)}</span>
+                                        </div>
                                     </div>
-                                    <span className="text-zinc-600">|</span>
-                                    <div className="flex items-center gap-1.5">
-                                        <Mail size={14} />
-                                        <span>{getUserEmail(selectedTicket)}</span>
-                                    </div>
+                                </div>
+
+                                <div className="flex items-center gap-2">
+                                    {selectedTicket.status !== 'resolved' && (
+                                        <button
+                                            onClick={() => updateStatus('resolved')}
+                                            className="px-4 py-2 bg-green-600 hover:bg-green-500 text-white text-sm font-bold rounded-lg flex items-center gap-2 transition-colors"
+                                        >
+                                            <CheckCircle size={16} />
+                                            Risolvi
+                                        </button>
+                                    )}
+                                    <button
+                                        onClick={() => setSelectedTicket(null)}
+                                        className="p-2 text-gray-500 hover:text-white"
+                                    >
+                                        <X size={20} />
+                                    </button>
                                 </div>
                             </div>
 
-                            <div className="flex items-center gap-2">
-                                {selectedTicket.status !== 'resolved' && (
-                                    <button
-                                        onClick={() => updateStatus('resolved')}
-                                        className="px-4 py-2 bg-green-600 hover:bg-green-500 text-white text-sm font-bold rounded-lg flex items-center gap-2 transition-colors"
+                            {/* Messages Area */}
+                            <div className="flex-1 overflow-y-auto p-6 space-y-4">
+                                {messages.map((msg) => (
+                                    <motion.div
+                                        initial={{ opacity: 0, y: 10 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        key={msg.id}
+                                        className={`flex ${msg.is_admin ? 'justify-end' : 'justify-start'}`}
                                     >
-                                        <CheckCircle size={16} />
-                                        Risolvi
+                                        <div className={`max-w-[70%] p-3 rounded-2xl text-sm leading-relaxed ${msg.is_admin
+                                            ? 'bg-green-600 text-white rounded-br-none'
+                                            : 'bg-zinc-800 text-gray-200 rounded-bl-none'
+                                            }`}>
+                                            <p>{msg.message}</p>
+                                            <p className={`text-[10px] mt-1 text-right ${msg.is_admin ? 'text-green-200' : 'text-zinc-400'}`}>
+                                                {new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                            </p>
+                                        </div>
+                                    </motion.div>
+                                ))}
+                                <div ref={messagesEndRef} />
+                            </div>
+
+                            {/* Input Area */}
+                            <form onSubmit={sendMessage} className="p-4 border-t border-white/10 bg-black/40">
+                                <div className="relative">
+                                    <input
+                                        type="text"
+                                        value={newMessage}
+                                        onChange={(e) => setNewMessage(e.target.value)}
+                                        placeholder="Scrivi una risposta..."
+                                        className="w-full bg-zinc-900 border border-zinc-700 rounded-xl py-3 pl-4 pr-12 text-white focus:outline-none focus:border-green-500 transition-colors"
+                                    />
+                                    <button
+                                        type="submit"
+                                        disabled={!newMessage.trim()}
+                                        className="absolute right-2 top-2 p-1.5 bg-green-600 text-white rounded-lg hover:bg-green-500 disabled:opacity-50 disabled:hover:bg-green-600 transition-colors"
+                                    >
+                                        <Send size={18} />
                                     </button>
-                                )}
-                                <button
-                                    onClick={() => setSelectedTicket(null)}
-                                    className="p-2 text-gray-500 hover:text-white"
-                                >
-                                    <X size={20} />
-                                </button>
+                                </div>
+                            </form>
+                        </>
+                        ) : (
+                        <div className="flex-1 flex flex-col items-center justify-center text-gray-500">
+                            <div className="w-16 h-16 bg-zinc-900 rounded-full flex items-center justify-center mb-4">
+                                <MessageSquare size={32} className="opacity-50" />
                             </div>
+                            <p className="text-lg">Seleziona un ticket per vedere la chat</p>
                         </div>
-
-                        {/* Messages Area */}
-                        <div className="flex-1 overflow-y-auto p-6 space-y-4">
-                            {messages.map((msg) => (
-                                <motion.div
-                                    initial={{ opacity: 0, y: 10 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    key={msg.id}
-                                    className={`flex ${msg.is_admin ? 'justify-end' : 'justify-start'}`}
-                                >
-                                    <div className={`max-w-[70%] p-3 rounded-2xl text-sm leading-relaxed ${msg.is_admin
-                                        ? 'bg-green-600 text-white rounded-br-none'
-                                        : 'bg-zinc-800 text-gray-200 rounded-bl-none'
-                                        }`}>
-                                        <p>{msg.message}</p>
-                                        <p className={`text-[10px] mt-1 text-right ${msg.is_admin ? 'text-green-200' : 'text-zinc-400'}`}>
-                                            {new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                                        </p>
-                                    </div>
-                                </motion.div>
-                            ))}
-                            <div ref={messagesEndRef} />
-                        </div>
-
-                        {/* Input Area */}
-                        <form onSubmit={sendMessage} className="p-4 border-t border-white/10 bg-black/40">
-                            <div className="relative">
-                                <input
-                                    type="text"
-                                    value={newMessage}
-                                    onChange={(e) => setNewMessage(e.target.value)}
-                                    placeholder="Scrivi una risposta..."
-                                    className="w-full bg-zinc-900 border border-zinc-700 rounded-xl py-3 pl-4 pr-12 text-white focus:outline-none focus:border-green-500 transition-colors"
-                                />
-                                <button
-                                    type="submit"
-                                    disabled={!newMessage.trim()}
-                                    className="absolute right-2 top-2 p-1.5 bg-green-600 text-white rounded-lg hover:bg-green-500 disabled:opacity-50 disabled:hover:bg-green-600 transition-colors"
-                                >
-                                    <Send size={18} />
-                                </button>
-                            </div>
-                        </form>
-                    </>
-                ) : (
-                    <div className="flex-1 flex flex-col items-center justify-center text-gray-500">
-                        <div className="w-16 h-16 bg-zinc-900 rounded-full flex items-center justify-center mb-4">
-                            <MessageSquare size={32} className="opacity-50" />
-                        </div>
-                        <p className="text-lg">Seleziona un ticket per vedere la chat</p>
-                    </div>
                 )}
+                    </div>
             </div>
         </div>
     );

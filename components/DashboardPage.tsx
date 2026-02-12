@@ -39,6 +39,7 @@ import { Lock, ShoppingCart, CheckCircle, Crown, X, Settings, Shield, HelpCircle
 import { ProfileSettings } from './ProfileSettings';
 import { SupportWidget } from './SupportWidget';
 import { FAQModal } from './FAQModal';
+import SmartUpgradeModal from './SmartUpgradeModal';
 
 // Secret admin email - only this email can see GOD MODE button
 const ADMIN_EMAIL = 'jaramichael@hotmail.com';
@@ -193,7 +194,7 @@ export const DashboardPage: React.FC = () => {
 
     const handleLogout = async () => {
         await logout();
-        navigate('/login');
+        navigate('/login', { replace: true });
     };
 
     const handleBuyCourse = async (courseId: CourseId) => {
@@ -238,7 +239,6 @@ export const DashboardPage: React.FC = () => {
         }
     };
 
-    // Fixed Course Definition
     const ALL_COURSES: {
         id: CourseId;
         title: string;
@@ -246,6 +246,7 @@ export const DashboardPage: React.FC = () => {
         route: string;
         priceId: string;
         price: number;
+        fullPrice?: number;
         description: string;
     }[] = [
             {
@@ -255,6 +256,7 @@ export const DashboardPage: React.FC = () => {
                 route: '/course/matrice-1',
                 priceId: STRIPE_PRODUCTS['matrice-1'].priceId,
                 price: STRIPE_PRODUCTS['matrice-1'].amount,
+                fullPrice: 99700,
                 description: STRIPE_PRODUCTS['matrice-1'].description
             },
             {
@@ -264,6 +266,7 @@ export const DashboardPage: React.FC = () => {
                 route: '/course/matrice-2',
                 priceId: STRIPE_PRODUCTS['matrice-2'].priceId,
                 price: STRIPE_PRODUCTS['matrice-2'].amount,
+                fullPrice: 99700,
                 description: STRIPE_PRODUCTS['matrice-2'].description
             },
             {
@@ -273,7 +276,8 @@ export const DashboardPage: React.FC = () => {
                 route: '/ascension', // Special route for the box
                 priceId: STRIPE_PRODUCTS['ascension-box'].priceId,
                 price: STRIPE_PRODUCTS['ascension-box'].amount,
-                description: STRIPE_PRODUCTS['ascension-box'].description
+                fullPrice: 199700, // Value of Bundle
+                description: 'Il Protocollo Definitivo. Include Matrice I, Matrice II, Membership "Elite Inner Circle" e Cripte Vocali.'
             }
         ];
 
@@ -294,6 +298,27 @@ export const DashboardPage: React.FC = () => {
             </div>
         );
     }
+
+    // Smart Upgrade State
+    const [showSmartUpgradeModal, setShowSmartUpgradeModal] = useState(false);
+
+    // Smart Upgrade Logic
+    const hasMatrice1 = purchases.some(p => p.course_id === 'matrice-1');
+    const hasMatrice2 = purchases.some(p => p.course_id === 'matrice-2');
+    const isUpgradeAvailable = hasMatrice1 && hasMatrice2 && !hasAscension;
+
+    // Filter Bonuses for Display
+    // "Included" bonuses are those that come with Ascension or courses (swipe files, templates, etc.)
+    // "Premium Extras" are services/high-ticket items (Audit, Done-For-You, etc.)
+    // We can filter based on price or specific IDs/Titles if needed.
+    // For now, let's assume "Bonuses" are free/included things, and "LockedExtras" are purchasable.
+    // However, the user wants VISUAL SEPARATION even for purchasable ones if they are "Part of Ascension" vs "Services".
+    // Based on previous chats: Inner Circle is "Part of Ascension".
+
+    // We will render Bonuses (unlocked) as usual.
+    // We will render LockedExtras (purchasable) split into two:
+    // 1. "Upgrade Your Arsenal" (Services)
+    // 2. The core "Inner Circle" is actually sold VIA Ascension Box for these users.
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-black relative overflow-hidden">
@@ -447,6 +472,8 @@ export const DashboardPage: React.FC = () => {
                             const prog = progress[course.id] || { completed_masterminds: 0, total_masterminds: 10 };
                             const progressPercent = (prog.completed_masterminds / prog.total_masterminds) * 100;
 
+                            const isAscension = course.id === 'ascension-box';
+
                             if (unlocked) {
                                 // ACTIVE CARD RENDER
                                 return (
@@ -488,10 +515,12 @@ export const DashboardPage: React.FC = () => {
                                 );
                             } else {
                                 // LOCKED CARD RENDER (Upsell)
+                                const isTargetUpgrade = isAscension && isUpgradeAvailable;
+
                                 return (
                                     <div
                                         key={course.id}
-                                        className="h-full backdrop-blur-sm bg-black/40 border border-white/5 rounded-2xl p-6 hover:border-white/20 transition-all duration-300 group flex flex-col relative"
+                                        className={`h-full backdrop-blur-sm bg-black/40 border ${isTargetUpgrade ? 'border-purple-500/50 shadow-[0_0_30px_rgba(168,85,247,0.1)]' : 'border-white/5'} rounded-2xl p-6 hover:border-white/20 transition-all duration-300 group flex flex-col relative`}
                                     >
                                         <div className="absolute top-4 right-4 text-gray-600 group-hover:text-white transition-colors">
                                             <Lock size={20} />
@@ -512,15 +541,26 @@ export const DashboardPage: React.FC = () => {
                                         <div className="mt-auto">
                                             <div className="flex items-end gap-2 mb-4">
                                                 <span className="text-2xl font-bold text-white">€{((course.price || 0) / 100).toFixed(0)}</span>
-                                                <span className="text-xs text-gray-500 mb-1 line-through">€997</span>
+                                                {course.fullPrice && course.fullPrice > course.price && (
+                                                    <span className="text-xs text-gray-500 mb-1 line-through">€{((course.fullPrice || 0) / 100).toFixed(0)}</span>
+                                                )}
                                             </div>
 
-                                            <button
-                                                onClick={() => handleBuyCourse(course.id)}
-                                                className="w-full py-3 border border-white/20 text-gray-300 hover:text-black hover:bg-white hover:border-white font-bold rounded-lg transition-all duration-300 flex items-center justify-center gap-2 group-hover:shadow-[0_0_20px_rgba(255,255,255,0.2)]"
-                                            >
-                                                <ShoppingCart size={16} /> SBLOCCA ORA
-                                            </button>
+                                            {isTargetUpgrade ? (
+                                                <button
+                                                    onClick={() => setShowSmartUpgradeModal(true)}
+                                                    className="w-full py-3 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-bold rounded-lg transition-all duration-300 flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(168,85,247,0.3)] animate-pulse hover:animate-none"
+                                                >
+                                                    <Crown size={16} /> COMPLETA ASCENSIONE
+                                                </button>
+                                            ) : (
+                                                <button
+                                                    onClick={() => handleBuyCourse(course.id)}
+                                                    className="w-full py-3 border border-white/20 text-gray-300 hover:text-black hover:bg-white hover:border-white font-bold rounded-lg transition-all duration-300 flex items-center justify-center gap-2 group-hover:shadow-[0_0_20px_rgba(255,255,255,0.2)]"
+                                                >
+                                                    <ShoppingCart size={16} /> SBLOCCA ORA
+                                                </button>
+                                            )}
                                         </div>
                                     </div>
                                 );
@@ -529,11 +569,11 @@ export const DashboardPage: React.FC = () => {
                     </div>
                 </div>
 
-                {/* BONUS SECTION */}
+                {/* BONUS SECTION - VISUALLY SEPARATED */}
                 {bonuses.length > 0 && (
-                    <div className="mb-12 animate-slide-up" style={{ animationDelay: '0.2s' }}>
+                    <div id="bonuses-section" className="mb-12 animate-slide-up" style={{ animationDelay: '0.2s' }}>
                         <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-2">
-                            <span className="text-purple-500">🎁</span> Contenuti Bonus & Risorse
+                            <span className="text-purple-500">🎁</span> Contenuti Bonus & Risorse Unlocked
                         </h2>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -565,18 +605,20 @@ export const DashboardPage: React.FC = () => {
                     </div>
                 )}
 
-                {/* LOCKED EXTRAS (Purchasable) */}
+                {/* LOCKED EXTRAS (Purchasable) - SEPARATED */}
                 {lockedExtras.length > 0 && (
-                    <div className="mb-12 animate-slide-up" style={{ animationDelay: '0.3s' }}>
-                        <div className="text-center mb-10">
-                            <h2 className="text-3xl md:text-4xl font-bold text-white mb-3 flex items-center justify-center gap-3">
-                                <span className="text-amber-500">💎</span>
-                                Extra Premium
-                                <span className="text-amber-500">💎</span>
-                            </h2>
-                            <p className="text-gray-400 text-lg max-w-2xl mx-auto">
-                                Strumenti professionali che trasformano la tua strategia in risultati concreti
-                            </p>
+                    <div className="mb-20 animate-slide-up" style={{ animationDelay: '0.3s' }}>
+                        {/* Divider */}
+                        <div className="relative flex items-center justify-center py-10">
+                            <div className="absolute inset-0 flex items-center">
+                                <div className="w-full border-t border-white/10"></div>
+                            </div>
+                            <div className="relative bg-[#050505] px-6">
+                                <h2 className="text-2xl font-bold text-white flex items-center gap-3">
+                                    <span className="text-amber-500">⚡</span>
+                                    Servizi Premium & Acceleratori
+                                </h2>
+                            </div>
                         </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -610,7 +652,7 @@ export const DashboardPage: React.FC = () => {
                                             {extra.title}
                                         </h3>
 
-                                        {/* Description - Fixed Height for Alignment */}
+                                        {/* Description */}
                                         <p className="text-sm text-gray-300 mb-6 leading-relaxed flex-grow min-h-[4.5rem]">
                                             {extra.description}
                                         </p>
@@ -654,30 +696,29 @@ export const DashboardPage: React.FC = () => {
                                 </div>
                             ))}
                         </div>
-
-                        {/* Bottom Trust Bar */}
-                        <div className="mt-10 text-center">
-                            <div className="inline-flex items-center gap-6 px-8 py-4 bg-white/5 backdrop-blur-sm border border-white/10 rounded-full">
-                                <span className="text-sm text-gray-400 flex items-center gap-2">
-                                    ✓ <span className="font-semibold text-white">Garanzia 30 giorni</span>
-                                </span>
-                                <span className="text-gray-600">|</span>
-                                <span className="text-sm text-gray-400 flex items-center gap-2">
-                                    ✓ <span className="font-semibold text-white">Supporto prioritario</span>
-                                </span>
-                                <span className="text-gray-600">|</span>
-                                <span className="text-sm text-gray-400 flex items-center gap-2">
-                                    ✓ <span className="font-semibold text-white">Aggiornamenti gratuiti</span>
-                                </span>
-                            </div>
-                        </div>
                     </div>
                 )}
 
+                {/* Bottom Trust Bar */}
+                <div className="mt-10 text-center pb-20">
+                    <div className="flex flex-col md:flex-row md:inline-flex items-center gap-2 md:gap-6 px-6 py-4 md:px-8 bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl md:rounded-full">
+                        <span className="text-sm text-gray-400 flex items-center gap-2">
+                            ✓ <span className="font-semibold text-white">Garanzia 30 giorni</span>
+                        </span>
+                        <span className="hidden md:block text-gray-600">|</span>
+                        <span className="text-sm text-gray-400 flex items-center gap-2">
+                            ✓ <span className="font-semibold text-white">Supporto prioritario</span>
+                        </span>
+                        <span className="hidden md:block text-gray-600">|</span>
+                        <span className="text-sm text-gray-400 flex items-center gap-2">
+                            ✓ <span className="font-semibold text-white">Aggiornamenti gratuiti</span>
+                        </span>
+                    </div>
+                </div>
 
                 {/* Quick Stats (if has courses) */}
                 {purchases.length > 0 && (
-                    <div className="backdrop-blur-xl bg-white/5 border border-white/10 rounded-2xl p-6">
+                    <div className="backdrop-blur-xl bg-white/5 border border-white/10 rounded-2xl p-6 mb-20">
                         <h3 className="text-lg font-bold text-white mb-4">📊 Statistiche Rapide</h3>
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                             <div className="text-center">
@@ -702,6 +743,14 @@ export const DashboardPage: React.FC = () => {
                     </div>
                 )}
             </div>
+
+            {/* Smart Upgrade Modal */}
+            <SmartUpgradeModal
+                isOpen={showSmartUpgradeModal}
+                onClose={() => setShowSmartUpgradeModal(false)}
+                onUpgrade={() => handleBuyCourse('ascension-box')}
+                price={99700}
+            />
 
             {/* Smart Success Modal */}
             {showSuccessModal && (

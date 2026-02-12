@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Quote } from 'lucide-react';
+import { createPortal } from 'react-dom';
 
 export const FounderSection: React.FC = () => {
     const [isHovered, setIsHovered] = useState(false);
@@ -65,34 +66,19 @@ export const FounderSection: React.FC = () => {
                             <AnimatePresence>
                                 {isHovered && (
                                     <>
-                                        {/* Mobile Overlay Backdrop */}
-                                        <motion.div
-                                            initial={{ opacity: 0 }}
-                                            animate={{ opacity: 1 }}
-                                            exit={{ opacity: 0 }}
-                                            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 md:hidden"
-                                            onClick={(e) => { e.stopPropagation(); setIsHovered(false); }}
-                                        />
-
+                                        {/* DESKTOP VERSION (Inline, Absolute) */}
                                         <motion.div
                                             initial={{ opacity: 0, y: 20, scale: 0.95 }}
                                             animate={{ opacity: 1, y: 0, scale: 1 }}
                                             exit={{ opacity: 0, y: 20, scale: 0.95 }}
                                             transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                                            className="fixed md:absolute top-[45%] left-1/2 -translate-x-1/2 -translate-y-1/2 md:top-auto md:bottom-full md:left-1/2 md:-translate-x-1/2 md:translate-y-0 md:mb-6 w-[300px] md:w-[320px] z-50"
+                                            className="hidden md:block absolute bottom-full left-1/2 -translate-x-1/2 mb-6 w-[320px] z-50 pointer-events-none"
                                         >
                                             <div className="bg-stone-950 border border-lux-gold/30 rounded-xl overflow-hidden shadow-[0_0_50px_rgba(228,197,114,0.3)] relative">
-                                                {/* Image with stronger gradient for text readability */}
                                                 <div className="h-[320px] w-full relative grayscale">
                                                     <div className="absolute inset-0 bg-gradient-to-t from-stone-950 via-stone-950/80 to-transparent opacity-90" />
-                                                    <img
-                                                        src="/assets/founder.png"
-                                                        alt="Michael Jara"
-                                                        className="w-full h-full object-cover"
-                                                    />
+                                                    <img src="/assets/founder.png" alt="Michael Jara" className="w-full h-full object-cover" />
                                                 </div>
-
-                                                {/* Text Overlay */}
                                                 <div className="absolute bottom-0 left-0 right-0 p-6 text-left z-10">
                                                     <p className="text-white font-bold text-lg leading-tight mb-2">L'Arte dell'Ascesa</p>
                                                     <p className="text-stone-300 text-xs leading-relaxed italic border-l-2 border-lux-gold pl-3 drop-shadow-md">
@@ -106,13 +92,23 @@ export const FounderSection: React.FC = () => {
                                                     </div>
                                                 </div>
                                             </div>
-
-                                            {/* Little Arrow - Desktop Only */}
-                                            <div className="hidden md:block absolute -bottom-2 left-1/2 -translate-x-1/2 w-4 h-4 bg-stone-950 border-r border-b border-lux-gold/30 rotate-45" />
+                                            <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-4 h-4 bg-stone-950 border-r border-b border-lux-gold/30 rotate-45" />
                                         </motion.div>
-                                    </>
-                                )}
-                            </AnimatePresence>
+
+                                        {/* MOBILE VERSION (Portaled, Fixed Centered) */}
+                                        {typeof document !== 'undefined' && createPortal(
+                                            <motion.div
+                                                initial={{ opacity: 0 }}
+                                                animate={{ opacity: 1 }}
+                                                exit={{ opacity: 0 }}
+                                                className="fixed inset-0 z-[9999] flex items-center justify-center px-4 md:hidden"
+                                                onClick={(e) => { e.stopPropagation(); setIsHovered(false); }}
+                                            >
+                                            </>
+                                        )}
+                                    </AnimatePresence>,
+                                document.body
+                            )}
                         </div>
                     </div>
                 </motion.div>

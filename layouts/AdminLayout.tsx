@@ -144,7 +144,7 @@ export const AdminLayout: React.FC = () => {
                 </header>
 
                 {/* Content Scroller */}
-                <div className="flex-1 overflow-y-auto bg-black p-4 md:p-10 w-full">
+                <div className="flex-1 overflow-y-auto bg-black w-full">
                     <Outlet />
                 </div>
 

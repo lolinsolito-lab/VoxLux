@@ -135,14 +135,14 @@ export const AdminDiscounts: React.FC = () => {
     }
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 p-8 space-y-8">
+        <div className="min-h-full bg-gradient-to-br from-gray-900 via-black to-gray-900 p-4 md:p-8 pb-20 space-y-8">
             {/* HEADER */}
             <motion.div
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
                 className="flex items-center justify-between"
             >
-                <h1 className="text-5xl font-black tracking-tighter">
+                <h1 className="text-3xl md:text-5xl font-black tracking-tighter">
                     <span className="bg-clip-text text-transparent bg-gradient-to-r from-green-500 via-emerald-500 to-teal-500">
                         PROMO CODES
                     </span>
@@ -256,8 +256,8 @@ export const AdminDiscounts: React.FC = () => {
                                             </button>
 
                                             <div className={`flex items-center gap-2 px-3 py-1.5 rounded-lg font-bold ${code.discount_type === 'percentage'
-                                                    ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30'
-                                                    : 'bg-green-500/20 text-green-400 border border-green-500/30'
+                                                ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30'
+                                                : 'bg-green-500/20 text-green-400 border border-green-500/30'
                                                 }`}>
                                                 {code.discount_type === 'percentage' ? <Percent size={16} /> : <DollarSign size={16} />}
                                                 <span className="text-lg">{formatDiscount(code)}</span>
@@ -301,8 +301,8 @@ export const AdminDiscounts: React.FC = () => {
                                         <button
                                             onClick={() => handleToggleActive(code.id, code.active)}
                                             className={`p-3 rounded-xl transition-all duration-300 ${code.active
-                                                    ? 'text-green-400 bg-green-500/20 hover:bg-green-500/30'
-                                                    : 'text-gray-500 bg-white/5 hover:bg-white/10'
+                                                ? 'text-green-400 bg-green-500/20 hover:bg-green-500/30'
+                                                : 'text-gray-500 bg-white/5 hover:bg-white/10'
                                                 }`}
                                         >
                                             <Check size={18} />
@@ -401,7 +401,7 @@ const PromoCodeFormModal = ({ code, generateCode, onClose, onSave }: {
                 exit={{ scale: 0.9, opacity: 0 }}
                 onClick={(e) => e.stopPropagation()}
                 onSubmit={handleSubmit}
-                className="bg-gradient-to-br from-gray-900 to-black border border-green-500/30 rounded-2xl p-8 w-full max-w-lg space-y-6"
+                className="bg-gradient-to-br from-gray-900 to-black border border-green-500/30 rounded-2xl p-6 md:p-8 w-full max-w-lg space-y-6 max-h-[100dvh] overflow-y-auto"
             >
                 <div className="flex justify-between items-center mb-4">
                     <h2 className="text-2xl font-black text-white">{code ? 'Modifica Codice' : 'Nuovo Codice Sconto'}</h2>
@@ -463,8 +463,8 @@ const PromoCodeFormModal = ({ code, generateCode, onClose, onSave }: {
                                 type="button"
                                 onClick={() => toggleTier(tier)}
                                 className={`px-3 py-2 rounded-lg border text-xs font-bold transition-all ${selectedTiers.includes(tier)
-                                        ? 'bg-green-600 border-green-500 text-white'
-                                        : 'bg-white/10 border-white/20 text-gray-400 hover:border-white/40'
+                                    ? 'bg-green-600 border-green-500 text-white'
+                                    : 'bg-white/10 border-white/20 text-gray-400 hover:border-white/40'
                                     }`}
                             >
                                 {tier.replace('matrice-', 'M').replace('ascension-box', 'Ascension')}

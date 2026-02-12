@@ -215,14 +215,14 @@ export const AdminFinance: React.FC = () => {
     }
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 p-8 space-y-8">
+        <div className="min-h-full bg-gradient-to-br from-gray-900 via-black to-gray-900 p-4 md:p-8 pb-20 space-y-8">
             {/* HEADER */}
             <motion.div
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
                 className="flex items-center justify-between"
             >
-                <h1 className="text-5xl font-black tracking-tighter">
+                <h1 className="text-3xl md:text-5xl font-black tracking-tighter">
                     <span className="bg-clip-text text-transparent bg-gradient-to-r from-red-500 via-orange-500 to-amber-500">
                         REVENUE TRACKING
                     </span>

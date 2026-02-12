@@ -61,7 +61,7 @@ const BonusFormModal = ({ bonus, onClose, onSave }: { bonus: BonusContent | null
 
     return (
         <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-            <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 w-full max-w-2xl shadow-2xl overflow-y-auto max-h-[90vh]">
+            <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 w-full max-w-2xl shadow-2xl overflow-y-auto max-h-[100dvh] md:max-h-[90vh]">
                 <div className="flex justify-between items-center mb-6">
                     <h3 className="text-xl font-bold text-white flex items-center gap-2">
                         {bonus ? <Pencil size={20} className="text-purple-500" /> : <Plus size={20} className="text-purple-500" />}
@@ -179,7 +179,7 @@ const UpsellFormModal = ({ upsell, onClose, onSave }: { upsell: BonusContent | n
 
     return (
         <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-            <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 w-full max-w-2xl shadow-2xl overflow-y-auto max-h-[90vh]">
+            <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 w-full max-w-2xl shadow-2xl overflow-y-auto max-h-[100dvh] md:max-h-[90vh]">
                 <div className="flex justify-between items-center mb-6">
                     <h3 className="text-xl font-bold text-white flex items-center gap-2">
                         {upsell ? <Pencil size={20} className="text-green-500" /> : <Plus size={20} className="text-green-500" />}
@@ -360,10 +360,10 @@ export const AdminContent: React.FC = () => {
     }
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 text-white p-8">
+        <div className="min-h-full bg-gradient-to-br from-gray-900 via-black to-gray-900 text-white p-4 md:p-8 pb-20">
             <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="mb-10">
                 <div className="flex justify-between items-center mb-2">
-                    <h1 className="text-5xl font-black tracking-tight">
+                    <h1 className="text-3xl md:text-5xl font-black tracking-tight">
                         LA FABBRICA <span className="bg-gradient-to-r from-purple-400 via-pink-500 to-purple-600 bg-clip-text text-transparent">CONTENUTI</span>
                     </h1>
                     <div className="flex gap-2">

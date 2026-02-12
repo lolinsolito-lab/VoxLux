@@ -164,8 +164,14 @@ const App: React.FC = () => {
 };
 
 const MainApp: React.FC = () => {
-  // Start with SPLASH view
-  const [currentView, setCurrentView] = useState<View>(View.SPLASH);
+  // Start with SPLASH view only if not seen directly before
+  const [currentView, setCurrentView] = useState<View>(() => {
+    // If user has seen splash in this session, skip it
+    if (typeof window !== 'undefined' && sessionStorage.getItem('vox_splash_seen')) {
+      return View.HERO;
+    }
+    return View.SPLASH;
+  });
 
   // Track previous view for the portal functionality
   const [portalView, setPortalView] = useState<View>(View.LIVE_AUDIO);
@@ -176,9 +182,10 @@ const MainApp: React.FC = () => {
 
   // Redirect to dashboard if user is already logged in
   useEffect(() => {
+    // Only redirect if we are on the landing/hero page and user is loaded
+    // We don't want to redirect if the user is explicitly logging out (handled by handleLogout)
+    // But handleLogout just sets view to HERO.
     if (!loading && user) {
-      // Optional: Check if onboarding is complete to decide destination
-      // For now, dashboard is safe
       navigate('/dashboard');
     }
   }, [user, loading, navigate]);
@@ -192,6 +199,9 @@ const MainApp: React.FC = () => {
   };
 
   const handleSplashComplete = () => {
+    if (typeof window !== 'undefined') {
+      sessionStorage.setItem('vox_splash_seen', 'true');
+    }
     setCurrentView(View.HERO);
   };
 

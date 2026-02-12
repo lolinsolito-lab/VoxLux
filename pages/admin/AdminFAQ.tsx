@@ -110,7 +110,7 @@ export const AdminFAQ: React.FC = () => {
     const activeQuestions = questions.filter(q => q.category_id === selectedCategory);
 
     return (
-        <div className="p-8 max-w-7xl mx-auto text-white min-h-screen">
+        <div className="p-4 md:p-8 pb-20 max-w-7xl mx-auto text-white min-h-full">
 
             {/* HEADER */}
             <div className="flex justify-between items-center mb-8">
@@ -123,10 +123,10 @@ export const AdminFAQ: React.FC = () => {
                 </div>
             </div>
 
-            <div className="grid grid-cols-12 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
 
                 {/* SIDEBAR - CATEGORIES */}
-                <div className="col-span-4 space-y-4">
+                <div className="col-span-1 md:col-span-4 space-y-4">
                     <div className="flex justify-between items-center mb-4">
                         <h3 className="text-sm font-bold uppercase tracking-wider text-zinc-500">Categorie</h3>
                         <button
@@ -175,7 +175,7 @@ export const AdminFAQ: React.FC = () => {
                 </div>
 
                 {/* MAIN CONTENT - QUESTIONS */}
-                <div className="col-span-8">
+                <div className="col-span-1 md:col-span-8">
                     <div className="bg-zinc-900/50 border border-white/5 rounded-2xl p-6 min-h-[600px]">
 
                         {/* TOOLBAR */}
@@ -300,7 +300,7 @@ export const AdminFAQ: React.FC = () => {
                             initial={{ scale: 0.9, opacity: 0 }}
                             animate={{ scale: 1, opacity: 1 }}
                             exit={{ scale: 0.9, opacity: 0 }}
-                            className="bg-zinc-900 border border-white/10 rounded-2xl p-6 w-[400px] shadow-2xl"
+                            className="bg-zinc-900 border border-white/10 rounded-2xl p-6 w-full max-w-md shadow-2xl max-h-[100dvh] overflow-y-auto"
                         >
                             <h2 className="text-xl font-bold mb-4">
                                 {editingCategory.id ? 'Modifica Categoria' : 'Nuova Categoria'}
@@ -337,7 +337,7 @@ export const AdminFAQ: React.FC = () => {
                             initial={{ scale: 0.9, opacity: 0 }}
                             animate={{ scale: 1, opacity: 1 }}
                             exit={{ scale: 0.9, opacity: 0 }}
-                            className="bg-zinc-900 border border-white/10 rounded-2xl p-6 w-[600px] shadow-2xl"
+                            className="bg-zinc-900 border border-white/10 rounded-2xl p-6 w-full max-w-2xl shadow-2xl max-h-[100dvh] overflow-y-auto"
                         >
                             <h2 className="text-xl font-bold mb-4">
                                 {editingQuestion.id ? 'Modifica FAQ' : 'Nuova FAQ'}

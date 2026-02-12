@@ -156,15 +156,15 @@ export const UserManagement: React.FC = () => {
     }
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 p-8 space-y-8">
+        <div className="min-h-full bg-gradient-to-br from-gray-900 via-black to-gray-900 p-4 md:p-8 pb-20 space-y-8">
             {/* HEADER */}
             <motion.div
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="flex flex-col md:flex-row md:items-center justify-between gap-4"
+                className="flex flex-col xl:flex-row xl:items-center justify-between gap-4"
             >
                 <div>
-                    <h1 className="text-5xl font-black tracking-tighter">
+                    <h1 className="text-3xl md:text-5xl font-black tracking-tighter">
                         <span className="bg-clip-text text-transparent bg-gradient-to-r from-purple-500 via-pink-500 to-red-500">
                             USER MANAGEMENT
                         </span>
