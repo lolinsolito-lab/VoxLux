@@ -140,10 +140,11 @@ export const PodcastCinematicHub: React.FC<PodcastCinematicHubProps> = ({ course
             </div>
 
             {/* 3. ORBITAL SYSTEM CONTAINER - Flexbox Vertical Stack on Mobile */}
-            <div className="flex flex-col items-center justify-center gap-16 md:gap-0 w-full">
+            <div className="flex flex-col items-center justify-center gap-6 md:gap-0 w-full mt-12 md:mt-0">
 
                 {/* ORBITAL SYSTEM - "LIVING LIGHT" */}
-                <div className="relative w-[90vw] h-[90vw] md:w-[90vmin] md:h-[90vmin] flex items-center justify-center transition-transform duration-500 flex-shrink-0">
+                {/* Mobile: Compacted width (85vw) and max-width constraint to prevent edge bleeding */}
+                <div className="relative w-[85vw] max-w-[340px] h-[85vw] max-h-[340px] md:w-[90vmin] md:h-[90vmin] md:max-w-none md:max-h-none flex items-center justify-center transition-transform duration-500 flex-shrink-0">
 
                     {/* EMITTING CORE - "The Pearl Eclipse" */}
                     {/* 1. Outer Glow (Large Breath) - Desktop only for performance */}
@@ -315,7 +316,7 @@ export const PodcastCinematicHub: React.FC<PodcastCinematicHubProps> = ({ course
                 </div>
 
                 {/* 4. FOOTER BOXES - BELOW ORBITAL SYSTEM (Mobile) + Left Aligned (Desktop/Tablet) */}
-                <div className="w-full px-6 md:px-0 md:absolute md:bottom-32 md:left-8 z-40 pointer-events-none flex flex-col items-center md:items-start md:text-left transition-all duration-500 pb-8 md:pb-0">
+                <div className="w-full px-6 md:px-0 md:absolute md:bottom-32 md:left-8 z-40 pointer-events-none flex flex-col items-center md:items-start md:text-left transition-all duration-500 pb-8 md:pb-0 text-center md:text-left">
 
                     {hoveredNode !== null ? (
                         // ACTIVE STATE: Module Info

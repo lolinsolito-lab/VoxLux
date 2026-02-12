@@ -15,24 +15,24 @@ interface StorytellingLivingTreeProps {
 // 1-3-3-2-1 Configuration (Bottom to Top)
 const MAP_NODES = [
     // ROW 1: BASE (1)
-    { x: 50, y: 90, scale: 1.2 },  // 1. Origine
+    { x: 50, y: 85, scale: 1.2 },  // 1. Origine (Moved up from 90)
 
     // ROW 2: LOWER TRIAD (3)
-    { x: 20, y: 72, scale: 1.0 },  // 2. Library (Left)
-    { x: 50, y: 72, scale: 1.0 },  // 3. Workshop (Center)
-    { x: 80, y: 72, scale: 1.0 },  // 4. Echo (Right)
+    { x: 20, y: 70, scale: 1.0 },  // 2. Library (Left)
+    { x: 50, y: 70, scale: 1.0 },  // 3. Workshop (Center)
+    { x: 80, y: 70, scale: 1.0 },  // 4. Echo (Right)
 
     // ROW 3: MIDDLE TRIAD (3)
-    { x: 20, y: 48, scale: 1.1 },  // 5. Fortress (Left)
-    { x: 50, y: 48, scale: 1.1 },  // 6. Sanctuary (Center)
-    { x: 80, y: 48, scale: 1.1 },  // 7. Value (Right)
+    { x: 20, y: 50, scale: 1.1 },  // 5. Fortress (Left)
+    { x: 50, y: 50, scale: 1.1 },  // 6. Sanctuary (Center)
+    { x: 80, y: 50, scale: 1.1 },  // 7. Value (Right)
 
     // ROW 4: UPPER PAIR (2)
-    { x: 35, y: 25, scale: 1.1 },  // 8. Time (Left)
-    { x: 65, y: 25, scale: 1.1 },  // 9. Loyalty (Right)
+    { x: 35, y: 30, scale: 1.1 },  // 8. Time (Left)
+    { x: 65, y: 30, scale: 1.1 },  // 9. Loyalty (Right)
 
     // ROW 5: CROWN (1)
-    { x: 50, y: 8, scale: 1.3 }    // 10. Mastery
+    { x: 50, y: 15, scale: 1.3 }    // 10. Mastery (Moved down from 8)
 ];
 
 // CONNECTIONS (Graph Edges - Flowing Upwards)
@@ -123,7 +123,7 @@ export const StorytellingLivingTree: React.FC<StorytellingLivingTreeProps> = ({
         <div className="absolute inset-0 z-10 w-full h-full pointer-events-none flex items-center justify-center">
 
             {/* Global CSS Styles for Custom Keyframes */}
-            <style jsx>{`
+            <style>{`
                 @keyframes cycleSunMoon {
                     0%, 100% { 
                         opacity: 0.2; 
@@ -166,7 +166,7 @@ export const StorytellingLivingTree: React.FC<StorytellingLivingTreeProps> = ({
             {/* Desktop: lg:max-w-[550px] xl:max-w-[600px] */}
             <div className={`
                 relative 
-                w-full max-h-[80vh] aspect-[3/5] 
+                w-full max-h-[85vh] aspect-[3/5] px-4 md:px-0
                 md:w-full md:max-w-[480px] md:max-h-[80vh] md:aspect-[3/4]
                 lg:max-w-[550px] xl:max-w-[600px] lg:max-h-[85vh] lg:aspect-[5/8]
                 flex-shrink-0 transition-all duration-1000 ease-out

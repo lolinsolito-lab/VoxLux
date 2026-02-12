@@ -35,7 +35,7 @@ interface BonusProduct {
 
 
 import { createCheckoutSession, STRIPE_PRODUCTS, CourseId } from '../services/stripe';
-import { Lock, ShoppingCart, CheckCircle, Crown, X, Settings, Shield, HelpCircle } from 'lucide-react';
+import { Lock, ShoppingCart, CheckCircle, Crown, X, Settings, Shield, HelpCircle, Play, ChevronRight } from 'lucide-react';
 import { ProfileSettings } from './ProfileSettings';
 import { SupportWidget } from './SupportWidget';
 import { FAQModal } from './FAQModal';
@@ -54,6 +54,14 @@ export const DashboardPage: React.FC = () => {
     const [progress, setProgress] = useState<Record<string, CourseProgress>>({});
     const [loading, setLoading] = useState(true);
     const [syncing, setSyncing] = useState(false);
+
+    // SAFETY BREAK: Force stop loading after 8s to prevent infinite spinner
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setLoading(false);
+        }, 8000);
+        return () => clearTimeout(timer);
+    }, []);
 
     // Modal State
     const [showSuccessModal, setShowSuccessModal] = useState(false);
