@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X } from 'lucide-react';
 
@@ -21,7 +22,7 @@ export const LegalModal: React.FC<LegalModalProps> = ({ isOpen, onClose, title, 
         return () => { document.body.style.overflow = ''; };
     }, [isOpen]);
 
-    return (
+    return createPortal(
         <AnimatePresence>
             {isOpen && (
                 <>
@@ -77,6 +78,7 @@ export const LegalModal: React.FC<LegalModalProps> = ({ isOpen, onClose, title, 
                     </motion.div>
                 </>
             )}
-        </AnimatePresence>
+        </AnimatePresence>,
+        document.body
     );
 };
