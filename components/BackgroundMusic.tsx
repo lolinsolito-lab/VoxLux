@@ -90,6 +90,9 @@ export const BackgroundMusic: React.FC<BackgroundMusicProps> = ({ src }) => {
     // Auto-start on first interaction (Click anywhere)
     useEffect(() => {
         const handleFirstInteraction = () => {
+            // STRICT MUTE CHECK: If muted, do NOT start playing
+            if (isMuted) return;
+
             if (!userInteracted && audioRef.current && shouldPlay) {
                 // Try to play
                 const playPromise = audioRef.current.play();
@@ -99,7 +102,7 @@ export const BackgroundMusic: React.FC<BackgroundMusicProps> = ({ src }) => {
                         .then(() => {
                             // SUCCESS: Interaction accepted
                             console.log("Audio started successfully");
-                            setUserInteracted(true);
+                            setUserInteracted(true); // INTERACTION CONFIRMED
                             fadeVolume(audioRef.current!, 0.4);
 
                             // Only remove listeners if it ACTUALLY worked
