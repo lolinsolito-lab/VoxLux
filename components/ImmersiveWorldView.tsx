@@ -25,6 +25,7 @@ import { world8 } from '../content/story/world8';
 import { world9 } from '../content/story/world9';
 import { world10 } from '../content/story/world10';
 import { WorldContent } from '../services/courses/types';
+import { mergeWorldContent } from '../services/contentMerger';
 
 const WORLD_CONTENT_MAP: Record<number, WorldContent> = {
     1: world1Content,
@@ -132,8 +133,7 @@ export const ImmersiveWorldView: React.FC<ImmersiveWorldViewProps> = ({
         checkQuiz();
     }, [dbModule]);
 
-    // Import helper (Dynamic require is meh, but keeping structure)
-    const { mergeWorldContent } = require('../services/contentMerger');
+    // Content merging (imported at top of file)
 
     if (dbModule) {
         // console.log(`[ImmersiveWorldView] Merging DB content for World ${worldNum}`, dbModule);

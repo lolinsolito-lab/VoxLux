@@ -6,6 +6,18 @@ import { useAudioSystem } from '../hooks/useAudioSystem';
 import { Mic, Play, ArrowLeft, Waves, Check, Sparkles } from 'lucide-react';
 import { PodcastAtmosphere } from './PodcastAtmosphere';
 
+// Mobile detection hook
+function useIsMobile() {
+    const [isMobile, setIsMobile] = useState(false);
+    useEffect(() => {
+        const check = () => setIsMobile(window.innerWidth < 768);
+        check();
+        window.addEventListener('resize', check);
+        return () => window.removeEventListener('resize', check);
+    }, []);
+    return isMobile;
+}
+
 interface PodcastCinematicHubProps {
     courseId: string;
     onSelectWorld: (worldId: string) => void;
@@ -30,6 +42,7 @@ const ECLIPSE_STYLE = `
 
 export const PodcastCinematicHub: React.FC<PodcastCinematicHubProps> = ({ courseId, onSelectWorld, onBack, completedModules }) => {
     const { playSound } = useAudioSystem();
+    const isMobile = useIsMobile();
     // HYBRID INTEGRATION: Hook
     const { course, loading } = useCourseData(courseId);
     const [hoveredNode, setHoveredNode] = useState<number | null>(null);
@@ -130,18 +143,18 @@ export const PodcastCinematicHub: React.FC<PodcastCinematicHubProps> = ({ course
             <div className="flex flex-col items-center justify-center gap-16 md:gap-0 w-full">
 
                 {/* ORBITAL SYSTEM - "LIVING LIGHT" */}
-                <div className="relative w-[60vmin] h-[60vmin] md:w-[90vmin] md:h-[90vmin] flex items-center justify-center transition-transform duration-500 flex-shrink-0">
+                <div className="relative w-[90vw] h-[90vw] md:w-[90vmin] md:h-[90vmin] flex items-center justify-center transition-transform duration-500 flex-shrink-0">
 
                     {/* EMITTING CORE - "The Pearl Eclipse" */}
-                    {/* 1. Outer Glow (Large Breath) - Slower (10s), White/Pearl */}
-                    <div className="absolute z-0 w-96 h-96 bg-white/5 rounded-full blur-3xl animate-[pulse_10s_infinite]"></div>
+                    {/* 1. Outer Glow (Large Breath) - Desktop only for performance */}
+                    {!isMobile && <div className="absolute z-0 w-96 h-96 bg-white/5 rounded-full blur-3xl animate-[pulse_10s_infinite]"></div>}
 
-                    {/* 2. Inner Shockwave Ring - Slower (8s), Subtle Silver */}
-                    <div className="absolute z-10 w-32 h-32 rounded-full border border-white/20 animate-[ping_8s_infinite]"></div>
+                    {/* 2. Inner Shockwave Ring - Desktop only */}
+                    {!isMobile && <div className="absolute z-10 w-32 h-32 rounded-full border border-white/20 animate-[ping_8s_infinite]"></div>}
 
                     {/* 3. The Mic Itself (Solid Obsidian + Pearl Light) */}
-                    <div className="absolute z-20 w-24 h-24 bg-black rounded-full backdrop-blur-xl border border-white/50 shadow-[0_0_60px_rgba(255,255,255,0.3)] flex items-center justify-center group cursor-pointer hover:scale-110 transition-transform duration-500">
-                        <Mic className="w-10 h-10 text-white drop-shadow-[0_0_20px_rgba(255,255,255,0.9)] animate-[pulse_6s_infinite]" />
+                    <div className={`absolute z-20 w-20 h-20 md:w-24 md:h-24 bg-black rounded-full backdrop-blur-xl border border-white/50 shadow-[0_0_60px_rgba(255,255,255,0.3)] flex items-center justify-center group cursor-pointer hover:scale-110 transition-transform duration-500`}>
+                        <Mic className={`w-8 h-8 md:w-10 md:h-10 text-white drop-shadow-[0_0_20px_rgba(255,255,255,0.9)] ${isMobile ? '' : 'animate-[pulse_6s_infinite]'}`} />
                     </div>
 
                     {/* Orbits & Nodes - "Responding to the Light" */}
@@ -167,16 +180,17 @@ export const PodcastCinematicHub: React.FC<PodcastCinematicHubProps> = ({ course
                                     zIndex: 20 - orbitIndex
                                 }}
                             >
-                                {/* "Pulsar Light" on the Orbit Ring itself - Traveling Particle */}
-                                {/* ORGANIC PULSE: Applies random delay and duration so they breathe independently */}
-                                <div
-                                    className="absolute top-0 left-1/2 w-1 h-32 bg-gradient-to-b from-amber-200/0 via-amber-100 to-amber-200/0 transform -translate-x-1/2 blur-md"
-                                    style={{
-                                        animation: `pulse ${orbit.pulseDuration}s infinite`,
-                                        animationDelay: `${orbit.pulseDelay}s`,
-                                        opacity: 0.8
-                                    }}
-                                ></div>
+                                {/* "Pulsar Light" on the Orbit Ring - Desktop only */}
+                                {!isMobile && (
+                                    <div
+                                        className="absolute top-0 left-1/2 w-1 h-32 bg-gradient-to-b from-amber-200/0 via-amber-100 to-amber-200/0 transform -translate-x-1/2 blur-md"
+                                        style={{
+                                            animation: `pulse ${orbit.pulseDuration}s infinite`,
+                                            animationDelay: `${orbit.pulseDelay}s`,
+                                            opacity: 0.8
+                                        }}
+                                    ></div>
+                                )}
 
                                 {/* Nodes on this orbit */}
                                 {orbit.nodes.map((nodeIndex) => {
@@ -217,52 +231,51 @@ export const PodcastCinematicHub: React.FC<PodcastCinematicHubProps> = ({ course
                                                     animationDelay: `${orbit.delay}s`
                                                 }}
                                             >
-                                                {/* ECLIPSE INTERFERENCE LAYER (Moon Frequency) */}
-                                                <div
-                                                    className="absolute inset-0 flex items-center justify-center"
-                                                    style={{
-                                                        animation: `eclipse-interference ${15 + (nodeIndex % 4) * 5}s infinite linear`, // Matches Mini MOON duration
-                                                    }}
-                                                >
-                                                    {/* Pulse Ring - Reacting to the Mini Sun - Synced Heartbeat */}
-                                                    <div
-                                                        className={`absolute inset-0 -m-4 ${isComplete ? 'bg-amber-400' : 'bg-amber-100'} rounded-full animate-ping opacity-10 group-hover:opacity-40`}
-                                                        style={{
-                                                            width: '100%', height: '100%',
-                                                            animationDuration: `${8 + (nodeIndex % 3) * 3}s` // Matches Mini SUN duration
-                                                        }}
-                                                    ></div>
-                                                </div>
+                                                {/* ECLIPSE INTERFERENCE & MINI SOLAR SYSTEM - Desktop Only */}
+                                                {!isMobile && (
+                                                    <>
+                                                        <div
+                                                            className="absolute inset-0 flex items-center justify-center"
+                                                            style={{
+                                                                animation: `eclipse-interference ${15 + (nodeIndex % 4) * 5}s infinite linear`,
+                                                            }}
+                                                        >
+                                                            <div
+                                                                className={`absolute inset-0 -m-4 ${isComplete ? 'bg-amber-400' : 'bg-amber-100'} rounded-full animate-ping opacity-10 group-hover:opacity-40`}
+                                                                style={{
+                                                                    width: '100%', height: '100%',
+                                                                    animationDuration: `${8 + (nodeIndex % 3) * 3}s`
+                                                                }}
+                                                            ></div>
+                                                        </div>
 
-                                                {/* MINI SOLAR SYSTEM (Sub-Orbits) */}
-                                                <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                                                        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                                                            <div
+                                                                className="absolute rounded-full border border-amber-500/0 animate-[spin_3s_linear_infinite]"
+                                                                style={{
+                                                                    width: '160%',
+                                                                    height: '160%',
+                                                                    animationDuration: `${8 + (nodeIndex % 3) * 3}s`
+                                                                }}
+                                                            >
+                                                                <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-1 md:w-1.5 h-1 md:h-1.5 bg-amber-400 rounded-full shadow-[0_0_8px_rgba(251,191,36,1)]"></div>
+                                                            </div>
 
-                                                    {/* 1. MINI SUN (Inner Orbit, Gold, Fast) */}
-                                                    {/* Duration: Prime-ish variations (3s, 4s, 5s) based on index */}
-                                                    <div
-                                                        className="absolute rounded-full border border-amber-500/0 animate-[spin_3s_linear_infinite]"
-                                                        style={{
-                                                            width: '160%',
-                                                            height: '160%',
-                                                            animationDuration: `${8 + (nodeIndex % 3) * 3}s`
-                                                        }}
-                                                    >
-                                                        <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-1 md:w-1.5 h-1 md:h-1.5 bg-amber-400 rounded-full shadow-[0_0_8px_rgba(251,191,36,1)]"></div>
-                                                    </div>
+                                                            <div
+                                                                className="absolute rounded-full border border-indigo-200/0 animate-[spin_5s_linear_infinite_reverse]"
+                                                                style={{
+                                                                    width: '220%',
+                                                                    height: '220%',
+                                                                    animationDuration: `${15 + (nodeIndex % 4) * 5}s`
+                                                                }}
+                                                            >
+                                                                <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 w-1 h-1 bg-stone-200 rounded-full shadow-[0_0_5px_rgba(255,255,255,0.8)]"></div>
+                                                            </div>
+                                                        </div>
+                                                    </>
+                                                )}
 
-                                                    {/* 2. MINI MOON (Outer Orbit, Silver, Slower, Reverse) */}
-                                                    {/* Duration: Prime variations (5s, 7s, 11s) */}
-                                                    <div
-                                                        className="absolute rounded-full border border-indigo-200/0 animate-[spin_5s_linear_infinite_reverse]"
-                                                        style={{
-                                                            width: '220%',
-                                                            height: '220%',
-                                                            animationDuration: `${15 + (nodeIndex % 4) * 5}s`
-                                                        }}
-                                                    >
-                                                        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 w-1 h-1 bg-stone-200 rounded-full shadow-[0_0_5px_rgba(255,255,255,0.8)]"></div>
-                                                    </div>
-                                                </div>
+
 
                                                 {/* Core Node Circle */}
                                                 <div className={`
@@ -277,8 +290,7 @@ export const PodcastCinematicHub: React.FC<PodcastCinematicHubProps> = ({ course
                                                             : 'bg-black/80 border-amber-200/60 text-amber-100 shadow-[0_0_15px_rgba(251,191,36,0.3)] hover:border-amber-200 hover:text-white hover:shadow-[0_0_30px_rgba(251,191,36,0.6)]') // Default: Sunlit Gold (was Dim)
                                                     }
                                                 `}
-                                                    style={{
-                                                        // ECLIPSE LOGIC: The Node BLACKS OUT when the Moon passes
+                                                    style={isMobile ? {} : {
                                                         animation: `eclipse-interference ${15 + (nodeIndex % 4) * 5}s infinite linear`
                                                     }}
                                                 >

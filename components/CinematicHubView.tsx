@@ -64,7 +64,7 @@ export const CinematicHubView: React.FC<CinematicHubViewProps> = ({ courseId, on
             <CosmicAtmosphere />
 
             {/* 2. HERO SECTION (Left Overlay) - Z-INDEX INCREASED to 30 */}
-            <div className="absolute top-0 left-0 w-full h-full pointer-events-none z-30 flex flex-col justify-between p-6 md:p-16">
+            <div className="absolute top-0 left-0 w-full h-full pointer-events-none z-30 flex flex-col justify-between p-4 md:p-16">
 
                 {/* Header / Vox Lux Silhouette */}
                 <div className="flex justify-between items-start animate-[fadeIn_1s_ease-out]">
@@ -80,8 +80,8 @@ export const CinematicHubView: React.FC<CinematicHubViewProps> = ({ courseId, on
                     </div>
 
                     <div className="text-right relative">
-                        {/* SOLAR FLARE EFFECT - The Source of Light */}
-                        <div className="absolute -top-20 -right-20 w-[800px] h-[800px] bg-[radial-gradient(circle_at_center,rgba(251,191,36,0.15)_0%,transparent_70%)] blur-3xl pointer-events-none -z-10 animate-pulse"></div>
+                        {/* SOLAR FLARE EFFECT - Desktop only for performance */}
+                        <div className="absolute -top-20 -right-20 w-[400px] h-[400px] md:w-[800px] md:h-[800px] bg-[radial-gradient(circle_at_center,rgba(251,191,36,0.15)_0%,transparent_70%)] blur-3xl pointer-events-none -z-10 animate-pulse hidden md:block"></div>
 
                         <h1 className="text-4xl md:text-6xl font-display font-bold text-transparent bg-clip-text bg-gradient-to-br from-white via-lux-gold to-amber-500 drop-shadow-[0_0_35px_rgba(251,191,36,0.6)] relative z-10">
                             STORYTELLING <br /> MASTERMIND

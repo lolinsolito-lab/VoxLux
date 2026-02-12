@@ -3,6 +3,9 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { supabase } from '../services/supabase';
 import { BRANDING } from '../config/branding';
+import { getAllLastActive, LastActiveWorld } from '../services/saveWorldProgress';
+import { COURSES } from '../services/courseData';
+import { getThemeForMastermind } from '../services/themeRegistry';
 
 interface Purchase {
     course_id: string;
@@ -57,6 +60,22 @@ export const DashboardPage: React.FC = () => {
     const [purchasedCourseName, setPurchasedCourseName] = useState('');
     const [showProfileSettings, setShowProfileSettings] = useState(false);
     const [showFAQModal, setShowFAQModal] = useState(false);
+
+    // Resume Logic
+    const [lastActive, setLastActive] = useState<LastActiveWorld | null>(null);
+
+    useEffect(() => {
+        // Find the most recent active world across all purchased courses
+        const allActive = getAllLastActive();
+        // Filter by purchased courses (safety check)
+        // Accessing state 'purchases' might be stale here if not in dependency, 
+        // but 'purchases' is loaded async. We can check inside the render or effect.
+        if (allActive.length > 0) {
+            // Sort by Date desc
+            allActive.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
+            setLastActive(allActive[0]);
+        }
+    }, [purchases]); // Re-run when purchases load to ensure valid access
 
     useEffect(() => {
         if (user) {
@@ -349,6 +368,64 @@ export const DashboardPage: React.FC = () => {
                         <span className="text-gray-400">XP: <span className="text-cyan-400 font-semibold">{user?.xp}</span></span>
                     </div>
                 </div>
+
+                {/* RESUME CARD - "IL CONTINUO" */}
+                {lastActive && purchases.some(p => p.course_id === lastActive.courseId) && (
+                    <div className="mb-12 relative group rounded-2xl overflow-hidden border border-amber-500/30 bg-gradient-to-r from-[#1a1500] to-black p-6 md:p-8 flex flex-col md:flex-row items-center justify-between gap-6 shadow-[0_0_30px_rgba(251,191,36,0.1)]">
+                        {/* Background Glow */}
+                        <div className="absolute top-0 right-0 w-64 h-64 bg-amber-500/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none"></div>
+
+                        <div className="relative z-10 flex flex-col md:flex-row items-center gap-6 text-center md:text-left">
+                            <div className="w-16 h-16 rounded-full bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-500 animate-pulse">
+                                <Play fill="currentColor" size={24} />
+                            </div>
+                            <div>
+                                <div className="text-xs uppercase tracking-[0.2em] text-amber-500 mb-2 font-bold">
+                                    Riprendi da dove hai lasciato
+                                </div>
+                                <h3 className="text-2xl font-display font-bold text-white mb-1">
+                                    {getThemeForMastermind(lastActive.worldIndex, lastActive.courseId).name}
+                                </h3>
+                                <div className="text-sm text-gray-400 flex items-center justify-center md:justify-start gap-2">
+                                    <span>{COURSES[lastActive.courseId]?.title}</span>
+                                    <span className="w-1 h-1 rounded-full bg-gray-600"></span>
+                                    <span>Capitolo {lastActive.worldIndex + 1}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button
+                            onClick={() => {
+                                navigate(`/course/${lastActive.courseId}`, {
+                                    state: { targetWorldId: lastActive.mastermindId }
+                                });
+                            }}
+                            className="relative z-10 px-8 py-3 bg-lux-gold text-black font-bold rounded-full hover:bg-white transition-all duration-300 shadow-[0_0_20px_rgba(251,191,36,0.3)] hover:shadow-[0_0_30px_rgba(255,255,255,0.5)] flex items-center gap-2"
+                        >
+                            <span>Riprendi Viaggio</span>
+                            <ChevronRight size={18} />
+                        </button>
+                    </div>
+                )}
+
+                {/* BONUS REMINDER (If has unlocked bonuses) */}
+                {bonuses.length > 0 && !lastActive && (
+                    <div className="mb-12 p-6 rounded-2xl border border-white/10 bg-white/5 flex items-center justify-between gap-4">
+                        <div className="flex items-center gap-4">
+                            <Crown className="text-purple-400" size={24} />
+                            <div>
+                                <h3 className="text-white font-bold">Hai {bonuses.length} Contenuti Bonus Sbloccati</h3>
+                                <p className="text-sm text-gray-400">Non lasciare nulla sul tavolo. Potenzia il tuo arsenale.</p>
+                            </div>
+                        </div>
+                        <button
+                            onClick={() => document.getElementById('bonuses-section')?.scrollIntoView({ behavior: 'smooth' })}
+                            className="text-sm text-purple-400 hover:text-purple-300 underline"
+                        >
+                            Vedi Bonus
+                        </button>
+                    </div>
+                )}
 
                 {/* Courses Section */}
                 <div className="mb-8">

@@ -141,16 +141,16 @@ export const AdminOverview: React.FC = () => {
     }
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 text-white p-8">
+        <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 text-white p-4 md:p-8">
             {/* Header */}
             <motion.div
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
                 className="mb-10"
             >
-                <div className="flex justify-between items-center mb-2">
-                    <h1 className="text-5xl font-black tracking-tight">
-                        VISTA ELICOTTERO <span className="bg-gradient-to-r from-red-500 via-orange-500 to-amber-500 bg-clip-text text-transparent">GOD MODE</span>
+                <div className="flex justify-between items-center mb-2 flex-wrap gap-4">
+                    <h1 className="text-3xl md:text-5xl font-black tracking-tight">
+                        VISTA ELICOTTERO <span className="bg-gradient-to-r from-red-500 via-orange-500 to-amber-500 bg-clip-text text-transparent block md:inline">GOD MODE</span>
                     </h1>
                     <button
                         onClick={fetchDashboardData}
@@ -228,43 +228,49 @@ export const AdminOverview: React.FC = () => {
                 </div>
 
                 {kpiData.revenueData.length > 0 ? (
-                    <ResponsiveContainer width="100%" height={300}>
-                        <AreaChart data={kpiData.revenueData}>
-                            <defs>
-                                <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
-                                    <stop offset="5%" stopColor="#10b981" stopOpacity={0.3} />
-                                    <stop offset="95%" stopColor="#10b981" stopOpacity={0} />
-                                </linearGradient>
-                            </defs>
-                            <CartesianGrid strokeDasharray="3 3" stroke="#374151" opacity={0.3} />
-                            <XAxis
-                                dataKey="date"
-                                stroke="#9ca3af"
-                                style={{ fontSize: '12px' }}
-                            />
-                            <YAxis
-                                stroke="#9ca3af"
-                                style={{ fontSize: '12px' }}
-                                tickFormatter={(value) => `€${value}`}
-                            />
-                            <Tooltip
-                                contentStyle={{
-                                    backgroundColor: '#1f2937',
-                                    border: '1px solid #374151',
-                                    borderRadius: '8px',
-                                    color: '#fff'
-                                }}
-                                formatter={(value: any) => [`€${value}`, 'Revenue']}
-                            />
-                            <Area
-                                type="monotone"
-                                dataKey="revenue"
-                                stroke="#10b981"
-                                strokeWidth={3}
-                                fill="url(#colorRevenue)"
-                            />
-                        </AreaChart>
-                    </ResponsiveContainer>
+                    <div className="h-[300px] w-full">
+                        <ResponsiveContainer width="100%" height="100%">
+                            <AreaChart data={kpiData.revenueData}>
+                                <defs>
+                                    <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
+                                        <stop offset="5%" stopColor="#10b981" stopOpacity={0.3} />
+                                        <stop offset="95%" stopColor="#10b981" stopOpacity={0} />
+                                    </linearGradient>
+                                </defs>
+                                <CartesianGrid strokeDasharray="3 3" stroke="#374151" opacity={0.3} />
+                                <XAxis
+                                    dataKey="date"
+                                    stroke="#9ca3af"
+                                    style={{ fontSize: '10px' }}
+                                    tick={{ fontSize: 10 }}
+                                />
+                                <YAxis
+                                    stroke="#9ca3af"
+                                    style={{ fontSize: '10px' }}
+                                    tickFormatter={(value) => `€${value}`}
+                                    tick={{ fontSize: 10 }}
+                                    width={40}
+                                />
+                                <Tooltip
+                                    contentStyle={{
+                                        backgroundColor: '#1f2937',
+                                        border: '1px solid #374151',
+                                        borderRadius: '8px',
+                                        color: '#fff',
+                                        fontSize: '12px'
+                                    }}
+                                    formatter={(value: any) => [`€${value}`, 'Revenue']}
+                                />
+                                <Area
+                                    type="monotone"
+                                    dataKey="revenue"
+                                    stroke="#10b981"
+                                    strokeWidth={3}
+                                    fill="url(#colorRevenue)"
+                                />
+                            </AreaChart>
+                        </ResponsiveContainer>
+                    </div>
                 ) : (
                     <div className="h-[300px] flex items-center justify-center text-gray-500">
                         <p>Nessun dato disponibile per il chart</p>
@@ -304,7 +310,7 @@ export const AdminOverview: React.FC = () => {
                                 initial={{ opacity: 0, x: -20 }}
                                 animate={{ opacity: 1, x: 0 }}
                                 transition={{ delay: index * 0.03 }}
-                                className="flex items-center justify-between py-4 px-4 border border-white/5 rounded-xl hover:bg-white/5 hover:border-purple-500/30 transition-all duration-300 group"
+                                className="flex flex-col md:flex-row items-start md:items-center justify-between py-4 px-4 border border-white/5 rounded-xl hover:bg-white/5 hover:border-purple-500/30 transition-all duration-300 group gap-4"
                             >
                                 <div className="flex items-center gap-4">
                                     <div className="w-12 h-12 rounded-full bg-gradient-to-br from-green-500/20 to-emerald-700/20 flex items-center justify-center border border-green-500/40 group-hover:scale-110 transition-transform">
@@ -329,7 +335,7 @@ export const AdminOverview: React.FC = () => {
                                         </div>
                                     </div>
                                 </div>
-                                <div className="text-right">
+                                <div className="text-left md:text-right w-full md:w-auto mt-2 md:mt-0 pl-[64px] md:pl-0">
                                     <div className="font-bold text-2xl text-green-400">
                                         {formatCurrency(purchase.amount / 100)}
                                     </div>

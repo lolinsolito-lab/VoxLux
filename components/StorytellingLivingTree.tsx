@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect, useRef } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { Mastermind, COURSES } from '../services/courseData';
 import { WORLD_THEMES } from '../services/themeRegistry';
 import { useAudioSystem } from '../hooks/useAudioSystem';
@@ -74,6 +74,15 @@ export const StorytellingLivingTree: React.FC<StorytellingLivingTreeProps> = ({
     const { playSound } = useAudioSystem();
     const [hoveredNode, setHoveredNode] = useState<number | null>(null);
     const [globalPulse, setGlobalPulse] = useState(false);
+
+    // Mobile detection for performance
+    const [isMobile, setIsMobile] = useState(false);
+    useEffect(() => {
+        const check = () => setIsMobile(window.innerWidth < 768);
+        check();
+        window.addEventListener('resize', check);
+        return () => window.removeEventListener('resize', check);
+    }, []);
 
     // Sacred Math: Prime Number Chronobiology
     // We assign unique PRIME NUMBER durations to each node to ensure cycles never align perfectly.
@@ -152,16 +161,16 @@ export const StorytellingLivingTree: React.FC<StorytellingLivingTreeProps> = ({
 
 
             {/* CONTAINER: Mobile & Tablet Optimized */}
-            {/* Mobile: w-full, max-w-[360px] to prevent edge touching, max-h-[75vh] to save header/footer space */}
-            {/* Tablet: ax-w-[480px], relaxed aspect ratio */}
+            {/* Mobile: Fill screen width, generous height for vertical spread */}
+            {/* Tablet: max-w-[480px], relaxed aspect ratio */}
             {/* Desktop: lg:max-w-[550px] xl:max-w-[600px] */}
             <div className={`
                 relative 
-                w-[95%] max-w-[360px] h-full max-h-[72vh] aspect-[4/7] 
+                w-full max-h-[80vh] aspect-[3/5] 
                 md:w-full md:max-w-[480px] md:max-h-[80vh] md:aspect-[3/4]
                 lg:max-w-[550px] xl:max-w-[600px] lg:max-h-[85vh] lg:aspect-[5/8]
                 flex-shrink-0 transition-all duration-1000 ease-out
-                ${globalPulse ? 'scale-105 filter drop-shadow-[0_0_50px_rgba(251,191,36,0.3)]' : ''}
+                ${!isMobile && globalPulse ? 'scale-105 filter drop-shadow-[0_0_50px_rgba(251,191,36,0.3)]' : ''}
             `}>
 
                 {/* 1. CONNECTIONS LAYER (SVG) */}
@@ -200,21 +209,23 @@ export const StorytellingLivingTree: React.FC<StorytellingLivingTreeProps> = ({
                                     }}
                                 />
 
-                                {/* Shooting Star (Thought Particle) */}
-                                <circle r="2" fill="white" className="opacity-0 filter drop-shadow-[0_0_4px_white]">
-                                    <animate
-                                        attributeName="cx" from={`${startNode.x}%`} to={`${endNode.x}%`}
-                                        dur={`${3 + (i % 2)}s`} begin={`${i * 0.7}s`} repeatCount="indefinite"
-                                    />
-                                    <animate
-                                        attributeName="cy" from={`${startNode.y}%`} to={`${endNode.y}%`}
-                                        dur={`${3 + (i % 2)}s`} begin={`${i * 0.7}s`} repeatCount="indefinite"
-                                    />
-                                    <animate
-                                        attributeName="opacity" values="0; 1; 0"
-                                        dur={`${3 + (i % 2)}s`} begin={`${i * 0.7}s`} repeatCount="indefinite"
-                                    />
-                                </circle>
+                                {/* Shooting Star (Thought Particle) - Desktop Only */}
+                                {!isMobile && (
+                                    <circle r="2" fill="white" className="opacity-0 filter drop-shadow-[0_0_4px_white]">
+                                        <animate
+                                            attributeName="cx" from={`${startNode.x}%`} to={`${endNode.x}%`}
+                                            dur={`${3 + (i % 2)}s`} begin={`${i * 0.7}s`} repeatCount="indefinite"
+                                        />
+                                        <animate
+                                            attributeName="cy" from={`${startNode.y}%`} to={`${endNode.y}%`}
+                                            dur={`${3 + (i % 2)}s`} begin={`${i * 0.7}s`} repeatCount="indefinite"
+                                        />
+                                        <animate
+                                            attributeName="opacity" values="0; 1; 0"
+                                            dur={`${3 + (i % 2)}s`} begin={`${i * 0.7}s`} repeatCount="indefinite"
+                                        />
+                                    </circle>
+                                )}
                             </g>
                         );
                     })}
@@ -256,25 +267,25 @@ export const StorytellingLivingTree: React.FC<StorytellingLivingTreeProps> = ({
                                 onSelectWorld(`${mm.id}|${index}`);
                             }}
                         >
-                            {/* A. COSMIC ORBITS */}
-                            {/* Outer Ring - Always spinning, subtle */}
-                            <div
-                                className={`absolute rounded-full border border-white/10 w-[150%] h-[150%] animate-[spin_20s_linear_infinite]`}
-                            />
+                            {/* A. COSMIC ORBITS - Desktop Only */}
+                            {!isMobile && (
+                                <div
+                                    className={`absolute rounded-full border border-white/10 w-[150%] h-[150%] animate-[spin_20s_linear_infinite]`}
+                                />
+                            )}
 
-                            {/* Inner Active Ring - Visible on Hover/Active */}
-                            {isActive && (
+                            {/* Inner Active Ring - Desktop Only */}
+                            {!isMobile && isActive && (
                                 <div className="absolute rounded-full border border-amber-400/50 w-[130%] h-[130%] animate-[spin_4s_linear_infinite]" />
                             )}
 
-                            {/* B. CELESTIAL BODIES (Orbiting Sun & Moon) */}
-                            {/* Visible when Idle to show the Cycle, stronger when Active */}
-                            <div className="absolute inset-0 animate-[spin_10s_linear_infinite]" style={{ animationDuration: `${rhythm.duration * 2}s` }}>
-                                {/* Sun */}
-                                <div className="absolute -top-[20%] left-1/2 w-[8%] h-[8%] rounded-full bg-amber-400 shadow-[0_0_10px_orange]" />
-                                {/* Moon */}
-                                <div className="absolute -bottom-[20%] left-1/2 w-[6%] h-[6%] rounded-full bg-slate-300 shadow-[0_0_8px_white]" />
-                            </div>
+                            {/* B. CELESTIAL BODIES (Orbiting Sun & Moon) - Desktop Only */}
+                            {!isMobile && (
+                                <div className="absolute inset-0 animate-[spin_10s_linear_infinite]" style={{ animationDuration: `${rhythm.duration * 2}s` }}>
+                                    <div className="absolute -top-[20%] left-1/2 w-[8%] h-[8%] rounded-full bg-amber-400 shadow-[0_0_10px_orange]" />
+                                    <div className="absolute -bottom-[20%] left-1/2 w-[6%] h-[6%] rounded-full bg-slate-300 shadow-[0_0_8px_white]" />
+                                </div>
+                            )}
 
                             {/* C. CORE SPHERE (THE WORLD) */}
                             <div
@@ -288,11 +299,16 @@ export const StorytellingLivingTree: React.FC<StorytellingLivingTreeProps> = ({
                                         : ''
                                     }
                                 `}
-                                style={!isActive ? {
-                                    // Apply Cosmic Cycle Animation when idle
+                                style={!isActive ? (isMobile ? {
+                                    // Mobile: Static subtle glow instead of heavy animation
+                                    borderColor: 'rgba(245, 225, 164, 0.3)',
+                                    backgroundColor: 'rgba(245, 225, 164, 0.05)',
+                                    boxShadow: '0 0 12px rgba(245, 225, 164, 0.2)'
+                                } : {
+                                    // Desktop: Full Cosmic Cycle Animation when idle
                                     animation: `cycleSunMoon ${rhythm.duration}s infinite ease-in-out`,
                                     animationDelay: `-${rhythm.delay}s`
-                                } : {}}
+                                }) : {}}
                             >
                                 {/* Inner Pulse */}
                                 <div className={`absolute inset-[10%] rounded-full opacity-50 mix-blend-screen transition-colors duration-500

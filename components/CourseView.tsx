@@ -1,11 +1,15 @@
 import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { COURSES, Mastermind, Module } from '../services/courseData';
 import { getThemeForMastermind } from '../services/themeRegistry';
 import { useAudioSystem } from '../hooks/useAudioSystem';
+import { useAuth } from '../contexts/AuthContext';
 import { ImmersiveWorldView } from './ImmersiveWorldView';
 import { CinematicHubView } from './CinematicHubView';
 import { PodcastCinematicHub } from './PodcastCinematicHub';
 import { AscensionHubView } from './AscensionHubView';
+import { saveWorldProgress, trackWorldEntry } from '../services/saveWorldProgress';
+import { supabase } from '../services/supabase';
 import { ArrowLeft, Play, X, Menu, Lock, CheckCircle, ChevronRight, ChevronDown } from 'lucide-react';
 
 interface CourseViewProps {
@@ -22,10 +26,42 @@ export const CourseView: React.FC<CourseViewProps> = ({ courseId, onBack, onNavi
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const [completedModules, setCompletedModules] = useState<Set<string>>(new Set());
 
+    const location = useLocation();
+
     // State for HYBRID IMMERSIVE MODE (Only for Matrice 1 & 2)
     const [activeImmersiveWorldId, setActiveImmersiveWorldId] = useState<string | null>(null);
 
+    // Deep Link / Resume Logic
+    useEffect(() => {
+        if (location.state && (location.state as any).targetWorldId) {
+            const target = (location.state as any).targetWorldId;
+            console.log("Resuming world:", target);
+            setActiveImmersiveWorldId(target);
+
+            // Optional: Clear state so it doesn't re-trigger? 
+            // Actually, safe to leave as it only runs on mount/location change
+        }
+    }, [location]);
+
     const { playSound } = useAudioSystem();
+    const { user, refreshUser } = useAuth();
+
+    // Load completed modules from DB on mount
+    useEffect(() => {
+        if (!user) return;
+        const loadProgress = async () => {
+            const { data } = await supabase
+                .from('course_progress')
+                .select('module_id')
+                .eq('user_id', user.id)
+                .eq('course_id', courseId)
+                .eq('completed', true);
+            if (data) {
+                setCompletedModules(new Set(data.map(d => d.module_id)));
+            }
+        };
+        loadProgress();
+    }, [user, courseId]);
 
     // Derived
     const selectedMastermindIndex = course.masterminds.findIndex(m => m.id === selectedMastermindId);
@@ -47,13 +83,40 @@ export const CourseView: React.FC<CourseViewProps> = ({ courseId, onBack, onNavi
         playSound('click');
     };
 
-    // Complete World Callback
-    const handleWorldComplete = () => {
-        // Mark all modules in this world as complete (simplified logic)
-        const worldModules = course.masterminds.find(m => m.id === activeImmersiveWorldId)?.modules || [];
+    // Complete World Callback — NOW PERSISTS TO DB!
+    const handleWorldComplete = async () => {
+        // Parse the active world to get its data
+        let targetId = activeImmersiveWorldId || '';
+        let forcedIndex = -1;
+        if (targetId.includes('|')) {
+            const parts = targetId.split('|');
+            targetId = parts[0];
+            forcedIndex = parseInt(parts[1]);
+        }
+        let worldIndex = course.masterminds.findIndex(m => m.id === targetId);
+        if (worldIndex === -1 && forcedIndex !== -1) worldIndex = forcedIndex;
+
+        const worldData = course.masterminds[worldIndex];
+        const worldModules = worldData?.modules || [];
+
+        // 1. Immediate local state update (instant UI feedback)
         const newCompleted = new Set(completedModules);
         worldModules.forEach(m => newCompleted.add(m.id));
         setCompletedModules(newCompleted);
+
+        // 2. Persist to database
+        if (user && worldData) {
+            const theme = getThemeForMastermind(worldIndex, course.id);
+            await saveWorldProgress({
+                userId: user.id,
+                courseId: course.id,
+                mastermindId: theme.id || worldData.id,
+                worldIndex,
+                moduleIds: worldModules.map(m => m.id)
+            });
+            // Refresh user to update XP/Level in auth context
+            refreshUser();
+        }
 
         setActiveImmersiveWorldId(null); // Return to Hub
         playSound('victory');
@@ -93,6 +156,11 @@ export const CourseView: React.FC<CourseViewProps> = ({ courseId, onBack, onNavi
         }
 
         const theme = getThemeForMastermind(worldIndex, course.id); // Pass course.id
+
+        // Track world entry for resume UX
+        if (user) {
+            trackWorldEntry(course.id, worldIndex, worldData.id);
+        }
 
         return (
             <ImmersiveWorldView

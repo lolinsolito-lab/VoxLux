@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
 import {
     LayoutDashboard,
@@ -18,10 +18,32 @@ import { useAuth } from '../contexts/AuthContext';
 import { BRANDING } from '../config/branding';
 
 export const AdminLayout: React.FC = () => {
-    const [sidebarOpen, setSidebarOpen] = useState(true);
+    // Default to closed on mobile, open on desktop
+    const [sidebarOpen, setSidebarOpen] = useState(window.innerWidth >= 768);
     const { logout } = useAuth();
     const location = useLocation();
     const navigate = useNavigate();
+
+    // Auto-close sidebar on route change (mobile only)
+    useEffect(() => {
+        if (window.innerWidth < 768) {
+            setSidebarOpen(false);
+        }
+    }, [location.pathname]);
+
+    // Handle resize events
+    useEffect(() => {
+        const handleResize = () => {
+            if (window.innerWidth >= 768) {
+                setSidebarOpen(true);
+            } else {
+                setSidebarOpen(false);
+            }
+        };
+
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
 
     const navItems = [
         { path: '/admin', label: 'Overview', icon: <LayoutDashboard size={20} /> },
@@ -39,12 +61,20 @@ export const AdminLayout: React.FC = () => {
 
     return (
         <div className="flex h-screen bg-black text-white font-sans overflow-hidden">
+            {/* MOBILE BACKDROP OVERLAY */}
+            {sidebarOpen && (
+                <div
+                    className="fixed inset-0 z-40 bg-black/80 backdrop-blur-sm md:hidden"
+                    onClick={() => setSidebarOpen(false)}
+                />
+            )}
+
             {/* STEALTH SIDEBAR */}
             <aside
                 className={`
-                    fixed inset-y-0 left-0 z-50 w-64 bg-zinc-950 border-r border-zinc-900 transition-transform duration-300 ease-in-out
+                    fixed inset-y-0 left-0 z-50 w-64 bg-zinc-950 border-r border-zinc-900 transition-transform duration-300 ease-in-out shadow-2xl
                     ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}
-                    md:relative md:translate-x-0
+                    md:relative md:translate-x-0 md:shadow-none
                 `}
             >
                 <div className="h-full flex flex-col">
@@ -56,8 +86,8 @@ export const AdminLayout: React.FC = () => {
                                 GOD MODE
                             </span>
                         </div>
-                        <button onClick={() => setSidebarOpen(false)} className="md:hidden text-zinc-500">
-                            <X size={20} />
+                        <button onClick={() => setSidebarOpen(false)} className="md:hidden text-zinc-500 hover:text-white">
+                            <X size={24} />
                         </button>
                     </div>
 
@@ -101,17 +131,20 @@ export const AdminLayout: React.FC = () => {
             </aside>
 
             {/* MAIN CONTENT AREA */}
-            <main className="flex-1 flex flex-col overflow-hidden relative">
-                {/* Mobile Toggle */}
-                <header className="md:hidden flex items-center justify-between p-4 bg-zinc-950 border-b border-zinc-900">
-                    <span className="font-bold text-zinc-100">GOD MODE</span>
-                    <button onClick={() => setSidebarOpen(true)} className="text-zinc-500">
+            <main className="flex-1 flex flex-col overflow-hidden relative w-full">
+                {/* Mobile Toggle Header */}
+                <header className="md:hidden flex items-center justify-between p-4 bg-zinc-950 border-b border-zinc-900 z-30">
+                    <div className="flex items-center gap-2">
+                        <ShieldAlert className="text-red-600" size={20} />
+                        <span className="font-bold text-zinc-100">GOD MODE</span>
+                    </div>
+                    <button onClick={() => setSidebarOpen(true)} className="text-zinc-400 hover:text-white p-2">
                         <Menu size={24} />
                     </button>
                 </header>
 
                 {/* Content Scroller */}
-                <div className="flex-1 overflow-y-auto bg-black p-6 md:p-10">
+                <div className="flex-1 overflow-y-auto bg-black p-4 md:p-10 w-full">
                     <Outlet />
                 </div>
 

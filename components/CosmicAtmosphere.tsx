@@ -1,17 +1,25 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 
 export const CosmicAtmosphere: React.FC = React.memo(() => {
+    // Mobile detection for performance optimization
+    const [isMobile, setIsMobile] = useState(false);
+    useEffect(() => {
+        const check = () => setIsMobile(window.innerWidth < 768);
+        check();
+        window.addEventListener('resize', check);
+        return () => window.removeEventListener('resize', check);
+    }, []);
     // 1. GENERATE SHOOTING STARS (Static Set)
-    const shootingStars = useMemo(() => Array.from({ length: 8 }).map((_, i) => ({
+    const shootingStars = useMemo(() => Array.from({ length: isMobile ? 2 : 8 }).map((_, i) => ({
         id: i,
         top: Math.random() * 70,
         left: Math.random() * 80,
         delay: Math.random() * 6
-    })), []);
+    })), [isMobile]);
 
     // 2. GENERATE LIVING STARS (Dense & Organic)
-    const livingStars = useMemo(() => Array.from({ length: 850 }).map((_, i) => {
-        const r = Math.random();
+    const starCount = isMobile ? 120 : 850;
+    const livingStars = useMemo(() => Array.from({ length: starCount }).map((_, i) => {
         const spreadX = (Math.random() - 0.5) * 130;
         const spreadY = (Math.random() - 0.5) * (35 * Math.exp(-Math.pow(spreadX / 45, 2)) + 5);
 
@@ -33,10 +41,10 @@ export const CosmicAtmosphere: React.FC = React.memo(() => {
             animationDuration: `${Math.random() * 3 + 3}s`,
             colorClass
         };
-    }), []);
+    }), [starCount]);
 
     // 3. GENERATE FLOAT PARTICLES
-    const particles = useMemo(() => Array.from({ length: 20 }).map((_, i) => ({
+    const particles = useMemo(() => Array.from({ length: isMobile ? 5 : 20 }).map((_, i) => ({
         id: i,
         top: Math.random() * 100,
         left: Math.random() * 100,
@@ -44,13 +52,13 @@ export const CosmicAtmosphere: React.FC = React.memo(() => {
         height: Math.random() * 4,
         delay: Math.random() * 5,
         duration: 10 + Math.random() * 10
-    })), []);
+    })), [isMobile]);
 
     return (
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
             {/* A. DEEP SPACE BACKGROUND */}
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-indigo-950/20 via-black to-black animate-[pulse_10s_infinite]"></div>
-            <div className="absolute inset-0 opacity-30 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] animate-[spin_120s_linear_infinite]"></div>
+            {!isMobile && <div className="absolute inset-0 opacity-30 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] animate-[spin_120s_linear_infinite]"></div>}
 
             {/* B. MILKY WAY COMPOSITION */}
             <div className="absolute inset-0 flex items-center justify-center">
