@@ -50,11 +50,28 @@ const DiplomaPreviewModal = ({
     onClose: () => void;
 }) => {
     // Determine course ID for theme (matrice-1 or matrice-2)
-    // Fallback based on slug if ID doesn't match expected pattern
-    const courseId = course.slug.includes('podcast') ? 'matrice-2' : 'matrice-1';
+    // Fallback based on slug or title if ID doesn't match expected pattern
+    const getCourseId = () => {
+        const slug = course.slug.toLowerCase();
+        const title = course.title.toLowerCase();
+        if (slug.includes('podcast') || title.includes('podcast')) return 'matrice-2';
+        return 'matrice-1'; // Default to Storytelling
+    };
+
+    const courseId = getCourseId();
 
     // DEFAULT TO LUXURY MODE to showcase the new templates immediately
     const [variant, setVariant] = useState<'standard' | 'luxury'>('luxury');
+    const [customBg, setCustomBg] = useState<string | null>(null);
+
+    const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            const url = URL.createObjectURL(file);
+            setCustomBg(url);
+            setVariant('luxury'); // Switch to luxury to show it
+        }
+    };
 
     return (
         <motion.div
@@ -66,14 +83,31 @@ const DiplomaPreviewModal = ({
         >
             <div className="relative w-full max-w-[1200px] flex flex-col items-center" onClick={e => e.stopPropagation()}>
 
-                <div className="w-full flex justify-between items-center mb-4 px-4">
+                <div className="w-full flex justify-between items-center mb-4 px-4 bg-black/50 p-4 rounded-xl border border-white/10">
                     <h2 className="text-xl font-bold text-white flex items-center gap-2">
                         <Eye className="text-amber-500" />
                         Anteprima Diploma: {course.title}
                     </h2>
                     <div className="flex items-center gap-4">
+
+                        {/* CUSTOM UPLOAD BUTTON */}
+                        <div className="relative">
+                            <input
+                                type="file"
+                                accept="image/*"
+                                onChange={handleFileUpload}
+                                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                            />
+                            <button className="px-4 py-2 bg-white/10 hover:bg-white/20 rounded-lg text-xs font-bold uppercase tracking-wider text-white border border-white/20 flex items-center gap-2 transition-all">
+                                📤 Carica Sfondo
+                            </button>
+                        </div>
+
                         <button
-                            onClick={() => setVariant(v => v === 'standard' ? 'luxury' : 'standard')}
+                            onClick={() => {
+                                setVariant(v => v === 'standard' ? 'luxury' : 'standard');
+                                // If switching to standard, maybe clear custom BG? No, let user keep it.
+                            }}
                             className={`px-6 py-2 rounded-full text-xs font-bold uppercase tracking-wider transition-all border ${variant === 'luxury' ? 'bg-amber-500 text-black border-amber-500 shadow-[0_0_15px_rgba(245,158,11,0.5)]' : 'bg-gray-800 text-gray-400 border-gray-600 hover:border-white hover:text-white'}`}
                         >
                             {variant === 'luxury' ? '✨ Mode: LUXURY' : '⚪ Mode: STANDARD'}
@@ -93,6 +127,7 @@ const DiplomaPreviewModal = ({
                         courseId={courseId}
                         date={new Date().toLocaleDateString('it-IT')}
                         variant={variant}
+                        customBackgroundImage={customBg} // NEW PROP
                     />
                 </div>
 
