@@ -37,21 +37,6 @@ export const CinematicHubView: React.FC<CinematicHubViewProps> = ({ courseId, on
 
     if (!course) return null; // Should not happen due to fallback logic
 
-    // MAP COORDINATES (Semi-random constellation pattern)
-    // x, y in percentages
-    const MAP_NODES = [
-        { x: 50, y: 80 }, // 1. Origine (Bottom Center)
-        { x: 30, y: 70 }, // 2. Library (Left Low)
-        { x: 70, y: 70 }, // 3. Workshop (Right Low)
-        { x: 20, y: 50 }, // 4. Echo (Left Mid)
-        { x: 80, y: 50 }, // 5. Fortress (Right Mid)
-        { x: 35, y: 35 }, // 6. Sanctuary (Left High)
-        { x: 65, y: 35 }, // 7. Value (Right High)
-        { x: 50, y: 25 }, // 8. Time (Top Center Low)
-        { x: 50, y: 15 }, // 9. Loyalty (Top Center Mid)
-        { x: 50, y: 5 }   // 10. Mastery (Top Peak)
-    ];
-
     const isWorldComplete = (mm: Mastermind) => {
         if (!mm.modules || mm.modules.length === 0) return false;
         return mm.modules.every(m => completedModules.has(m.id));
@@ -66,29 +51,30 @@ export const CinematicHubView: React.FC<CinematicHubViewProps> = ({ courseId, on
             {/* 2. HERO SECTION - UI OVERLAY */}
             <div className="absolute top-0 left-0 w-full h-full pointer-events-none z-30 flex flex-col md:flex-row justify-between p-4 md:p-16">
 
-                {/* LEFT: Footer / Description (On Mobile this is bottom, on Desktop this is Bottom Left) */}
-                {/* We use order-last on mobile to put it at bottom, order-first on desktop to put it left? 
-                    Actually, let's keep the DOM order but use absolute positioning or flex alignment.
-                    Better: Use grid or simple absolute positioning for the 'Title' to be Top Right and 'Info' to be Bottom Left.
-                */}
+                {/* BACK BUTTON - Detached for Mobile Positioning */}
+                <button
+                    onClick={onBack}
+                    className="pointer-events-auto text-white/50 hover:text-white flex items-center gap-2 group transition-colors fixed top-6 left-6 z-50 md:static md:flex-row-reverse md:absolute md:top-16 md:right-16"
+                    onMouseEnter={() => playSound('hover')}
+                >
+                    <ArrowLeft className="group-hover:-translate-x-1 transition-transform md:hidden" />
+                    <span className="uppercase tracking-[0.2em] text-xs font-bold">Torna alla Lista</span>
+                    <ArrowLeft className="group-hover:translate-x-1 transition-transform hidden md:block rotate-180" />
+                </button>
 
-                {/* TITLE GROUP (Mobile: Top Left, Desktop: Top Right) */}
-                <div className="flex flex-col items-start gap-6 md:absolute md:top-16 md:right-16 md:items-end md:text-right">
-                    <button
-                        onClick={onBack}
-                        className="pointer-events-auto text-white/50 hover:text-white flex items-center gap-2 group transition-colors md:flex-row-reverse"
-                        onMouseEnter={() => playSound('hover')}
-                    >
-                        <ArrowLeft className="group-hover:-translate-x-1 transition-transform md:hidden" />
-                        <span className="uppercase tracking-[0.2em] text-xs font-bold">Torna alla Lista</span>
-                        <ArrowLeft className="group-hover:translate-x-1 transition-transform hidden md:block rotate-180" />
-                    </button>
-
-                    <div className="relative mt-4 md:mt-0">
-                        {/* SOLAR FLARE EFFECT */}
+                {/* MAIN TITLE GROUP */}
+                {/* Mobile: Absolute Bottom Center (above footer) */}
+                {/* Desktop: Absolute Top Right (below back button) */}
+                <div className={`
+                    pointer-events-none
+                    absolute bottom-[160px] left-0 w-full flex flex-col items-center text-center px-4
+                    md:top-24 md:right-16 md:bottom-auto md:left-auto md:w-auto md:items-end md:text-right
+                `}>
+                    <div className="relative">
+                        {/* SOLAR FLARE EFFECT (Desktop Only) */}
                         <div className="absolute -top-20 -right-20 w-[400px] h-[400px] md:w-[800px] md:h-[800px] bg-[radial-gradient(circle_at_center,rgba(251,191,36,0.15)_0%,transparent_70%)] blur-3xl pointer-events-none -z-10 animate-pulse hidden md:block"></div>
 
-                        <h1 className="text-4xl md:text-7xl font-display font-bold text-transparent bg-clip-text bg-gradient-to-br from-white via-lux-gold to-amber-500 drop-shadow-[0_0_35px_rgba(251,191,36,0.6)] relative z-10">
+                        <h1 className="text-3xl md:text-7xl font-display font-bold text-transparent bg-clip-text bg-gradient-to-br from-white via-lux-gold to-amber-500 drop-shadow-[0_0_35px_rgba(251,191,36,0.6)] relative z-10">
                             STORYTELLING <br /> MASTERMIND
                         </h1>
                         <p className="text-lux-gold/90 font-serif italic mt-2 tracking-wide drop-shadow-md text-sm md:text-xl">
@@ -101,7 +87,7 @@ export const CinematicHubView: React.FC<CinematicHubViewProps> = ({ courseId, on
                 <div className={`
                     max-w-xl pointer-events-auto relative z-40 p-6 -mx-4 md:p-0 md:mx-0 rounded-t-[2rem] md:rounded-none flex flex-col items-center md:items-start text-center md:text-left transition-all duration-300
                     bg-gradient-to-t from-black via-black/95 to-transparent md:bg-transparent
-                    mt-auto md:mt-0 md:absolute md:bottom-16 md:left-16
+                    mt-auto md:mt-0 md:absolute md:bottom-16 md:left-16 w-full md:w-auto
                 `}>
                     <h2 className="text-white text-sm md:text-lg uppercase tracking-widest mb-2 flex items-center gap-2 md:gap-3 h-8">
                         <Sparkles className={`w-4 h-4 md:w-5 md:h-5 ${hoveredNode !== null ? 'text-amber-400 rotate-12 transition-all' : 'text-lux-gold'}`} />
@@ -163,8 +149,7 @@ export const CinematicHubView: React.FC<CinematicHubViewProps> = ({ courseId, on
                 </div>
             </div>
 
-            {/* 3. VOX SEPHIRA - 3D INTERACTIVE GALAXY (Replaces 2D Map) */}
-            {/* 3. VOX SEPHIRA - 2D LIVING TREE (Replaces Galaxy) */}
+            {/* 3. VOX SEPHIRA - 2D LIVING TREE */}
             <StorytellingLivingTree
                 masterminds={course.masterminds}
                 completedModules={completedModules}

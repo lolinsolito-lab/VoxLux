@@ -32,23 +32,24 @@ const DESKTOP_NODES = [
     { x: 50, y: 11, scale: 1.3 }   // 10. Mastery (Was 12)
 ];
 
-// MOBILE: Compact, Safe Margins, "Fit to Screen"
+// MOBILE: Exact Copy of Desktop Shape ("As Above, So Below")
+// User Requirement: "Forma perfetta anche su mobile" -> Identity with Desktop
 const MOBILE_NODES = [
     // ROW 1: BASE (1)
-    { x: 50, y: 75, scale: 1.2 },  // Lifted from 78
+    { x: 50, y: 92, scale: 1.2 },
     // ROW 2: LOWER TRIAD (3)
-    { x: 15, y: 62, scale: 1.0 }, // Compressed from 64
-    { x: 50, y: 62, scale: 1.0 },
-    { x: 85, y: 62, scale: 1.0 },
+    { x: 20, y: 70, scale: 1.0 },
+    { x: 50, y: 70, scale: 1.0 },
+    { x: 80, y: 70, scale: 1.0 },
     // ROW 3: MIDDLE TRIAD (3)
-    { x: 15, y: 50, scale: 1.1 }, // Center
-    { x: 50, y: 50, scale: 1.1 },
-    { x: 85, y: 50, scale: 1.1 },
+    { x: 20, y: 48, scale: 1.1 },
+    { x: 50, y: 48, scale: 1.1 },
+    { x: 80, y: 48, scale: 1.1 },
     // ROW 4: UPPER PAIR (2)
-    { x: 35, y: 38, scale: 1.1 }, // Lowered from 36
-    { x: 65, y: 38, scale: 1.1 },
+    { x: 35, y: 28, scale: 1.1 },
+    { x: 65, y: 28, scale: 1.1 },
     // ROW 5: CROWN (1)
-    { x: 50, y: 25, scale: 1.3 }  // Lowered from 22
+    { x: 50, y: 11, scale: 1.3 }
 ];
 
 // CONNECTIONS (Graph Edges - Flowing Upwards)
@@ -133,7 +134,7 @@ export const StorytellingLivingTree: React.FC<StorytellingLivingTreeProps> = ({
     };
 
     return (
-        <div className="absolute inset-0 z-10 w-full h-full pointer-events-none flex items-center justify-center pb-48 md:pb-0">
+        <div className="absolute inset-0 z-10 w-full h-full pointer-events-none flex items-center justify-center">
 
             {/* Global CSS Styles for Custom Keyframes */}
             <style>{`
@@ -174,15 +175,13 @@ export const StorytellingLivingTree: React.FC<StorytellingLivingTreeProps> = ({
 
 
             {/* CONTAINER: Mobile & Tablet Optimized */}
-            {/* Mobile: Fill screen width, generous height for vertical spread */}
-            {/* Tablet: max-w-[480px], relaxed aspect ratio */}
-            {/* Desktop: lg:max-w-[550px] xl:max-w-[600px] */}
+            {/* Mobile: SAME ASPECT RATIO as Desktop [3/4], but Scaled Down */}
             <div className={`
                 relative 
-                w-full max-h-[60vh] aspect-[3/5] px-4 
-                md:px-0 md:w-auto md:h-[80vh] md:max-h-[800px] md:aspect-[3/4]
-                lg:h-[85vh] lg:max-h-[900px] lg:max-w-[650px]
-                flex-shrink-0 transition-all duration-1000 ease-out
+                w-full max-w-[85vw] aspect-[3/4] 
+                md:w-auto md:max-w-[650px] md:h-[80vh] md:max-h-[800px]
+                lg:h-[85vh] lg:max-h-[900px] 
+                flex-shrink-0 transition-all duration-1000 ease-out origin-center
                 ${!isMobile && globalPulse ? 'scale-105 filter drop-shadow-[0_0_50px_rgba(251,191,36,0.3)]' : ''}
             `}>
 
