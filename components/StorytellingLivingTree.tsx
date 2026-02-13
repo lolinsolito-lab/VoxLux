@@ -16,9 +16,9 @@ interface StorytellingLivingTreeProps {
 // DESKTOP: Expanded, Majestic, "As Above, So Below"
 const DESKTOP_NODES = [
     // ROW 1: BASE (1) - Pushed down for grounding
-    { x: 50, y: 93, scale: 1.2 },  // 1. Origine (Was 82/88)
+    { x: 50, y: 92, scale: 1.2 },  // 1. Origine (Was 93)
     // ROW 2: LOWER TRIAD (3) - Spaced vertically from base
-    { x: 20, y: 70, scale: 1.0 },  // 2. Library (Was 68)
+    { x: 20, y: 70, scale: 1.0 },  // 2. Library
     { x: 50, y: 70, scale: 1.0 },  // 3. Workshop
     { x: 80, y: 70, scale: 1.0 },  // 4. Echo
     // ROW 3: MIDDLE TRIAD (3) - Central Heart
@@ -29,7 +29,7 @@ const DESKTOP_NODES = [
     { x: 35, y: 28, scale: 1.1 },  // 8. Time
     { x: 65, y: 28, scale: 1.1 },  // 9. Loyalty
     // ROW 5: CROWN (1) - High but reachable
-    { x: 50, y: 12, scale: 1.3 }   // 10. Mastery
+    { x: 50, y: 11, scale: 1.3 }   // 10. Mastery (Was 12)
 ];
 
 // MOBILE: Compact, Safe Margins, "Fit to Screen"
