@@ -113,10 +113,10 @@ export const CinematicHubView: React.FC<CinematicHubViewProps> = ({ courseId, on
                         </span>
                     </h2>
 
-                    <div className="relative h-16 md:h-12 w-full flex flex-col justify-center items-center md:items-start">
+                    <div className="relative h-24 md:h-24 w-full flex flex-col justify-center items-center md:items-start">
                         {/* Static Description */}
                         <p className={`
-                            absolute top-0 transition-opacity duration-300 text-amber-100/60 leading-relaxed border-none md:border-l-2 md:border-lux-gold/30 md:pl-4 text-xs md:text-base max-w-sm md:max-w-none
+                            absolute top-0 transition-opacity duration-300 text-amber-100/80 leading-relaxed border-none md:border-l-2 md:border-lux-gold/30 md:pl-4 text-xs md:text-base max-w-sm md:max-w-none
                             ${hoveredNode === null ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2 pointer-events-none'}
                         `}>
                             Non è un corso. È un'esplorazione. Attraversa i regni, supera i rituali e conquista la tua voce definitiva.
