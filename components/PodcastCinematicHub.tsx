@@ -365,10 +365,10 @@ export const PodcastCinematicHub: React.FC<PodcastCinematicHubProps> = ({ course
                                     playSound('click');
                                     onSelectWorld(`${course.masterminds[displayNode].id}|${displayNode}`);
                                 }}
-                                className="md:hidden group relative w-auto px-8 py-3 bg-lux-gold text-black font-bold uppercase tracking-[0.2em] text-xs hover:bg-white transition-all duration-300 shadow-[0_0_20px_rgba(251,191,36,0.3)] hover:shadow-[0_0_40px_rgba(255,255,255,0.6)] rounded-full flex items-center justify-center gap-3 mx-auto"
+                                className="group relative w-auto px-8 py-3 bg-lux-gold text-black font-bold uppercase tracking-[0.2em] text-xs hover:bg-white transition-all duration-300 shadow-[0_0_20px_rgba(251,191,36,0.3)] hover:shadow-[0_0_40px_rgba(255,255,255,0.6)] rounded-full flex items-center justify-center gap-3 mx-auto md:mx-0"
                             >
                                 <Play className="w-4 h-4 fill-current relative z-10" />
-                                <span className="relative z-10">Entra nella Frequenza</span>
+                                <span className="relative z-10">Ascolta Frequenza</span>
                                 <div className="absolute inset-0 bg-white opacity-0 group-hover:opacity-100 transition-opacity blur-md rounded-full"></div>
                             </button>
 
