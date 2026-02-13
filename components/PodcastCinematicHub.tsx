@@ -3,7 +3,7 @@ import { useCourseData } from '../hooks/useCourseData';
 import { Mastermind } from '../services/courseData';
 import { PODCAST_THEMES } from '../services/themeRegistry';
 import { useAudioSystem } from '../hooks/useAudioSystem';
-import { Mic, Play, ArrowLeft, Waves, Check, Sparkles } from 'lucide-react';
+import { Mic, Play, ArrowLeft, Waves, Check, Sparkles, Lock } from 'lucide-react';
 import { PodcastAtmosphere } from './PodcastAtmosphere';
 import { useGodMode } from '../hooks/useGodMode';
 
@@ -361,15 +361,33 @@ export const PodcastCinematicHub: React.FC<PodcastCinematicHubProps> = ({ course
                             {/* START BUTTON (Active State) */}
                             <button
                                 onClick={() => {
+                                    if (!isNodeUnlocked(displayNode)) {
+                                        playSound('hover');
+                                        return;
+                                    }
                                     playSound('click');
                                     playSound('click');
                                     onSelectWorld(`${course.masterminds[displayNode].id}|${displayNode}`);
                                 }}
-                                className="group relative w-auto px-8 py-3 bg-lux-gold text-black font-bold uppercase tracking-[0.2em] text-xs hover:bg-white transition-all duration-300 shadow-[0_0_20px_rgba(251,191,36,0.3)] hover:shadow-[0_0_40px_rgba(255,255,255,0.6)] rounded-full flex items-center justify-center gap-3 mx-auto md:mx-0"
+                                className={`
+                                    group relative w-auto px-8 py-3 font-bold uppercase tracking-[0.2em] text-xs transition-all duration-300 rounded-full flex items-center justify-center gap-3 mx-auto md:mx-0
+                                    ${isNodeUnlocked(displayNode)
+                                        ? 'bg-lux-gold text-black hover:bg-white shadow-[0_0_20px_rgba(251,191,36,0.3)] hover:shadow-[0_0_40px_rgba(255,255,255,0.6)] cursor-pointer'
+                                        : 'bg-stone-800 text-stone-500 border border-stone-700 shadow-none cursor-not-allowed'
+                                    }
+                                `}
                             >
-                                <Play className="w-4 h-4 fill-current relative z-10" />
-                                <span className="relative z-10">Ascolta Frequenza</span>
-                                <div className="absolute inset-0 bg-white opacity-0 group-hover:opacity-100 transition-opacity blur-md rounded-full"></div>
+                                {isNodeUnlocked(displayNode) ? (
+                                    <Play className="w-4 h-4 fill-current relative z-10" />
+                                ) : (
+                                    <Lock className="w-4 h-4 text-stone-500 relative z-10" />
+                                )}
+                                <span className="relative z-10">
+                                    {isNodeUnlocked(displayNode) ? "Ascolta Frequenza" : "Frequenza Bloccata"}
+                                </span>
+                                {isNodeUnlocked(displayNode) && (
+                                    <div className="absolute inset-0 bg-white opacity-0 group-hover:opacity-100 transition-opacity blur-md rounded-full"></div>
+                                )}
                             </button>
                         </div>
                     ) : (

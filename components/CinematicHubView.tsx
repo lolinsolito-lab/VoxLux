@@ -3,7 +3,7 @@ import { useCourseData } from '../hooks/useCourseData';
 import { Mastermind } from '../services/courseData';
 import { WORLD_THEMES } from '../services/themeRegistry';
 import { useAudioSystem } from '../hooks/useAudioSystem';
-import { Play, Sparkles, Star, ArrowLeft, Check } from 'lucide-react';
+import { Play, Sparkles, Star, ArrowLeft, Check, Lock } from 'lucide-react';
 import { StorytellingLivingTree } from './StorytellingLivingTree';
 import { CosmicAtmosphere } from './CosmicAtmosphere';
 import { useGodMode } from '../hooks/useGodMode';
@@ -49,6 +49,16 @@ export const CinematicHubView: React.FC<CinematicHubViewProps> = ({ courseId, on
     const isWorldComplete = (mm: Mastermind) => {
         if (!mm.modules || mm.modules.length === 0) return false;
         return mm.modules.every(m => completedModules.has(m.id));
+    };
+
+    const isNodeUnlocked = (index: number) => {
+        if (godMode) return true;
+        if (index === 0) return true;
+        // Check previous node completion
+        if (index > 0 && course?.masterminds[index - 1] && isWorldComplete(course.masterminds[index - 1])) {
+            return true;
+        }
+        return false;
     };
 
     return (
@@ -145,7 +155,12 @@ export const CinematicHubView: React.FC<CinematicHubViewProps> = ({ courseId, on
                     <button
                         onClick={(e) => {
                             e.stopPropagation();
-                            playSound('click');
+                            // Lock Logic
+                            if (displayNode !== null && !isNodeUnlocked(displayNode)) {
+                                playSound('hover'); // Placeholder until sound type confirmed
+                                return;
+                            }
+
                             // If hovering/selected, go to that specific world. Else go to the first one/current progress.
                             const targetId = displayNode !== null
                                 ? `${course.masterminds[displayNode].id}|${displayNode}`
@@ -155,14 +170,23 @@ export const CinematicHubView: React.FC<CinematicHubViewProps> = ({ courseId, on
                         className={`
                             group relative w-auto px-8 py-3 font-bold uppercase tracking-[0.2em] text-xs md:text-sm transition-all duration-300 shadow-[0_0_20px_rgba(251,191,36,0.3)] rounded-full flex items-center gap-3 mt-1 overflow-hidden
                             ${displayNode !== null
-                                ? 'bg-amber-500 text-black hover:bg-white hover:shadow-[0_0_40px_rgba(251,191,36,0.8)]'
+                                ? (isNodeUnlocked(displayNode)
+                                    ? 'bg-amber-500 text-black hover:bg-white hover:shadow-[0_0_40px_rgba(251,191,36,0.8)] cursor-pointer'
+                                    : 'bg-stone-800 text-stone-500 cursor-not-allowed border border-stone-700 shadow-none'
+                                )
                                 : 'bg-lux-gold text-black hover:bg-white hover:shadow-[0_0_40px_rgba(255,255,255,0.6)]'
                             }
                         `}
                     >
-                        <Play className="w-4 h-4 fill-current relative z-10 transition-transform group-hover:scale-110" />
+                        {displayNode !== null && !isNodeUnlocked(displayNode) ? (
+                            <Lock className="w-4 h-4 text-stone-500 relative z-10" />
+                        ) : (
+                            <Play className="w-4 h-4 fill-current relative z-10 transition-transform group-hover:scale-110" />
+                        )}
                         <span className="relative z-10">
-                            {displayNode !== null ? "Entra nel Mondo" : "Inizia il Viaggio"}
+                            {displayNode !== null
+                                ? (isNodeUnlocked(displayNode) ? "Entra nel Mondo" : "Mondo Bloccato")
+                                : "Inizia il Viaggio"}
                         </span>
 
                         {/* Hover Flush Effect */}
