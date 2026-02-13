@@ -52,7 +52,9 @@ const DiplomaPreviewModal = ({
     // Determine course ID for theme (matrice-1 or matrice-2)
     // Fallback based on slug if ID doesn't match expected pattern
     const courseId = course.slug.includes('podcast') ? 'matrice-2' : 'matrice-1';
-    const [variant, setVariant] = useState<'standard' | 'luxury'>('standard');
+
+    // DEFAULT TO LUXURY MODE to showcase the new templates immediately
+    const [variant, setVariant] = useState<'standard' | 'luxury'>('luxury');
 
     return (
         <motion.div

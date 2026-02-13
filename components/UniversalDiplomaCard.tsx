@@ -317,8 +317,11 @@ export const UniversalDiplomaCard: React.FC<UniversalDiplomaCardProps> = ({
                 )}
                 {/* --- BACKGROUND ART (SVG) --- */}
 
-                {/* STORYTELLING: COSMIC TREE */}
-                {!isPodcast && (
+                {/* --- BACKGROUND ART (SVG) --- */}
+                {/* Only check for standard variant to avoid cluttering luxury mode */}
+
+                {/* STORYTELLING: COSMIC TREE (Standard Only) */}
+                {variant !== 'luxury' && !isPodcast && (
                     <div className="absolute inset-0 z-[1] opacity-30 pointer-events-none mix-blend-screen">
                         <svg viewBox="0 0 1100 700" className="w-full h-full">
                             <defs>
@@ -355,8 +358,8 @@ export const UniversalDiplomaCard: React.FC<UniversalDiplomaCardProps> = ({
                     </div>
                 )}
 
-                {/* PODCAST: MICROPHONE ECOSYSTEM */}
-                {isPodcast && (
+                {/* PODCAST: MICROPHONE ECOSYSTEM (Standard Only) */}
+                {variant !== 'luxury' && isPodcast && (
                     <div className="absolute inset-0 z-[1] opacity-40 pointer-events-none mix-blend-screen">
                         <svg viewBox="0 0 1100 700" className="w-full h-full">
                             <defs>
