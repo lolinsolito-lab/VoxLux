@@ -9,6 +9,18 @@ Before running the migration, verify:
 - [ ] You have a backup (Supabase auto-backs up, but good to verify)
 - [ ] No users are actively using the platform (or minimal traffic)
 
+
+## 🚀 Recent Deployments
+
+### **Phase 12: Admin Preview & Diploma Visuals**
+- **Date**: 2026-02-13
+- **Changes**:
+  - Added `DiplomaPreviewModal` to `AdminCourses.tsx`
+  - Implemented "Cosmic Tree" & "Mic Ecosystem" visuals in `UniversalDiplomaCard.tsx`
+  - Installed `qrcode` dependency
+  - Fixed TypeScript build errors
+- **Verification**: Check Admin Dashboard > Courses > "Anteprima Grafica"
+
 ---
 
 ## 🚀 Step-by-Step Deployment
