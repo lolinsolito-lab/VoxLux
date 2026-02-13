@@ -95,24 +95,41 @@ export const UniversalDiplomaCard: React.FC<UniversalDiplomaCardProps> = ({
         if (!cardRef.current) return;
         playSound('click');
         setIsGenerating(true);
+
+        // Create toast
         const toast = document.createElement('div');
         toast.innerText = "📸 Generazione Immagine...";
         Object.assign(toast.style, {
             position: 'fixed', bottom: '20px', right: '20px',
             background: '#fff', color: '#000', padding: '10px 20px',
-            borderRadius: '5px', zIndex: '9999'
+            borderRadius: '5px', zIndex: '9999', boxShadow: '0 4px 12px rgba(0,0,0,0.2)'
         });
         document.body.appendChild(toast);
 
-        try {
-            cardRef.current.classList.add('snapshot-mode');
-            await new Promise(r => setTimeout(r, 800)); // Increased wait for SVG rendering
+        // CLONE STRATEGY:
+        // We clone the card and append it to body to ensure it's captured at full scale (1:1)
+        // avoiding issues with the Admin Preview modal's "scale-75" transform.
+        const clone = cardRef.current.cloneNode(true) as HTMLElement;
+        clone.style.position = 'fixed';
+        clone.style.top = '-9999px'; // Off-screen
+        clone.style.left = '-9999px';
+        clone.style.transform = 'none'; // RESET TRANSFORM
+        clone.style.zIndex = '-1';
+        clone.style.opacity = '1';
+        clone.classList.remove('no-export'); // Ensure it's visible
+        clone.classList.add('snapshot-mode'); // Apply snapshot styling
 
-            const canvas = await html2canvas(cardRef.current, {
-                scale: 3,
+        document.body.appendChild(clone);
+
+        try {
+            await new Promise(r => setTimeout(r, 1000)); // Wait for render/fonts
+
+            const canvas = await html2canvas(clone, {
+                scale: 3, // High Res
                 backgroundColor: null,
                 useCORS: true,
-                allowTaint: false,
+                allowTaint: true, // Allow tainting if needed for local blobs
+                logging: false,
                 ignoreElements: (element) => element.classList.contains('no-export')
             });
 
@@ -124,7 +141,7 @@ export const UniversalDiplomaCard: React.FC<UniversalDiplomaCardProps> = ({
             console.error(err);
             alert("Errore immagine: " + err);
         } finally {
-            if (cardRef.current) cardRef.current.classList.remove('snapshot-mode');
+            if (document.body.contains(clone)) document.body.removeChild(clone);
             setIsGenerating(false);
             if (document.body.contains(toast)) document.body.removeChild(toast);
         }
@@ -134,23 +151,37 @@ export const UniversalDiplomaCard: React.FC<UniversalDiplomaCardProps> = ({
         if (!cardRef.current) return;
         playSound('click');
         setIsGenerating(true);
+
         const toast = document.createElement('div');
         toast.innerText = "📄 Creazione Pergamena...";
         Object.assign(toast.style, {
             position: 'fixed', bottom: '20px', right: '20px',
             background: '#fff', color: '#000', padding: '10px 20px',
-            borderRadius: '5px', zIndex: '9999'
+            borderRadius: '5px', zIndex: '9999', boxShadow: '0 4px 12px rgba(0,0,0,0.2)'
         });
         document.body.appendChild(toast);
 
-        try {
-            cardRef.current.classList.add('snapshot-mode');
-            await new Promise(r => setTimeout(r, 800));
+        // CLONE STRATEGY (Same as Image)
+        const clone = cardRef.current.cloneNode(true) as HTMLElement;
+        clone.style.position = 'fixed';
+        clone.style.top = '-9999px';
+        clone.style.left = '-9999px';
+        clone.style.transform = 'none'; // RESET TRANSFORM
+        clone.style.zIndex = '-1';
+        clone.style.opacity = '1';
+        clone.classList.remove('no-export');
+        clone.classList.add('snapshot-mode');
 
-            const canvas = await html2canvas(cardRef.current, {
-                scale: 4,
+        document.body.appendChild(clone);
+
+        try {
+            await new Promise(r => setTimeout(r, 1000));
+
+            const canvas = await html2canvas(clone, {
+                scale: 4, // Max Quality
                 useCORS: true,
-                allowTaint: false,
+                allowTaint: true,
+                logging: false,
                 ignoreElements: (element) => element.classList.contains('no-export')
             });
 
@@ -173,7 +204,7 @@ export const UniversalDiplomaCard: React.FC<UniversalDiplomaCardProps> = ({
             console.error(err);
             alert("Errore PDF: " + err);
         } finally {
-            if (cardRef.current) cardRef.current.classList.remove('snapshot-mode');
+            if (document.body.contains(clone)) document.body.removeChild(clone);
             setIsGenerating(false);
             if (document.body.contains(toast)) document.body.removeChild(toast);
         }
@@ -209,19 +240,6 @@ export const UniversalDiplomaCard: React.FC<UniversalDiplomaCardProps> = ({
                     -webkit-text-fill-color: unset !important;
                     color: var(--diploma-accent) !important;
                     text-shadow: 0 0 15px var(--diploma-glow) !important;
-                }
-
-                .scanner-line {
-                    position: absolute;
-                    left: 0;
-                    width: 100%;
-                    height: 2px;
-                    background: var(--diploma-primary);
-                    box-shadow: 0 0 10px var(--diploma-primary);
-                    animation: hologram-scan 4s infinite linear;
-                    z-index: 5;
-                    opacity: ${isPodcast ? '0.3' : '0'};
-                    pointer-events: none;
                 }
 
                 .cosmic-tree-path {
@@ -339,8 +357,7 @@ export const UniversalDiplomaCard: React.FC<UniversalDiplomaCardProps> = ({
                     </div>
                 )}
 
-                {/* Scanner effect for Podcast Diploma */}
-                <div className="scanner-line"></div>
+                {/* Scanner effect removed as per user feedback */}
 
                 {/* --- GEOMETRY OVERLAY (Subtle) --- */}
                 <div className="absolute inset-0 border-[20px] border-double z-[2] opacity-30 pointer-events-none" style={{ borderColor: 'var(--diploma-border)' }} />
