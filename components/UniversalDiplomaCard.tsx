@@ -318,9 +318,8 @@ export const UniversalDiplomaCard: React.FC<UniversalDiplomaCardProps> = ({
                 {/* --- BACKGROUND ART (SVG) --- */}
 
                 {/* --- BACKGROUND ART (SVG) --- */}
-                {/* Only check for standard variant to avoid cluttering luxury mode */}
-
-                {/* STORYTELLING: COSMIC TREE (Standard Only) */}
+                {/* DISABLED AS PER USER REQUEST TO ENSURE CLEAN LUXURY VIEW */}
+                {/* 
                 {variant !== 'luxury' && !isPodcast && (
                     <div className="absolute inset-0 z-[1] opacity-30 pointer-events-none mix-blend-screen">
                         <svg viewBox="0 0 1100 700" className="w-full h-full">
@@ -331,19 +330,19 @@ export const UniversalDiplomaCard: React.FC<UniversalDiplomaCardProps> = ({
                                     <stop offset="100%" stopColor="#fceabb" stopOpacity="0" />
                                 </linearGradient>
                             </defs>
-                            {/* Roots & Trunk */}
+                            {/* Roots & Trunk }
                             <path d="M550,700 Q550,600 550,500" stroke="url(#goldGrad)" strokeWidth="2" fill="none" className="cosmic-tree-path" />
                             <path d="M550,500 Q500,400 400,300" stroke="url(#goldGrad)" strokeWidth="1" fill="none" className="cosmic-tree-path" style={{ animationDelay: '0.5s' }} />
                             <path d="M550,500 Q600,400 700,300" stroke="url(#goldGrad)" strokeWidth="1" fill="none" className="cosmic-tree-path" style={{ animationDelay: '0.5s' }} />
                             <path d="M400,300 Q350,200 300,100" stroke="url(#goldGrad)" strokeWidth="0.5" fill="none" className="cosmic-tree-path" style={{ animationDelay: '1s' }} />
                             <path d="M700,300 Q750,200 800,100" stroke="url(#goldGrad)" strokeWidth="0.5" fill="none" className="cosmic-tree-path" style={{ animationDelay: '1s' }} />
 
-                            {/* Nodes (Stars/Ideas) */}
+                            {/* Nodes (Stars/Ideas) }
                             <circle cx="550" cy="500" r="3" fill="#d4af37" className="animate-[pulse-glow_3s_infinite]" />
                             <circle cx="400" cy="300" r="2" fill="#d4af37" className="animate-[pulse-glow_4s_infinite]" />
                             <circle cx="700" cy="300" r="2" fill="#d4af37" className="animate-[pulse-glow_4s_infinite]" />
 
-                            {/* Subtle particle dust */}
+                            {/* Subtle particle dust }
                             {[...Array(20)].map((_, i) => (
                                 <circle
                                     key={i}
@@ -357,8 +356,9 @@ export const UniversalDiplomaCard: React.FC<UniversalDiplomaCardProps> = ({
                         </svg>
                     </div>
                 )}
+                */}
 
-                {/* PODCAST: MICROPHONE ECOSYSTEM (Standard Only) */}
+                {/* 
                 {variant !== 'luxury' && isPodcast && (
                     <div className="absolute inset-0 z-[1] opacity-40 pointer-events-none mix-blend-screen">
                         <svg viewBox="0 0 1100 700" className="w-full h-full">
@@ -369,13 +369,13 @@ export const UniversalDiplomaCard: React.FC<UniversalDiplomaCardProps> = ({
                                 </radialGradient>
                             </defs>
 
-                            {/* Central Core (Mic Abstract) */}
+                            {/* Central Core (Mic Abstract) }
                             <g transform="translate(550, 350)">
                                 <circle r="150" fill="url(#cyberGlow)" className="animate-[pulse-glow_4s_infinite]" />
                                 <circle r="100" fill="none" stroke="#22d3ee" strokeWidth="0.5" strokeDasharray="4 4" className="animate-[rotate-slow_20s_linear_infinite]" />
                                 <circle r="220" fill="none" stroke="#8b5cf6" strokeWidth="0.5" strokeOpacity="0.3" className="animate-[rotate-slow_30s_linear_infinite_reverse]" />
 
-                                {/* Orbital Nodes (Worlds) */}
+                                {/* Orbital Nodes (Worlds) }
                                 <g className="animate-[rotate-slow_15s_linear_infinite]">
                                     <circle cx="100" cy="0" r="4" fill="#22d3ee" />
                                     <line x1="0" y1="0" x2="100" y2="0" stroke="#22d3ee" strokeWidth="0.5" strokeOpacity="0.2" />
@@ -385,12 +385,13 @@ export const UniversalDiplomaCard: React.FC<UniversalDiplomaCardProps> = ({
                                 </g>
                             </g>
 
-                            {/* Sound Waves */}
+                            {/* Sound Waves }
                             <path d="M0,350 Q275,300 550,350 T1100,350" fill="none" stroke="#22d3ee" strokeWidth="0.5" strokeOpacity="0.1" />
                             <path d="M0,350 Q275,400 550,350 T1100,350" fill="none" stroke="#8b5cf6" strokeWidth="0.5" strokeOpacity="0.1" />
                         </svg>
                     </div>
                 )}
+                */}
 
                 {/* Scanner effect removed as per user feedback */}
 

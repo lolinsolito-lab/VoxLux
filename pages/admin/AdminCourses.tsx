@@ -74,9 +74,9 @@ const DiplomaPreviewModal = ({
                     <div className="flex items-center gap-4">
                         <button
                             onClick={() => setVariant(v => v === 'standard' ? 'luxury' : 'standard')}
-                            className={`px-4 py-2 rounded-full text-xs font-bold uppercase tracking-wider transition-all border ${variant === 'luxury' ? 'bg-amber-500 text-black border-amber-500 shadow-[0_0_15px_rgba(245,158,11,0.5)]' : 'bg-transparent text-gray-400 border-gray-600 hover:border-white hover:text-white'}`}
+                            className={`px-6 py-2 rounded-full text-xs font-bold uppercase tracking-wider transition-all border ${variant === 'luxury' ? 'bg-amber-500 text-black border-amber-500 shadow-[0_0_15px_rgba(245,158,11,0.5)]' : 'bg-gray-800 text-gray-400 border-gray-600 hover:border-white hover:text-white'}`}
                         >
-                            {variant === 'luxury' ? '✨ Luxury Mode' : 'Standard Mode'}
+                            {variant === 'luxury' ? '✨ Mode: LUXURY' : '⚪ Mode: STANDARD'}
                         </button>
                         <button
                             onClick={onClose}
