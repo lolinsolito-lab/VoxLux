@@ -1,61 +1,94 @@
--- =====================================================
--- VOX LUX - LMS Phase 2: Diplomas & Quizzes
--- Migration: 003_diplomas_and_quizzes.sql
--- =====================================================
+-- 003_diplomas_and_quizzes.sql
 
--- 1. Create table for user diplomas/certificates
-CREATE TABLE IF NOT EXISTS user_diplomas (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    user_id UUID NOT NULL REFERENCES profiles(id) ON DELETE CASCADE,
-    course_id UUID NOT NULL REFERENCES courses(id) ON DELETE CASCADE,
-    certificate_code TEXT UNIQUE NOT NULL, -- Short unique code for verification (e.g. LUX-2026-ABCD)
-    issued_at TIMESTAMPTZ DEFAULT NOW(),
-    metadata JSONB DEFAULT '{}'::jsonb, -- Snapshot of course title, user name, etc.
-    CONSTRAINT unique_user_course_diploma UNIQUE (user_id, course_id)
+-- 1. Align Schema with Codebase (Modules & Lessons)
+-- If course_modules exists (from 002), we might need to drop it or rename it.
+-- Assuming we want to start fresh with the correct structure:
+
+DROP TABLE IF EXISTS "course_modules" CASCADE;
+
+-- Create 'modules' table
+CREATE TABLE IF NOT EXISTS "modules" (
+    "id" UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+    "course_id" UUID REFERENCES "courses"("id") ON DELETE CASCADE,
+    "title" TEXT NOT NULL,
+    "description" TEXT,
+    "order_index" INTEGER DEFAULT 0,
+    "is_locked" BOOLEAN DEFAULT false,
+    "created_at" TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    "updated_at" TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
--- Indexes
-CREATE INDEX IF NOT EXISTS idx_diplomas_user ON user_diplomas(user_id);
-CREATE INDEX IF NOT EXISTS idx_diplomas_code ON user_diplomas(certificate_code);
+-- Create 'lessons' table
+CREATE TABLE IF NOT EXISTS "lessons" (
+    "id" UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+    "module_id" UUID REFERENCES "modules"("id") ON DELETE CASCADE,
+    "title" TEXT NOT NULL,
+    "description" TEXT,
+    "video_url" TEXT,
+    "video_provider" TEXT DEFAULT 'custom',
+    "duration_minutes" INTEGER DEFAULT 0,
+    "order_index" INTEGER DEFAULT 0,
+    "resources" JSONB DEFAULT '[]'::jsonb,
+    "created_at" TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    "updated_at" TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
 
--- RLS Policies
-ALTER TABLE user_diplomas ENABLE ROW LEVEL SECURITY;
+-- 2. Create 'quizzes' table
+CREATE TABLE IF NOT EXISTS "quizzes" (
+    "id" UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+    "module_id" UUID REFERENCES "modules"("id") ON DELETE CASCADE,
+    "title" TEXT NOT NULL,
+    "description" TEXT,
+    "passing_score" INTEGER DEFAULT 80,
+    "questions" JSONB DEFAULT '[]'::jsonb,
+    "created_at" TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    "updated_at" TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    UNIQUE("module_id") -- One quiz per module
+);
 
-CREATE POLICY "Users can view their own diplomas"
-    ON user_diplomas FOR SELECT
-    USING (auth.uid() = user_id);
+-- 3. Create 'user_diplomas' table
+CREATE TABLE IF NOT EXISTS "user_diplomas" (
+    "id" UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+    "user_id" UUID REFERENCES "auth"."users"("id") ON DELETE CASCADE,
+    "course_id" UUID REFERENCES "courses"("id") ON DELETE CASCADE,
+    "diploma_template_id" TEXT NOT NULL,
+    "awarded_at" TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    "score" INTEGER,
+    "metadata" JSONB DEFAULT '{}'::jsonb,
+    UNIQUE("user_id", "course_id")
+);
 
-CREATE POLICY "Admins can manage all diplomas"
-    ON user_diplomas FOR ALL
-    USING (
-        EXISTS (
-            SELECT 1 FROM profiles
-            WHERE profiles.id = auth.uid()
-            AND profiles.role = 'admin'
-        )
-    );
+-- 4. Update 'courses' table for Diploma settings
+ALTER TABLE "courses" 
+ADD COLUMN IF NOT EXISTS "diploma_requirements" JSONB DEFAULT NULL,
+ADD COLUMN IF NOT EXISTS "module_count" INTEGER DEFAULT 0; -- Optional cache, or we use count() query
 
--- 2. Add Diploma Configuration to Courses table
-ALTER TABLE courses 
-ADD COLUMN IF NOT EXISTS diploma_enabled BOOLEAN DEFAULT false,
-ADD COLUMN IF NOT EXISTS diploma_template_id TEXT, -- 'standard', 'gold', 'platinum'
-ADD COLUMN IF NOT EXISTS passing_score_required INTEGER DEFAULT 80; -- Global passing score for quizzes
 
--- 3. Add Quiz specific fields to course_modules (if needed beyond JSONB)
--- We strictly use content_data for questions, but let's ensure we have a helper index if we query by quiz type often.
--- (Already covered by existing indexes in 002)
+-- 5. Add RLS Policies (Basic examples)
+ALTER TABLE "modules" ENABLE ROW LEVEL SECURITY;
+ALTER TABLE "lessons" ENABLE ROW LEVEL SECURITY;
+ALTER TABLE "quizzes" ENABLE ROW LEVEL SECURITY;
+ALTER TABLE "user_diplomas" ENABLE ROW LEVEL SECURITY;
 
--- Helper Function to generate certificate code
-CREATE OR REPLACE FUNCTION generate_certificate_code()
-RETURNS TEXT AS $$
-DECLARE
-    chars TEXT := 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-    result TEXT := '';
-    i INTEGER := 0;
-BEGIN
-    FOR i IN 1..8 LOOP
-        result := result || substr(chars, floor(random() * length(chars) + 1)::integer, 1);
-    END LOOP;
-    RETURN 'LUX-' || to_char(now(), 'YYYY') || '-' || result;
-END;
-$$ LANGUAGE plpgsql;
+-- Policies for Modules/Lessons/Quizzes: Public Read, Admin Write
+CREATE POLICY "Public Read Modules" ON "modules" FOR SELECT USING (true);
+CREATE POLICY "Admin Write Modules" ON "modules" FOR ALL USING (
+  auth.role() = 'service_role' OR 
+  auth.uid() IN (SELECT id FROM users WHERE role = 'admin')
+);
+
+CREATE POLICY "Public Read Lessons" ON "lessons" FOR SELECT USING (true);
+CREATE POLICY "Admin Write Lessons" ON "lessons" FOR ALL USING (
+  auth.role() = 'service_role' OR 
+  auth.uid() IN (SELECT id FROM users WHERE role = 'admin')
+);
+
+CREATE POLICY "Public Read Quizzes" ON "quizzes" FOR SELECT USING (true);
+CREATE POLICY "Admin Write Quizzes" ON "quizzes" FOR ALL USING (
+  auth.role() = 'service_role' OR 
+  auth.uid() IN (SELECT id FROM users WHERE role = 'admin')
+);
+
+-- Policies for User Diplomas: User can read their own
+CREATE POLICY "User Read Diplomas" ON "user_diplomas" FOR SELECT USING (auth.uid() = user_id);
+CREATE POLICY "System Write Diplomas" ON "user_diplomas" FOR ALL USING (auth.role() = 'service_role');

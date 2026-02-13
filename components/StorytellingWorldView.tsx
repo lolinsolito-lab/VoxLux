@@ -267,7 +267,6 @@ export const StorytellingWorldView: React.FC<StorytellingWorldViewProps> = ({ wo
             {/* --- 3D SCENE --- */}
             <div
                 className="absolute inset-0 z-0 transition-transform duration-1000 scale-100"
-                style={{ scrollbarGutter: 'stable' }}
             >
                 <Canvas dpr={[1, 2]}>
                     <Suspense fallback={null}>
@@ -325,149 +324,151 @@ export const StorytellingWorldView: React.FC<StorytellingWorldViewProps> = ({ wo
 
                 {/* CENTRAL CONTENT CARD - Grid Centering for absolute stability */}
                 <div
-                    className="absolute inset-0 z-10 grid place-items-center w-full h-full p-4 md:p-12 pointer-events-auto overflow-y-auto"
+                    className="absolute inset-0 z-10 w-full h-full overflow-y-auto pointer-events-auto"
                     style={{ scrollbarGutter: 'stable' }}
                 >
-                    <aWeb.div
-                        style={uiSpring}
-                        className={`pointer-events-auto w-full max-w-2xl my-auto rounded-3xl p-6 md:p-10 
-                                    backdrop-blur-xl border border-white/10 shadow-2xl 
-                                    bg-gradient-to-b from-black/40 to-black/80 
-                                    flex flex-col items-center text-center
-                                    relative overflow-hidden group transition-all duration-500`}
-                    >
-                        {/* Subtle Inner Glow Gradient */}
-                        <div className={`absolute inset-0 opacity-20 bg-gradient-to-tr ${getTheme()} pointer-events-none mix-blend-screen transition-opacity duration-1000`} />
+                    <div className="flex min-h-full items-center justify-center p-4 md:p-12">
+                        <aWeb.div
+                            style={uiSpring}
+                            className={`w-full max-w-2xl rounded-3xl p-6 md:p-10 
+                                        backdrop-blur-xl border border-white/10 shadow-2xl 
+                                        bg-gradient-to-b from-black/40 to-black/80 
+                                        flex flex-col items-center text-center
+                                        relative overflow-hidden group transition-all duration-500`}
+                        >
+                            {/* Subtle Inner Glow Gradient */}
+                            <div className={`absolute inset-0 opacity-20 bg-gradient-to-tr ${getTheme()} pointer-events-none mix-blend-screen transition-opacity duration-1000`} />
 
-                        {/* ICON HEADER */}
-                        <div className="relative mb-6">
-                            <div className="absolute inset-0 bg-white/20 blur-xl rounded-full scale-150 opacity-20 animate-pulse" />
-                            {stage === 'SUN' && <Sun size={32} className="text-amber-200 relative z-10" />}
-                            {stage === 'MOON' && <Moon size={32} className="text-cyan-200 relative z-10" />}
-                            {stage === 'THREAD' && <SparklesIcon size={32} className="text-amber-100 relative z-10" />}
-                        </div>
-
-                        {/* --- MEDIA PLAYER (VIDEO) --- */}
-                        {activeContent?.videoUrl && (
-                            <div className="w-full aspect-video rounded-lg overflow-hidden border border-white/10 shadow-lg mb-8 bg-black relative group/video">
-                                <iframe
-                                    src={activeContent.videoUrl}
-                                    className="w-full h-full"
-                                    frameBorder="0" // keeping frameBorder purely for legacy fallback
-                                    allow="autoplay; fullscreen; picture-in-picture"
-                                ></iframe>
+                            {/* ICON HEADER */}
+                            <div className="relative mb-6">
+                                <div className="absolute inset-0 bg-white/20 blur-xl rounded-full scale-150 opacity-20 animate-pulse" />
+                                {stage === 'SUN' && <Sun size={32} className="text-amber-200 relative z-10" />}
+                                {stage === 'MOON' && <Moon size={32} className="text-cyan-200 relative z-10" />}
+                                {stage === 'THREAD' && <SparklesIcon size={32} className="text-amber-100 relative z-10" />}
                             </div>
-                        )}
 
-                        {/* TEXT CONTENT */}
-                        <div className="relative z-10 w-full">
-                            {stage === 'SUN' && (
-                                <>
-                                    <h3 className="text-amber-400 uppercase tracking-[0.2em] mb-3 text-xs font-bold drop-shadow-md">Fase 1: Logos</h3>
-                                    <h1 className="text-2xl md:text-3xl font-display font-medium text-white mb-4 tracking-wide">{dual.sunContent.title}</h1>
-                                    <div className="w-12 h-[1px] bg-white/20 mx-auto mb-6" />
-                                    <p className="text-sm md:text-base text-gray-300 font-light leading-relaxed mb-6">{dual.sunContent.technicalContent}</p>
-                                    <div className="bg-amber-950/20 border border-amber-500/10 rounded-xl p-4 backdrop-blur-md">
-                                        <p className="text-amber-200/90 italic text-sm font-serif">"{dual.sunContent.microLesson}"</p>
-                                    </div>
-                                </>
-                            )}
-
-                            {stage === 'MOON' && (
-                                <>
-                                    <h3 className="text-cyan-400 uppercase tracking-[0.2em] mb-3 text-xs font-bold drop-shadow-md">Fase 2: Pathos</h3>
-                                    <h1 className="text-2xl md:text-3xl font-display font-medium text-white mb-4 tracking-wide">{dual.moonContent.title}</h1>
-                                    <div className="w-12 h-[1px] bg-white/20 mx-auto mb-6" />
-                                    <p className="text-sm md:text-base text-gray-300 font-light leading-relaxed mb-6">{dual.moonContent.psychologicalContent}</p>
-                                    <div className="bg-cyan-950/20 border border-cyan-500/10 rounded-xl p-4 backdrop-blur-md">
-                                        <h4 className="text-cyan-400/60 uppercase text-[10px] tracking-widest mb-2">Riflessione</h4>
-                                        <p className="text-white/90 font-serif text-lg italic">"{dual.moonContent.guidingQuestion}"</p>
-                                    </div>
-                                </>
-                            )}
-
-                            {stage === 'THREAD' && (
-                                <>
-                                    <h3 className="text-purple-400 uppercase tracking-[0.2em] mb-3 text-xs font-bold drop-shadow-md">Fase 3: Praxis</h3>
-                                    <h1 className="text-2xl md:text-3xl font-display font-medium text-transparent bg-clip-text bg-gradient-to-r from-amber-100 to-amber-400 mb-4 tracking-wide">Il Patto</h1>
-                                    <div className="w-12 h-[1px] bg-amber-500/30 mx-auto mb-6" />
-                                    <p className="text-sm md:text-base text-gray-300 font-light leading-relaxed mb-6">{dual.goldenThread.synthesisExercise}</p>
-                                    <div className="bg-white/5 border border-white/10 rounded-xl p-6 mb-4 relative overflow-hidden backdrop-blur-sm">
-                                        <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-white/20 to-transparent" />
-                                        <p className="text-[10px] text-white/60 uppercase tracking-widest mb-2 font-medium">Output</p>
-                                        <p className="text-lg md:text-xl text-white font-mono tracking-tight">{dual.goldenThread.output}</p>
-                                    </div>
-                                </>
-                            )}
-
-                            {/* EXTRA MODULES RENDERING */}
-                            {typeof stage === 'string' && stage.startsWith('EXTRA_') && activeContent && (
-                                <>
-                                    <h3 className="text-emerald-400 uppercase tracking-[0.2em] mb-3 text-xs font-bold drop-shadow-md">
-                                        Espansione: Modulo {parseInt(stage.split('_')[1]) + 4}
-                                    </h3>
-                                    <h1 className="text-2xl md:text-3xl font-display font-medium text-white mb-4 tracking-wide">
-                                        {activeContent.title}
-                                    </h1>
-                                    <div className="w-12 h-[1px] bg-emerald-500/30 mx-auto mb-6" />
-
-                                    <div
-                                        className="text-sm md:text-base text-gray-300 font-light leading-relaxed mb-6 prose prose-invert max-w-none"
-                                        dangerouslySetInnerHTML={{ __html: activeContent.content }}
-                                    />
-                                </>
-                            )}
-                        </div>
-
-                        {/* --- DOWNLOADS & RESOURCES --- */}
-                        {activeContent?.downloads && activeContent.downloads.length > 0 && (
-                            <div className="w-full mt-8 pt-6 border-t border-white/5">
-                                <h4 className="text-[10px] uppercase tracking-widest text-amber-100/80 font-bold drop-shadow mb-4 text-center">Toolkit Operativo</h4>
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                                    {activeContent.downloads.map((res: any, idx: number) => (
-                                        <a
-                                            key={idx}
-                                            href={res.url}
-                                            className="flex items-center gap-3 p-3 rounded bg-white/5 hover:bg-white/10 border border-white/5 hover:border-white/20 transition-all group/dl text-left"
-                                        >
-                                            <div className="p-2 bg-black/50 rounded text-gray-400 group-hover/dl:text-white transition-colors">
-                                                {res.type === 'pdf' ? <FileText size={14} /> : res.type === 'image' ? <ImageIcon size={14} /> : <Download size={14} />}
-                                            </div>
-                                            <span className="text-xs text-gray-300 group-hover/dl:text-white font-medium truncate">{res.label}</span>
-                                        </a>
-                                    ))}
+                            {/* --- MEDIA PLAYER (VIDEO) --- */}
+                            {activeContent?.videoUrl && (
+                                <div className="w-full aspect-video rounded-lg overflow-hidden border border-white/10 shadow-lg mb-8 bg-black relative group/video">
+                                    <iframe
+                                        src={activeContent.videoUrl}
+                                        className="w-full h-full"
+                                        frameBorder="0" // keeping frameBorder purely for legacy fallback
+                                        allow="autoplay; fullscreen; picture-in-picture"
+                                    ></iframe>
                                 </div>
-                            </div>
-                        )}
-
-
-
-                        {/* FOOTER ACTION */}
-                        <div className="relative z-10 mt-8 md:mt-10 flex items-center justify-center gap-4">
-                            {stage !== 'SUN' && (
-                                <button
-                                    onClick={handleBack}
-                                    className="group px-6 py-3 rounded-full font-medium uppercase tracking-[0.2em] text-[10px] text-white/50 hover:text-white border border-white/10 hover:border-white/30 hover:bg-white/5 transition-all duration-300 backdrop-blur-sm"
-                                >
-                                    Indietro
-                                </button>
                             )}
 
-                            <button
-                                onClick={handleNext}
-                                className={`group relative px-10 py-3 rounded-full font-medium uppercase tracking-[0.2em] text-xs transition-all duration-500 hover:scale-105 active:scale-95 flex items-center gap-3 overflow-hidden
+                            {/* TEXT CONTENT */}
+                            <div className="relative z-10 w-full">
+                                {stage === 'SUN' && (
+                                    <>
+                                        <h3 className="text-amber-400 uppercase tracking-[0.2em] mb-3 text-xs font-bold drop-shadow-md">Fase 1: Logos</h3>
+                                        <h1 className="text-2xl md:text-3xl font-display font-medium text-white mb-4 tracking-wide">{dual.sunContent.title}</h1>
+                                        <div className="w-12 h-[1px] bg-white/20 mx-auto mb-6" />
+                                        <p className="text-sm md:text-base text-gray-300 font-light leading-relaxed mb-6">{dual.sunContent.technicalContent}</p>
+                                        <div className="bg-amber-950/20 border border-amber-500/10 rounded-xl p-4 backdrop-blur-md">
+                                            <p className="text-amber-200/90 italic text-sm font-serif">"{dual.sunContent.microLesson}"</p>
+                                        </div>
+                                    </>
+                                )}
+
+                                {stage === 'MOON' && (
+                                    <>
+                                        <h3 className="text-cyan-400 uppercase tracking-[0.2em] mb-3 text-xs font-bold drop-shadow-md">Fase 2: Pathos</h3>
+                                        <h1 className="text-2xl md:text-3xl font-display font-medium text-white mb-4 tracking-wide">{dual.moonContent.title}</h1>
+                                        <div className="w-12 h-[1px] bg-white/20 mx-auto mb-6" />
+                                        <p className="text-sm md:text-base text-gray-300 font-light leading-relaxed mb-6">{dual.moonContent.psychologicalContent}</p>
+                                        <div className="bg-cyan-950/20 border border-cyan-500/10 rounded-xl p-4 backdrop-blur-md">
+                                            <h4 className="text-cyan-400/60 uppercase text-[10px] tracking-widest mb-2">Riflessione</h4>
+                                            <p className="text-white/90 font-serif text-lg italic">"{dual.moonContent.guidingQuestion}"</p>
+                                        </div>
+                                    </>
+                                )}
+
+                                {stage === 'THREAD' && (
+                                    <>
+                                        <h3 className="text-purple-400 uppercase tracking-[0.2em] mb-3 text-xs font-bold drop-shadow-md">Fase 3: Praxis</h3>
+                                        <h1 className="text-2xl md:text-3xl font-display font-medium text-transparent bg-clip-text bg-gradient-to-r from-amber-100 to-amber-400 mb-4 tracking-wide">Il Patto</h1>
+                                        <div className="w-12 h-[1px] bg-amber-500/30 mx-auto mb-6" />
+                                        <p className="text-sm md:text-base text-gray-300 font-light leading-relaxed mb-6">{dual.goldenThread.synthesisExercise}</p>
+                                        <div className="bg-white/5 border border-white/10 rounded-xl p-6 mb-4 relative overflow-hidden backdrop-blur-sm">
+                                            <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+                                            <p className="text-[10px] text-white/60 uppercase tracking-widest mb-2 font-medium">Output</p>
+                                            <p className="text-lg md:text-xl text-white font-mono tracking-tight">{dual.goldenThread.output}</p>
+                                        </div>
+                                    </>
+                                )}
+
+                                {/* EXTRA MODULES RENDERING */}
+                                {typeof stage === 'string' && stage.startsWith('EXTRA_') && activeContent && (
+                                    <>
+                                        <h3 className="text-emerald-400 uppercase tracking-[0.2em] mb-3 text-xs font-bold drop-shadow-md">
+                                            Espansione: Modulo {parseInt(stage.split('_')[1]) + 4}
+                                        </h3>
+                                        <h1 className="text-2xl md:text-3xl font-display font-medium text-white mb-4 tracking-wide">
+                                            {activeContent.title}
+                                        </h1>
+                                        <div className="w-12 h-[1px] bg-emerald-500/30 mx-auto mb-6" />
+
+                                        <div
+                                            className="text-sm md:text-base text-gray-300 font-light leading-relaxed mb-6 prose prose-invert max-w-none"
+                                            dangerouslySetInnerHTML={{ __html: activeContent.content }}
+                                        />
+                                    </>
+                                )}
+                            </div>
+
+                            {/* --- DOWNLOADS & RESOURCES --- */}
+                            {activeContent?.downloads && activeContent.downloads.length > 0 && (
+                                <div className="w-full mt-8 pt-6 border-t border-white/5">
+                                    <h4 className="text-[10px] uppercase tracking-widest text-amber-100/80 font-bold drop-shadow mb-4 text-center">Toolkit Operativo</h4>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                        {activeContent.downloads.map((res: any, idx: number) => (
+                                            <a
+                                                key={idx}
+                                                href={res.url}
+                                                className="flex items-center gap-3 p-3 rounded bg-white/5 hover:bg-white/10 border border-white/5 hover:border-white/20 transition-all group/dl text-left"
+                                            >
+                                                <div className="p-2 bg-black/50 rounded text-gray-400 group-hover/dl:text-white transition-colors">
+                                                    {res.type === 'pdf' ? <FileText size={14} /> : res.type === 'image' ? <ImageIcon size={14} /> : <Download size={14} />}
+                                                </div>
+                                                <span className="text-xs text-gray-300 group-hover/dl:text-white font-medium truncate">{res.label}</span>
+                                            </a>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+
+
+
+                            {/* FOOTER ACTION */}
+                            <div className="relative z-10 mt-8 md:mt-10 flex items-center justify-center gap-4">
+                                {stage !== 'SUN' && (
+                                    <button
+                                        onClick={handleBack}
+                                        className="group px-6 py-3 rounded-full font-medium uppercase tracking-[0.2em] text-[10px] text-white/50 hover:text-white border border-white/10 hover:border-white/30 hover:bg-white/5 transition-all duration-300 backdrop-blur-sm"
+                                    >
+                                        Indietro
+                                    </button>
+                                )}
+
+                                <button
+                                    onClick={handleNext}
+                                    className={`group relative px-10 py-3 rounded-full font-medium uppercase tracking-[0.2em] text-xs transition-all duration-500 hover:scale-105 active:scale-95 flex items-center gap-3 overflow-hidden
                                     ${stage === 'SUN' ? 'bg-white text-black hover:bg-amber-50 shadow-[0_0_20px_rgba(255,255,255,0.3)]' : ''}
                                     ${stage === 'MOON' ? 'bg-white text-black hover:bg-cyan-50 shadow-[0_0_20px_rgba(255,255,255,0.3)]' : ''}
                                     ${stage === 'THREAD' ? 'bg-gradient-to-r from-amber-200 to-amber-500 text-black shadow-[0_0_30px_rgba(251,191,36,0.5)]' : ''}
                                 `}
-                            >
-                                <span className="relative z-10">{stage === 'THREAD' ? 'Completa' : 'Prosegui'}</span>
-                                <div className="absolute inset-0 bg-white/50 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
-                                <ChevronRight className="w-4 h-4 relative z-10 group-hover:translate-x-1 transition-transform" />
-                            </button>
-                        </div>
+                                >
+                                    <span className="relative z-10">{stage === 'THREAD' ? 'Completa' : 'Prosegui'}</span>
+                                    <div className="absolute inset-0 bg-white/50 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
+                                    <ChevronRight className="w-4 h-4 relative z-10 group-hover:translate-x-1 transition-transform" />
+                                </button>
+                            </div>
 
-                    </aWeb.div>
+                        </aWeb.div>
+                    </div>
                 </div>
 
             </div>
