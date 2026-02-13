@@ -71,8 +71,12 @@ export const PodcastCinematicHub: React.FC<PodcastCinematicHubProps> = ({ course
             const pulseDelay = -(Math.random() * 5); // Start at different times
             const pulseDuration = 2 + Math.random() * 3; // Breathe at different speeds (2s-5s)
 
+            // Dynamic Spacing: Wider on Mobile to prevent overlap
+            const radiusStep = isMobile ? 5 : 4;
+            const radiusBase = isMobile ? 15 : 18;
+
             return {
-                radius: 18 + (i * 4),
+                radius: radiusBase + (i * radiusStep),
                 nodes: [i],
                 isReverse,
                 duration,
@@ -81,7 +85,7 @@ export const PodcastCinematicHub: React.FC<PodcastCinematicHubProps> = ({ course
                 pulseDuration
             };
         });
-    }, []);
+    }, [isMobile]);
 
     if (loading) {
         return (
@@ -144,7 +148,7 @@ export const PodcastCinematicHub: React.FC<PodcastCinematicHubProps> = ({ course
 
                 {/* ORBITAL SYSTEM - "LIVING LIGHT" */}
                 {/* Mobile: Compacted width (85vw) and max-width constraint to prevent edge bleeding */}
-                <div className="relative w-[85vw] max-w-[340px] h-[85vw] max-h-[340px] md:w-[90vmin] md:h-[90vmin] md:max-w-none md:max-h-none flex items-center justify-center transition-transform duration-500 flex-shrink-0">
+                <div className="relative w-[95vw] max-w-[380px] h-[95vw] max-h-[380px] md:w-[90vmin] md:h-[90vmin] md:max-w-none md:max-h-none flex items-center justify-center transition-transform duration-500 flex-shrink-0">
 
                     {/* EMITTING CORE - "The Pearl Eclipse" */}
                     {/* 1. Outer Glow (Large Breath) - Visible on Mobile now */}
