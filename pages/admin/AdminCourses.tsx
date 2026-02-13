@@ -3,6 +3,7 @@ import { Plus, Pencil, Trash2, Book, Users, CheckCircle, Layout, Eye, Lock, Unlo
 import { motion, AnimatePresence } from 'framer-motion';
 import { supabase } from '../../services/supabase';
 import { ModuleBuilder } from '../../components/admin/ModuleBuilder';
+import { UniversalDiplomaCard } from '../../components/UniversalDiplomaCard'; // Import added
 
 interface Course {
     id: string;
@@ -40,6 +41,57 @@ interface CourseModule {
     is_locked: boolean;
 }
 
+// Diploma Preview Modal - Moved here to fix hoisting
+const DiplomaPreviewModal = ({
+    course,
+    onClose
+}: {
+    course: Course;
+    onClose: () => void;
+}) => {
+    // Determine course ID for theme (matrice-1 or matrice-2)
+    // Fallback based on slug if ID doesn't match expected pattern
+    const courseId = course.slug.includes('podcast') ? 'matrice-2' : 'matrice-1';
+
+    return (
+        <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/95 backdrop-blur-sm flex items-center justify-center z-[9999] p-4 overflow-auto"
+            onClick={onClose}
+        >
+            <div className="relative w-full max-w-[1200px] flex flex-col items-center" onClick={e => e.stopPropagation()}>
+
+                <div className="w-full flex justify-between items-center mb-4 px-4">
+                    <h2 className="text-xl font-bold text-white flex items-center gap-2">
+                        <Eye className="text-amber-500" />
+                        Anteprima Diploma: {course.title}
+                    </h2>
+                    <button
+                        onClick={onClose}
+                        className="p-2 bg-white/10 hover:bg-white/20 rounded-full text-white transition-all"
+                    >
+                        ✕
+                    </button>
+                </div>
+
+                <div className="transform scale-[0.6] md:scale-75 origin-top transition-transform">
+                    <UniversalDiplomaCard
+                        userName="Mario Rossi (Preview)"
+                        courseId={courseId}
+                        date={new Date().toLocaleDateString('it-IT')}
+                    />
+                </div>
+
+                <div className="mt-[-150px] md:mt-[-100px] text-center text-gray-500 text-sm">
+                    *Questa è una simulazione. I dati reali verranno iniettati al momento del conseguimento.
+                </div>
+            </div>
+        </motion.div>
+    );
+};
+
 export const AdminCourses: React.FC = () => {
     const [courses, setCourses] = useState<Course[]>([]);
     const [loading, setLoading] = useState(true);
@@ -47,6 +99,7 @@ export const AdminCourses: React.FC = () => {
     const [editingCourse, setEditingCourse] = useState<Course | null>(null);
     const [showModuleBuilder, setShowModuleBuilder] = useState(false);
     const [showDiplomaModal, setShowDiplomaModal] = useState(false);
+    const [showPreviewModal, setShowPreviewModal] = useState(false); // New State
     const [selectedCourseId, setSelectedCourseId] = useState<string | null>(null);
 
     useEffect(() => {
@@ -361,6 +414,15 @@ export const AdminCourses: React.FC = () => {
                                             <Award size={14} />
                                             {course.diploma_requirements ? 'Diploma Attivo' : 'Configura Diploma'}
                                         </button>
+
+                                        {/* New Preview Button */}
+                                        <button
+                                            onClick={() => { setEditingCourse(course); setShowPreviewModal(true); }}
+                                            className="col-span-2 py-2 border border-white/10 rounded-lg hover:bg-white/10 transition-all duration-300 flex items-center justify-center gap-2 text-xs font-semibold text-gray-400 hover:text-white"
+                                        >
+                                            <Eye size={14} />
+                                            Anteprima Grafica
+                                        </button>
                                     </div>
                                 </motion.div>
                             ))}
@@ -398,6 +460,13 @@ export const AdminCourses: React.FC = () => {
                             setShowDiplomaModal(false);
                             fetchCourses();
                         }}
+                    />
+                )}
+                {/* Preview Modal Integration */}
+                {showPreviewModal && editingCourse && (
+                    <DiplomaPreviewModal
+                        course={editingCourse}
+                        onClose={() => setShowPreviewModal(false)}
                     />
                 )}
             </AnimatePresence>

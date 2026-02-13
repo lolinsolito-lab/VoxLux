@@ -5,12 +5,12 @@ import { CheckCircle, XCircle, Award, ArrowRight, ArrowLeft, Loader } from 'luci
 import { useAuth } from '../contexts/AuthContext';
 
 interface QuizViewProps {
-    moduleId: string;
+    quizId: string; // CHANGED: Now expects valid UUID of the Quiz
     onComplete: (passed: boolean, score: number) => void;
     onClose: () => void;
 }
 
-export const QuizView: React.FC<QuizViewProps> = ({ moduleId, onComplete, onClose }) => {
+export const QuizView: React.FC<QuizViewProps> = ({ quizId, onComplete, onClose }) => {
     const { user } = useAuth();
     const [quiz, setQuiz] = useState<Quiz | null>(null);
     const [loading, setLoading] = useState(true);
@@ -26,7 +26,7 @@ export const QuizView: React.FC<QuizViewProps> = ({ moduleId, onComplete, onClos
                 const { data, error } = await supabase
                     .from('quizzes')
                     .select('*')
-                    .eq('module_id', moduleId)
+                    .eq('id', quizId) // Query by Primary Key
                     .single();
 
                 if (error) throw error;
@@ -34,14 +34,13 @@ export const QuizView: React.FC<QuizViewProps> = ({ moduleId, onComplete, onClos
                 setSelectedAnswers(new Array(data.questions.length).fill(-1));
             } catch (err) {
                 console.error('Error fetching quiz:', err);
-                // Fail silently or close, standard practice for optional modules
                 onClose();
             } finally {
                 setLoading(false);
             }
         };
-        fetchQuiz();
-    }, [moduleId, onClose]);
+        if (quizId) fetchQuiz();
+    }, [quizId, onClose]);
 
     const handleAnswerSelect = (answerIndex: number) => {
         const newAnswers = [...selectedAnswers];

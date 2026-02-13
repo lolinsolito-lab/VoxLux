@@ -40,9 +40,11 @@ import { AdminCourses } from './pages/admin/AdminCourses';
 import { AdminCalendar } from './pages/admin/AdminCalendar';
 import { AdminSupport } from './pages/admin/AdminSupport';
 import { AdminFAQ } from './pages/admin/AdminFAQ';
+import { AdminQuizEditor } from './components/admin/AdminQuizEditor'; // Import added
 import { BookingPage } from './pages/BookingPage';
 import { LegalGuard } from './components/LegalGuard';
 import { HelpCenter } from './pages/HelpCenter';
+import { VerifyCertificate } from './pages/VerifyCertificate'; // Import added
 
 
 // 🌌 VOX AUREA - ELITE CONSOLE SIGNATURE
@@ -135,6 +137,7 @@ const App: React.FC = () => {
               <Route path="content" element={<AdminContent />} />
               <Route path="discounts" element={<AdminDiscounts />} />
               <Route path="courses" element={<AdminCourses />} />
+              <Route path="quizzes" element={<AdminQuizEditor />} />
               <Route path="calendar" element={<AdminCalendar />} />
               <Route path="support" element={<AdminSupport />} />
               <Route path="faq" element={<AdminFAQ />} />
@@ -153,6 +156,9 @@ const App: React.FC = () => {
 
           {/* Public Booking */}
           <Route path="/book" element={<BookingPage />} />
+
+          {/* Certificate Verification - Public Route */}
+          <Route path="/verify/:id" element={<VerifyCertificate />} />
 
           {/* Main App (Public) */}
           <Route path="/*" element={<MainApp />} />

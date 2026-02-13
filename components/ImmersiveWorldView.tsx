@@ -118,20 +118,37 @@ export const ImmersiveWorldView: React.FC<ImmersiveWorldViewProps> = ({
     // FETCH QUIZ AVAILABILITY (Must be top level)
     useEffect(() => {
         const checkQuiz = async () => {
-            if (dbModule?.id) {
+            // We use the slug from local DB module (e.g. 'm1-10') or construct it
+            // worldNum is 1-based.
+            // Storytelling slugs: 'm1-' + worldNum
+            // Podcast slugs: 'm2-' + worldNum
+
+            const targetSlug = isStorytelling
+                ? `m1-${worldNum}`
+                : isPodcast
+                    ? `m2-${worldNum}`
+                    : null;
+
+            if (targetSlug) {
+                // Query Quiz by joining Module on Slug
                 const { data } = await supabase
                     .from('quizzes')
-                    .select('id')
-                    .eq('module_id', dbModule.id)
+                    .select('id, module:modules!inner(slug)')
+                    .eq('modules.slug', targetSlug)
                     .single();
-                if (data) setQuizModuleId(dbModule.id);
-                else setQuizModuleId(null);
+
+                if (data) {
+                    // console.log('[ImmersiveWorldView] Found Quiz:', data.id);
+                    setQuizModuleId(data.id); // This is the QUIZ ID, not Module ID
+                } else {
+                    setQuizModuleId(null);
+                }
             } else {
                 setQuizModuleId(null);
             }
         };
         checkQuiz();
-    }, [dbModule]);
+    }, [worldNum, isStorytelling, isPodcast]);
 
     // Content merging (imported at top of file)
 
@@ -149,7 +166,7 @@ export const ImmersiveWorldView: React.FC<ImmersiveWorldViewProps> = ({
         return (
             <div className="absolute inset-0 z-50 bg-black">
                 <QuizView
-                    moduleId={quizModuleId}
+                    quizId={quizModuleId} // Updated prop name
                     onComplete={(passed) => passed ? setStage('FINAL_RITUAL') : onClose()}
                     onClose={onClose}
                 />

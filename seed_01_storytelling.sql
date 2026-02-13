@@ -43,29 +43,58 @@ BEGIN
 
     FOR w IN SELECT * FROM jsonb_array_elements(worlds_data)
     LOOP
-        -- Insert Module
-        INSERT INTO modules (course_id, title, description, order_index, is_locked)
-        VALUES (c_id, w->>'title', w->>'desc', (w->>'idx')::int, false)
+        -- Insert Module with SLUG (m1-X)
+        INSERT INTO modules (course_id, slug, title, description, order_index, is_locked)
+        VALUES (
+            c_id, 
+            'm1-' || ((w->>'idx')::int + 1), -- e.g. m1-1, m1-2...
+            w->>'title', 
+            w->>'desc', 
+            (w->>'idx')::int, 
+            false
+        )
         ON CONFLICT (course_id, order_index) DO UPDATE SET
+            slug = EXCLUDED.slug,
             title = EXCLUDED.title,
             description = EXCLUDED.description
         RETURNING id INTO m_id;
 
-        -- Insert 3 Standard Lessons (Sun, Moon, Thread)
-        -- Lesson 1: Sun (Theory)
-        INSERT INTO lessons (module_id, title, description, order_index, video_provider)
-        VALUES (m_id, 'Fase 1: Helios (Teoria)', 'I principi fondamentali della ' || (w->>'title'), 0, 'custom')
-        ON CONFLICT (module_id, order_index) DO NOTHING;
+        -- Insert 3 Standard Lessons
+        -- Lesson 1: Sun
+        INSERT INTO lessons (module_id, slug, title, description, order_index, video_provider)
+        VALUES (
+            m_id, 
+            'm1-' || ((w->>'idx')::int + 1) || '-1', -- m1-1-1
+            'Fase 1: Helios (Teoria)', 
+            'I principi fondamentali della ' || (w->>'title'), 
+            0, 
+            'custom'
+        )
+        ON CONFLICT (module_id, order_index) DO UPDATE SET slug = EXCLUDED.slug;
 
-        -- Lesson 2: Moon (Psychology)
-        INSERT INTO lessons (module_id, title, description, order_index, video_provider)
-        VALUES (m_id, 'Fase 2: Selene (Psicologia)', 'L''impatto emotivo e psicologico.', 1, 'custom')
-        ON CONFLICT (module_id, order_index) DO NOTHING;
+        -- Lesson 2: Moon
+        INSERT INTO lessons (module_id, slug, title, description, order_index, video_provider)
+        VALUES (
+            m_id, 
+            'm1-' || ((w->>'idx')::int + 1) || '-2', -- m1-1-2
+            'Fase 2: Selene (Psicologia)', 
+            'L''impatto emotivo e psicologico.', 
+            1, 
+            'custom'
+        )
+        ON CONFLICT (module_id, order_index) DO UPDATE SET slug = EXCLUDED.slug;
 
-        -- Lesson 3: Thread (Practice)
-        INSERT INTO lessons (module_id, title, description, order_index, video_provider)
-        VALUES (m_id, 'Fase 3: Praxis (Il Filo d''Oro)', 'Esercizio pratico di integrazione.', 2, 'custom')
-        ON CONFLICT (module_id, order_index) DO NOTHING;
+        -- Lesson 3: Thread
+        INSERT INTO lessons (module_id, slug, title, description, order_index, video_provider)
+        VALUES (
+            m_id, 
+            'm1-' || ((w->>'idx')::int + 1) || '-3', -- m1-1-3
+            'Fase 3: Praxis (Il Filo d''Oro)', 
+            'Esercizio pratico di integrazione.', 
+            2, 
+            'custom'
+        )
+        ON CONFLICT (module_id, order_index) DO UPDATE SET slug = EXCLUDED.slug;
 
     END LOOP;
 END $$;

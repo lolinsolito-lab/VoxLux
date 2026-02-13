@@ -1,8 +1,10 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import html2canvas from 'html2canvas';
 import { jsPDF } from 'jspdf';
+import QRCode from 'qrcode';
 import { Download, Share2, Eye, EyeOff, Moon, Sun } from 'lucide-react';
 import { useAudioSystem } from '../hooks/useAudioSystem';
+import { generateCertificateId, getVerificationUrl, formatCertificateDate } from '../utils/certificate';
 
 interface UniversalDiplomaCardProps {
     userName: string;
@@ -13,44 +15,63 @@ interface UniversalDiplomaCardProps {
 export const UniversalDiplomaCard: React.FC<UniversalDiplomaCardProps> = ({
     userName,
     courseId,
-    date = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })
+    date
 }) => {
     const { playSound } = useAudioSystem();
     const [textVisible, setTextVisible] = useState(true);
     const [theme, setTheme] = useState<'dark' | 'light'>('dark');
     const cardRef = useRef<HTMLDivElement>(null);
     const [isGenerating, setIsGenerating] = useState(false);
+    const [qrCodeUrl, setQrCodeUrl] = useState<string>('');
+    const [certificateId, setCertificateId] = useState<string>('');
+    const [displayDate, setDisplayDate] = useState<string>('');
 
     const isPodcast = courseId === 'matrice-2';
 
+    // Initialize Certificate Data
+    useEffect(() => {
+        const id = generateCertificateId(isPodcast ? 'VL-PM' : 'VL-SS');
+        setCertificateId(id);
+        setDisplayDate(date || formatCertificateDate(new Date()));
+
+        const verifyUrl = getVerificationUrl(id);
+
+        QRCode.toDataURL(verifyUrl, {
+            width: 200,
+            margin: 1,
+            color: {
+                dark: isPodcast ? '#22d3ee' : '#d4af37',
+                light: '#00000000'
+            }
+        }).then(url => {
+            setQrCodeUrl(url);
+        }).catch(err => {
+            console.error('QR Gen Error:', err);
+        });
+    }, [courseId, date, isPodcast]);
+
+
     // THEME CONFIGURATION
     const config = isPodcast ? {
-        // PODCAST THEME (Neon/Cyber - Overrides defaults via inline styles if needed, or we adapt css classes)
-        // But user template was Gold. I will adapt colors dynamically.
+        // PODCAST THEME
         title: "Podcast Mastermind",
-        academy: "Vox Sephira Academy", // Or Vox Acustica? User template said Vox Sephira. I will stick to Vox Sephira for base but maybe tweak for podcast.
+        academy: "Vox Sephira Academy",
         role: "Architetto del Suono",
         sealText: "OFFICIAL\nMASTER",
         colors: {
-            // We'll use CSS variables injection for this
-            bgDeep: '#050014', // Deep Violet Black
+            bgDeep: '#050014',
             bgInner: '#120024',
             bgOuter: '#000000',
-            goldPrimary: '#22d3ee', // Cyan
-            goldMetallic: '#8b5cf6', // Violet
-            goldCrystal: 'rgba(34, 211, 238, 0.4)',
-            goldTextTitle: '#e0e7ff',
-            goldTextBody: '#94a3b8',
-            borderColor: 'rgba(139, 92, 246, 0.5)',
-            starColor: '#ffffff',
-            starGlow: 'rgba(34, 211, 238, 0.6)',
-            nebula1: 'rgba(139, 92, 246, 0.2)',
-            nebula2: 'rgba(34, 211, 238, 0.15)',
-            sealText: '#1e1b4b',
+            primary: '#22d3ee', // Cyan
+            accent: '#8b5cf6', // Violet
+            textTitle: '#e0e7ff',
+            textBody: '#94a3b8',
+            border: 'rgba(139, 92, 246, 0.5)',
+            glow: 'rgba(34, 211, 238, 0.6)',
             sealBg: 'radial-gradient(circle at 35% 35%, #a5f3fc 0%, #22d3ee 40%, #0891b2 60%, #155e75 100%)'
         }
     } : {
-        // STORYTELLING THEME (Gold/Lux - Default from Template)
+        // STORYTELLING THEME
         title: "Storytelling Mastermind",
         academy: "Vox Sephira Academy",
         role: "Stratega della Narrazione",
@@ -59,56 +80,49 @@ export const UniversalDiplomaCard: React.FC<UniversalDiplomaCardProps> = ({
             bgDeep: '#000000',
             bgInner: '#110d08',
             bgOuter: '#000000',
-            goldPrimary: '#ffeb3b',
-            goldMetallic: '#d4af37',
-            goldCrystal: 'rgba(255, 236, 179, 0.4)',
-            goldTextTitle: '#f7e7ce',
-            goldTextBody: '#b0b0b0',
-            borderColor: 'rgba(212, 175, 55, 0.3)',
-            starColor: '#fff8e1',
-            starGlow: 'rgba(255, 200, 50, 0.4)',
-            nebula1: 'rgba(100, 80, 40, 0.15)',
-            nebula2: 'rgba(140, 100, 40, 0.1)',
-            sealText: '#5e430d',
+            primary: '#ffeb3b', // Bright Gold
+            accent: '#d4af37', // Metallic Gold
+            textTitle: '#f7e7ce',
+            textBody: '#b0b0b0',
+            border: 'rgba(212, 175, 55, 0.3)',
+            glow: 'rgba(255, 200, 50, 0.4)',
             sealBg: 'radial-gradient(circle at 35% 35%, #fceabb 0%, #fccd4d 40%, #fbdf93 60%, #c49942 100%)'
         }
     };
 
     // --- ACTIONS ---
-
     const handleDownloadImg = async () => {
         if (!cardRef.current) return;
         playSound('click');
         setIsGenerating(true);
-        // User Feedback
         const toast = document.createElement('div');
-        toast.innerText = "📸 Generazione Immagine in corso...";
+        toast.innerText = "📸 Generazione Immagine...";
         Object.assign(toast.style, {
             position: 'fixed', bottom: '20px', right: '20px',
             background: '#fff', color: '#000', padding: '10px 20px',
-            borderRadius: '5px', zIndex: '9999', boxShadow: '0 5px 15px rgba(0,0,0,0.3)'
+            borderRadius: '5px', zIndex: '9999'
         });
         document.body.appendChild(toast);
 
         try {
             cardRef.current.classList.add('snapshot-mode');
-            // Wait for repaint and fonts
-            await new Promise(r => setTimeout(r, 500));
+            await new Promise(r => setTimeout(r, 800)); // Increased wait for SVG rendering
 
             const canvas = await html2canvas(cardRef.current, {
-                scale: 2,
+                scale: 3,
                 backgroundColor: null,
-                useCORS: true,       // CRITICAL: Loading cross-origin images safely
-                allowTaint: false    // CRITICAL: Must be FALSE to allow toDataURL()
+                useCORS: true,
+                allowTaint: false,
+                ignoreElements: (element) => element.classList.contains('no-export')
             });
 
             const link = document.createElement('a');
-            link.download = `Vox_mastermind_${userName.replace(/\s+/g, '_')}.png`;
+            link.download = `Vox_${isPodcast ? 'Podcast' : 'Storytelling'}_Master_${userName.replace(/\s+/g, '_')}.png`;
             link.href = canvas.toDataURL('image/png');
             link.click();
         } catch (err) {
             console.error(err);
-            alert("Impossibile generare immagine: " + err);
+            alert("Errore immagine: " + err);
         } finally {
             if (cardRef.current) cardRef.current.classList.remove('snapshot-mode');
             setIsGenerating(false);
@@ -121,34 +135,43 @@ export const UniversalDiplomaCard: React.FC<UniversalDiplomaCardProps> = ({
         playSound('click');
         setIsGenerating(true);
         const toast = document.createElement('div');
-        toast.innerText = "📄 Generazione PDF in corso...";
+        toast.innerText = "📄 Creazione Pergamena...";
         Object.assign(toast.style, {
             position: 'fixed', bottom: '20px', right: '20px',
             background: '#fff', color: '#000', padding: '10px 20px',
-            borderRadius: '5px', zIndex: '9999', boxShadow: '0 5px 15px rgba(0,0,0,0.3)'
+            borderRadius: '5px', zIndex: '9999'
         });
         document.body.appendChild(toast);
 
         try {
             cardRef.current.classList.add('snapshot-mode');
-            await new Promise(r => setTimeout(r, 500));
+            await new Promise(r => setTimeout(r, 800));
 
             const canvas = await html2canvas(cardRef.current, {
-                scale: 3,
+                scale: 4,
                 useCORS: true,
-                allowTaint: false // IMPORTANT
+                allowTaint: false,
+                ignoreElements: (element) => element.classList.contains('no-export')
             });
 
-            const imgData = canvas.toDataURL('image/jpeg', 1.0);
+            const imgData = canvas.toDataURL('image/jpeg', 0.95);
             const pdf = new jsPDF('l', 'mm', 'a4');
             const pdfWidth = pdf.internal.pageSize.getWidth();
             const pdfHeight = pdf.internal.pageSize.getHeight();
 
+            pdf.setProperties({
+                title: `Diploma Vox Lux - ${userName}`,
+                subject: `Certificato: ${config.title}`,
+                author: 'Vox Lux Strategy',
+                keywords: `diploma, vox lux, ${isPodcast ? 'podcast' : 'storytelling'}, ${certificateId}`,
+                creator: 'Vox Sephira Academy'
+            });
+
             pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight);
-            pdf.save(`Certificato_Mastermind_${userName.replace(/\s+/g, '_')}.pdf`);
+            pdf.save(`Certificato_${isPodcast ? 'Podcast' : 'Storytelling'}_${userName.replace(/\s+/g, '_')}.pdf`);
         } catch (err) {
             console.error(err);
-            alert("Impossibile generare PDF: " + err);
+            alert("Errore PDF: " + err);
         } finally {
             if (cardRef.current) cardRef.current.classList.remove('snapshot-mode');
             setIsGenerating(false);
@@ -159,75 +182,68 @@ export const UniversalDiplomaCard: React.FC<UniversalDiplomaCardProps> = ({
     return (
         <div className="flex flex-col items-center gap-8 animate-[fadeIn_1s] w-full max-w-[1200px] pointer-events-auto" style={{ zIndex: 1000 }}>
 
-            {/* Added explicit pointer-events-auto to container */}
-
-            {/* CSS VARIABLES INJECTION */}
             <style>{`
                 :root {
                     --bg-deep: ${config.colors.bgDeep};
                     --bg-gradient-inner: ${config.colors.bgInner};
                     --bg-gradient-outer: ${config.colors.bgOuter};
-                    --gold-primary: ${config.colors.goldPrimary};
-                    --gold-metallic: ${config.colors.goldMetallic};
-                    --gold-crystal: ${config.colors.goldCrystal};
-                    --gold-text-title: ${config.colors.goldTextTitle};
-                    --gold-text-body: ${config.colors.goldTextBody};
-                    --border-color: ${config.colors.borderColor};
-                    --star-color: ${config.colors.starColor};
-                    --star-glow: ${config.colors.starGlow};
-                    --nebula-color-1: ${config.colors.nebula1};
-                    --nebula-color-2: ${config.colors.nebula2};
-                    --seal-text: ${config.colors.sealText};
-                    --seal-bg: ${config.colors.sealBg};
+                    --diploma-primary: ${config.colors.primary};
+                    --diploma-accent: ${config.colors.accent};
+                    --diploma-text-title: ${config.colors.textTitle};
+                    --diploma-text-body: ${config.colors.textBody};
+                    --diploma-border: ${config.colors.border};
+                    --diploma-glow: ${config.colors.glow};
                 }
                 
-                @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;900&family=Montserrat:wght@300;400;500&display=swap');
+                @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;900&family=Montserrat:wght@300;400;500&family=Orbitron:wght@400;700&display=swap');
 
-                /* ANIMATIONS */
-                @keyframes star-drift { from { transform: rotate(0deg); } to { transform: rotate(20deg); } }
-                @keyframes nebula-pulse { 0% { opacity: 0.5; transform: scale(1); } 100% { opacity: 0.8; transform: scale(1.05); } }
-                @keyframes twinkle { 0%, 100% { opacity: 0.6; transform: scale(1); } 50% { opacity: 1; transform: scale(1.4); } }
-
-                .universe-stars {
-                    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.5'/%3E%3C/svg%3E");
-                }
-                .universe-stars::after {
-                    content: '';
-                    position: absolute;
-                    top: -50%; left: -50%; width: 200%; height: 200%;
-                    background-image: 
-                        radial-gradient(1px 1px at 5% 5%, var(--star-color) 100%, transparent),
-                        radial-gradient(1.5px 1.5px at 25% 25%, var(--star-color) 100%, transparent),
-                        radial-gradient(1px 1px at 55% 55%, var(--star-color) 100%, transparent),
-                        radial-gradient(2px 2px at 65% 65%, var(--star-color) 100%, transparent),
-                        radial-gradient(1px 1px at 95% 95%, var(--star-color) 100%, transparent);
-                    background-size: 300px 300px;
-                    opacity: 0.5;
-                    animation: star-drift 150s linear infinite;
-                }
+                @keyframes float-slow { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-10px); } }
+                @keyframes pulse-glow { 0%, 100% { opacity: 0.3; } 50% { opacity: 0.6; } }
+                @keyframes rotate-slow { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+                @keyframes hologram-scan { 0% { top: 0%; opacity: 0; } 50% { opacity: 1; } 100% { top: 100%; opacity: 0; } }
+                @keyframes grow-root { from { stroke-dashoffset: 1000; } to { stroke-dashoffset: 0; } }
 
                 .snapshot-mode .recipient-name {
                     background: none !important;
                     -webkit-background-clip: unset !important;
                     -webkit-text-fill-color: unset !important;
-                    color: var(--gold-metallic) !important;
-                    text-shadow: 0 0 15px var(--star-glow) !important;
+                    color: var(--diploma-accent) !important;
+                    text-shadow: 0 0 15px var(--diploma-glow) !important;
+                }
+
+                .scanner-line {
+                    position: absolute;
+                    left: 0;
+                    width: 100%;
+                    height: 2px;
+                    background: var(--diploma-primary);
+                    box-shadow: 0 0 10px var(--diploma-primary);
+                    animation: hologram-scan 4s infinite linear;
+                    z-index: 5;
+                    opacity: ${isPodcast ? '0.3' : '0'};
+                    pointer-events: none;
+                }
+
+                .cosmic-tree-path {
+                    stroke-dasharray: 1000;
+                    stroke-dashoffset: 0;
+                    animation: grow-root 3s ease-out forwards;
                 }
             `}</style>
 
 
-            {/* UI CONTROLS */}
-            <div className="absolute top-4 right-4 flex gap-4 z-50 pointer-events-auto">
+            {/* UI CONTROLS - No Export */}
+            <div className="absolute top-4 right-4 flex gap-4 z-50 pointer-events-auto no-export">
                 <button
                     onClick={() => { playSound('click'); setTheme(prev => prev === 'dark' ? 'light' : 'dark'); }}
-                    className="flex items-center gap-2 bg-black/50 backdrop-blur border border-[#d4af37]/30 text-[#d4af37] px-4 py-2 rounded text-xs uppercase tracking-widest hover:bg-[#d4af37] hover:text-black transition-all"
+                    className="flex items-center gap-2 bg-black/50 backdrop-blur border border-white/10 text-[var(--diploma-accent)] px-4 py-2 rounded text-xs uppercase tracking-widest hover:bg-white/10 transition-all"
                 >
                     {theme === 'dark' ? <Moon size={14} /> : <Sun size={14} />}
                     {theme === 'dark' ? 'Notte' : 'Giorno'}
                 </button>
                 <button
                     onClick={() => { playSound('click'); setTextVisible(!textVisible); }}
-                    className="flex items-center gap-2 bg-black/50 backdrop-blur border border-[#d4af37]/30 text-[#d4af37] px-4 py-2 rounded text-xs uppercase tracking-widest hover:bg-[#d4af37] hover:text-black transition-all"
+                    className="flex items-center gap-2 bg-black/50 backdrop-blur border border-white/10 text-[var(--diploma-accent)] px-4 py-2 rounded text-xs uppercase tracking-widest hover:bg-white/10 transition-all"
                 >
                     {textVisible ? <EyeOff size={14} /> : <Eye size={14} />}
                     {textVisible ? 'Nascondi Testo' : 'Mostra Testo'}
@@ -244,63 +260,104 @@ export const UniversalDiplomaCard: React.FC<UniversalDiplomaCardProps> = ({
                 style={{
                     background: theme === 'dark'
                         ? 'radial-gradient(ellipse at bottom, var(--bg-gradient-inner) 0%, var(--bg-gradient-outer) 100%)'
-                        : '#f8f8f8',
-                    border: '1px solid var(--border-color)',
-                    boxShadow: theme === 'dark' ? '0 20px 80px rgba(0,0,0,0.8)' : '0 20px 80px rgba(184, 134, 11, 0.15)'
+                        : '#f9f9f9',
+                    border: '1px solid var(--diploma-border)',
+                    boxShadow: theme === 'dark' ? '0 20px 80px rgba(0,0,0,0.8)' : '0 20px 80px rgba(0,0,0,0.1)'
                 }}
             >
-                {/* --- BACKGROUND LAYERS --- */}
-                <div className="absolute inset-0 opacity-40 mix-blend-screen pointer-events-none universe-stars z-[1]" />
-                <div
-                    className="absolute inset-0 z-[1] pointer-events-none animate-[nebula-pulse_10s_infinite_alternate]"
-                    style={{
-                        background: `
-                            radial-gradient(circle at 20% 80%, var(--nebula-color-1), transparent 50%),
-                            radial-gradient(circle at 80% 20%, var(--nebula-color-2), transparent 50%),
-                            radial-gradient(circle at 50% 50%, rgba(30, 20, 10, 0.3), transparent 60%)
-                        `,
-                        filter: 'blur(40px)'
-                    }}
-                />
+                {/* --- BACKGROUND ART (SVG) --- */}
 
-                {/* --- GEOMETRY --- */}
-                <div className="absolute w-[950px] h-[950px] rounded-full border border-[var(--gold-crystal)] z-[2] top-1/2 -translate-y-1/2 -left-[380px] shadow-[0_0_5px_var(--star-glow)]" />
-                <div className="absolute w-[950px] h-[950px] rounded-full border border-[var(--gold-crystal)] z-[2] top-1/2 -translate-y-1/2 -right-[380px] shadow-[0_0_5px_var(--star-glow)]" />
-                <div className="absolute w-[700px] h-[700px] rounded-full border border-[var(--border-color)] z-[2] top-1/2 -translate-y-1/2 -left-[220px] shadow-[0_0_8px_var(--star-glow)]" />
-                <div className="absolute w-[700px] h-[700px] rounded-full border border-[var(--border-color)] z-[2] top-1/2 -translate-y-1/2 -right-[220px] shadow-[0_0_8px_var(--star-glow)]" />
-                <div className="absolute w-[500px] h-[500px] rounded-full border border-[var(--gold-crystal)] z-[2] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
+                {/* STORYTELLING: COSMIC TREE */}
+                {!isPodcast && (
+                    <div className="absolute inset-0 z-[1] opacity-30 pointer-events-none mix-blend-screen">
+                        <svg viewBox="0 0 1100 700" className="w-full h-full">
+                            <defs>
+                                <linearGradient id="goldGrad" x1="0%" y1="100%" x2="0%" y2="0%">
+                                    <stop offset="0%" stopColor="#8a6e2f" stopOpacity="0" />
+                                    <stop offset="50%" stopColor="#d4af37" stopOpacity="0.5" />
+                                    <stop offset="100%" stopColor="#fceabb" stopOpacity="0" />
+                                </linearGradient>
+                            </defs>
+                            {/* Roots & Trunk */}
+                            <path d="M550,700 Q550,600 550,500" stroke="url(#goldGrad)" strokeWidth="2" fill="none" className="cosmic-tree-path" />
+                            <path d="M550,500 Q500,400 400,300" stroke="url(#goldGrad)" strokeWidth="1" fill="none" className="cosmic-tree-path" style={{ animationDelay: '0.5s' }} />
+                            <path d="M550,500 Q600,400 700,300" stroke="url(#goldGrad)" strokeWidth="1" fill="none" className="cosmic-tree-path" style={{ animationDelay: '0.5s' }} />
+                            <path d="M400,300 Q350,200 300,100" stroke="url(#goldGrad)" strokeWidth="0.5" fill="none" className="cosmic-tree-path" style={{ animationDelay: '1s' }} />
+                            <path d="M700,300 Q750,200 800,100" stroke="url(#goldGrad)" strokeWidth="0.5" fill="none" className="cosmic-tree-path" style={{ animationDelay: '1s' }} />
 
-                {/* --- STARS --- */}
-                {/* Simplified stars as JSX for cleaner code than pure CSS repeated classes */}
-                {[
-                    { top: '22%', left: '26%', delay: '0s', scale: 1 },
-                    { top: '78%', right: '26%', delay: '2s', scale: 1 },
-                    { top: '15%', right: '18%', delay: '1s', scale: 0.8 },
-                    { top: '85%', left: '18%', delay: '3s', scale: 0.8 },
-                ].map((s, i) => (
-                    <div
-                        key={i}
-                        className="absolute w-1 h-1 bg-[var(--star-color)] rounded-full animate-[twinkle_4s_infinite_ease-in-out] z-[3]"
-                        style={{
-                            ...s,
-                            boxShadow: '0 0 4px 1px var(--star-color), 0 0 12px 3px var(--gold-primary), 0 0 20px 5px var(--star-glow)',
-                            animationDelay: s.delay
-                        }}
-                    />
-                ))}
+                            {/* Nodes (Stars/Ideas) */}
+                            <circle cx="550" cy="500" r="3" fill="#d4af37" className="animate-[pulse-glow_3s_infinite]" />
+                            <circle cx="400" cy="300" r="2" fill="#d4af37" className="animate-[pulse-glow_4s_infinite]" />
+                            <circle cx="700" cy="300" r="2" fill="#d4af37" className="animate-[pulse-glow_4s_infinite]" />
+
+                            {/* Subtle particle dust */}
+                            {[...Array(20)].map((_, i) => (
+                                <circle
+                                    key={i}
+                                    cx={Math.random() * 1100}
+                                    cy={Math.random() * 700}
+                                    r={Math.random() * 1.5}
+                                    fill="#d4af37"
+                                    opacity="0.3"
+                                />
+                            ))}
+                        </svg>
+                    </div>
+                )}
+
+                {/* PODCAST: MICROPHONE ECOSYSTEM */}
+                {isPodcast && (
+                    <div className="absolute inset-0 z-[1] opacity-40 pointer-events-none mix-blend-screen">
+                        <svg viewBox="0 0 1100 700" className="w-full h-full">
+                            <defs>
+                                <radialGradient id="cyberGlow" cx="50%" cy="50%" r="50%">
+                                    <stop offset="0%" stopColor="#22d3ee" stopOpacity="0.2" />
+                                    <stop offset="100%" stopColor="#000" stopOpacity="0" />
+                                </radialGradient>
+                            </defs>
+
+                            {/* Central Core (Mic Abstract) */}
+                            <g transform="translate(550, 350)">
+                                <circle r="150" fill="url(#cyberGlow)" className="animate-[pulse-glow_4s_infinite]" />
+                                <circle r="100" fill="none" stroke="#22d3ee" strokeWidth="0.5" strokeDasharray="4 4" className="animate-[rotate-slow_20s_linear_infinite]" />
+                                <circle r="220" fill="none" stroke="#8b5cf6" strokeWidth="0.5" strokeOpacity="0.3" className="animate-[rotate-slow_30s_linear_infinite_reverse]" />
+
+                                {/* Orbital Nodes (Worlds) */}
+                                <g className="animate-[rotate-slow_15s_linear_infinite]">
+                                    <circle cx="100" cy="0" r="4" fill="#22d3ee" />
+                                    <line x1="0" y1="0" x2="100" y2="0" stroke="#22d3ee" strokeWidth="0.5" strokeOpacity="0.2" />
+                                </g>
+                                <g className="animate-[rotate-slow_25s_linear_infinite_reverse]">
+                                    <circle cx="0" cy="220" r="6" fill="#8b5cf6" />
+                                </g>
+                            </g>
+
+                            {/* Sound Waves */}
+                            <path d="M0,350 Q275,300 550,350 T1100,350" fill="none" stroke="#22d3ee" strokeWidth="0.5" strokeOpacity="0.1" />
+                            <path d="M0,350 Q275,400 550,350 T1100,350" fill="none" stroke="#8b5cf6" strokeWidth="0.5" strokeOpacity="0.1" />
+                        </svg>
+                    </div>
+                )}
+
+                {/* Scanner effect for Podcast Diploma */}
+                <div className="scanner-line"></div>
+
+                {/* --- GEOMETRY OVERLAY (Subtle) --- */}
+                <div className="absolute inset-0 border-[20px] border-double z-[2] opacity-30 pointer-events-none" style={{ borderColor: 'var(--diploma-border)' }} />
+                <div className="absolute top-8 bottom-8 left-8 right-8 border border-dashed z-[2] opacity-20 pointer-events-none" style={{ borderColor: 'var(--diploma-primary)' }} />
 
                 {/* --- CONTENT LAYER --- */}
                 <div
-                    className={`relative z-[10] w-full h-full flex flex-col justify-start pt-20 pb-10 px-24 box-border transition-opacity duration-500 ${textVisible ? 'opacity-100' : 'opacity-0'}`}
+                    className={`relative z-[10] w-full h-full flex flex-col justify-start pt-16 pb-10 px-24 box-border transition-opacity duration-500 ${textVisible ? 'opacity-100' : 'opacity-0'}`}
                 >
                     {/* Header */}
                     <div>
                         <h1
                             className="font-display text-[3.2rem] font-medium uppercase m-0 leading-[1.2] tracking-[4px]"
                             style={{
-                                fontFamily: "'Cinzel', serif",
-                                color: 'var(--gold-text-title)',
-                                textShadow: '0 0 20px var(--star-glow)'
+                                fontFamily: isPodcast ? "'Orbitron', sans-serif" : "'Cinzel', serif",
+                                color: 'var(--diploma-text-title)',
+                                textShadow: '0 0 20px var(--diploma-glow)'
                             }}
                         >
                             {config.title}
@@ -317,7 +374,7 @@ export const UniversalDiplomaCard: React.FC<UniversalDiplomaCardProps> = ({
                     <div>
                         <div
                             className="text-[1.2rem] tracking-[0.3rem] uppercase font-normal mt-12"
-                            style={{ fontFamily: "'Cinzel', serif", color: 'var(--gold-metallic)' }}
+                            style={{ fontFamily: "'Cinzel', serif", color: 'var(--diploma-accent)' }}
                         >
                             Certification of Mastery
                         </div>
@@ -326,22 +383,24 @@ export const UniversalDiplomaCard: React.FC<UniversalDiplomaCardProps> = ({
                             <h1
                                 className="recipient-name text-[5rem] font-bold uppercase leading-none tracking-[4px]"
                                 style={{
-                                    fontFamily: "'Cinzel', serif",
-                                    background: 'linear-gradient(to bottom, #fff9c4 10%, #ffcc00 50%, #d4af37 90%)',
+                                    fontFamily: isPodcast ? "'Orbitron', sans-serif" : "'Cinzel', serif",
+                                    background: isPodcast
+                                        ? 'linear-gradient(to bottom, #ccfbf1 10%, #22d3ee 50%, #0ea5e9 90%)'
+                                        : 'linear-gradient(to bottom, #fff9c4 10%, #ffcc00 50%, #d4af37 90%)',
                                     WebkitBackgroundClip: 'text',
                                     WebkitTextFillColor: 'transparent',
-                                    filter: 'drop-shadow(0 0 15px var(--star-glow))'
+                                    filter: 'drop-shadow(0 0 15px var(--diploma-glow))'
                                 }}
                             >
                                 {userName}
                             </h1>
                         </div>
 
-                        <div className="w-[350px] h-px mx-auto mb-8 opacity-60" style={{ background: 'linear-gradient(90deg, transparent, var(--gold-metallic), transparent)' }} />
+                        <div className="w-[350px] h-px mx-auto mb-8 opacity-60" style={{ background: 'linear-gradient(90deg, transparent, var(--diploma-accent), transparent)' }} />
 
                         <div
                             className="text-[1rem] font-light max-w-[65%] mx-auto leading-[1.7] tracking-[0.5px]"
-                            style={{ fontFamily: "'Montserrat', sans-serif", color: 'var(--gold-text-body)' }}
+                            style={{ fontFamily: "'Montserrat', sans-serif", color: 'var(--diploma-text-body)' }}
                         >
                             Ha attraversato i Dieci Mondi e forgiato la propria Voce.<br />
                             Conferiamo oggi il titolo di <strong>{config.role}</strong> con pieni onori e diritti.
@@ -349,47 +408,55 @@ export const UniversalDiplomaCard: React.FC<UniversalDiplomaCardProps> = ({
                     </div>
 
                     {/* Footer */}
-                    <div className="mt-auto flex justify-between items-center w-full px-6">
-                        <div className="hidden md:block w-[180px] text-center relative top-2">
-                            <div className="text-[1.1rem] mb-2 font-normal" style={{ fontFamily: "'Cinzel', serif", color: 'var(--gold-text-title)' }}>Vox Sephira</div>
-                            <div className="w-full h-px mb-3" style={{ background: 'linear-gradient(90deg, transparent, var(--gold-metallic), transparent)' }} />
-                            <div className="text-[0.65rem] tracking-[0.15rem] uppercase" style={{ fontFamily: "'Montserrat', sans-serif", color: 'var(--gold-text-body)' }}>Il Fondatore</div>
+                    <div className="mt-auto flex justify-between items-center w-full px-6 relative">
+
+                        {/* LEFT: Verification & ID */}
+                        <div className="w-[200px] text-left relative top-2">
+                            <div className="text-[0.6rem] mb-1 font-mono uppercase opacity-70" style={{ color: 'var(--diploma-text-body)' }}>Certificate ID</div>
+                            <div className="text-[0.8rem] mb-2 font-mono" style={{ color: 'var(--diploma-primary)', letterSpacing: '2px' }}>{certificateId}</div>
+
+                            {qrCodeUrl && (
+                                <div className="mt-2 w-[80px] h-[80px] bg-white p-1 rounded-sm opacity-90 hover:opacity-100 transition-opacity">
+                                    <img src={qrCodeUrl} alt="Verification QR" className="w-full h-full object-contain" />
+                                </div>
+                            )}
                         </div>
 
-                        {/* SEAL */}
+                        {/* CENTER: SEAL */}
                         <div
                             className="w-[120px] h-[120px] rounded-full flex justify-center items-center relative mb-5 mx-auto"
                             style={{
-                                background: 'var(--seal-bg)',
-                                boxShadow: '0 5px 15px rgba(0,0,0,0.3), 0 0 0 2px var(--gold-metallic), inset 0 0 0 2px rgba(255,255,255,0.4)'
+                                background: config.colors.sealBg,
+                                boxShadow: `0 5px 15px rgba(0,0,0,0.3), 0 0 0 2px var(--diploma-accent), inset 0 0 0 2px rgba(255,255,255,0.4)`
                             }}
                         >
-                            <div className="absolute w-[90px] h-[90px] rounded-full border border-dashed border-[#8a6e2f]/60" />
+                            <div className="absolute w-[90px] h-[90px] rounded-full border border-dashed border-black/20" />
                             <div
                                 className="text-center font-black leading-[1.2] text-[0.75rem] tracking-[1.5px]"
-                                style={{ fontFamily: "'Cinzel', serif", color: 'var(--seal-text)', textShadow: '0 1px 0 rgba(255,255,255,0.4)' }}
+                                style={{ fontFamily: "'Cinzel', serif", color: '#1e1b4b', textShadow: '0 1px 0 rgba(255,255,255,0.4)' }}
                             >
                                 {config.sealText.split('\n')[0]}<br />
                                 <span className="block text-[0.55rem] font-semibold mt-0.5">{config.sealText.split('\n')[1]}</span>
                             </div>
                         </div>
 
-                        <div className="hidden md:block w-[180px] text-center relative top-2">
-                            <div className="text-[1.1rem] mb-2 font-normal" style={{ fontFamily: "'Cinzel', serif", color: 'var(--gold-text-title)' }}>{date}</div>
-                            <div className="w-full h-px mb-3" style={{ background: 'linear-gradient(90deg, transparent, var(--gold-metallic), transparent)' }} />
-                            <div className="text-[0.65rem] tracking-[0.15rem] uppercase" style={{ fontFamily: "'Montserrat', sans-serif", color: 'var(--gold-text-body)' }}>Data</div>
+                        {/* RIGHT: Date & Founder */}
+                        <div className="w-[200px] text-right relative top-2">
+                            <div className="text-[1.1rem] mb-2 font-normal" style={{ fontFamily: "'Cinzel', serif", color: 'var(--diploma-text-title)' }}>{displayDate}</div>
+                            <div className="w-full h-px mb-3" style={{ background: 'linear-gradient(90deg, transparent, var(--diploma-accent), transparent)' }} />
+                            <div className="text-[0.65rem] tracking-[0.15rem] uppercase" style={{ fontFamily: "'Montserrat', sans-serif", color: 'var(--diploma-text-body)' }}>Michael Jara<br /><span className="opacity-60 text-[0.55rem]">Fondatore Vox Lux</span></div>
                         </div>
                     </div>
 
                 </div>
             </div>
 
-            {/* ACTION BUTTONS */}
-            <div className="flex gap-8 mt-4 pointer-events-auto pb-8">
+            {/* ACTION BUTTONS (No Export) */}
+            <div className="flex gap-8 mt-4 pointer-events-auto pb-8 no-export">
                 <button
                     onClick={handleDownloadPDF}
                     disabled={isGenerating}
-                    className={`group relative px-8 py-4 bg-transparent border border-[var(--gold-metallic)] text-[var(--gold-metallic)] font-bold uppercase tracking-widest hover:bg-[var(--gold-metallic)] hover:text-black transition-all ${isGenerating ? 'opacity-50 cursor-not-allowed' : ''}`}
+                    className={`group relative px-8 py-4 bg-transparent border border-[var(--diploma-accent)] text-[var(--diploma-accent)] font-bold uppercase tracking-widest hover:bg-[var(--diploma-accent)] hover:text-black transition-all ${isGenerating ? 'opacity-50 cursor-not-allowed' : ''}`}
                 >
                     <span className="flex items-center gap-2">
                         <Download className="w-5 h-5" />
@@ -399,7 +466,7 @@ export const UniversalDiplomaCard: React.FC<UniversalDiplomaCardProps> = ({
                 <button
                     onClick={handleDownloadImg}
                     disabled={isGenerating}
-                    className={`group relative px-8 py-4 bg-transparent border border-[var(--gold-metallic)] text-[var(--gold-metallic)] font-bold uppercase tracking-widest hover:bg-[var(--gold-metallic)] hover:text-black transition-all ${isGenerating ? 'opacity-50 cursor-not-allowed' : ''}`}
+                    className={`group relative px-8 py-4 bg-transparent border border-[var(--diploma-accent)] text-[var(--diploma-accent)] font-bold uppercase tracking-widest hover:bg-[var(--diploma-accent)] hover:text-black transition-all ${isGenerating ? 'opacity-50 cursor-not-allowed' : ''}`}
                 >
                     <span className="flex items-center gap-2">
                         <Share2 className="w-5 h-5" />
