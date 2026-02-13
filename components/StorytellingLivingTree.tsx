@@ -274,9 +274,18 @@ export const StorytellingLivingTree: React.FC<StorytellingLivingTreeProps> = ({
                                 setHoveredNode(null);
                                 if (onHoverNode) onHoverNode(null);
                             }}
-                            onClick={() => {
+                            onClick={(e) => {
+                                e.stopPropagation();
                                 playSound('click');
-                                onSelectWorld(`${mm.id}|${index}`);
+                                if (isMobile) {
+                                    // Mobile: Tap to SELECT (Preview) only. 
+                                    // Navigation happens via the big Footer Button.
+                                    setHoveredNode(index);
+                                    if (onHoverNode) onHoverNode(index);
+                                } else {
+                                    // Desktop: Click to ENTER immediately
+                                    onSelectWorld(`${mm.id}|${index}`);
+                                }
                             }}
                         >
                             {/* A. COSMIC ORBITS - Desktop Only */}
