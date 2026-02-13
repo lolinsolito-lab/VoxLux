@@ -311,16 +311,11 @@ export const StorytellingLivingTree: React.FC<StorytellingLivingTreeProps> = ({
                                         : ''
                                     }
                                 `}
-                                style={!isActive ? (isMobile ? {
-                                    // Mobile: Static subtle glow instead of heavy animation
-                                    borderColor: 'rgba(245, 225, 164, 0.3)',
-                                    backgroundColor: 'rgba(245, 225, 164, 0.05)',
-                                    boxShadow: '0 0 12px rgba(245, 225, 164, 0.2)'
-                                } : {
-                                    // Desktop: Full Cosmic Cycle Animation when idle
+                                style={!isActive ? {
+                                    // Unified: Full Cosmic Cycle Animation for ALL devices
                                     animation: `cycleSunMoon ${rhythm.duration}s infinite ease-in-out`,
                                     animationDelay: `-${rhythm.delay}s`
-                                }) : {}}
+                                } : {}}
                             >
                                 {/* Inner Pulse */}
                                 <div className={`absolute inset-[10%] rounded-full opacity-50 mix-blend-screen transition-colors duration-500
