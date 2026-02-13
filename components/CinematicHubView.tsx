@@ -96,10 +96,10 @@ export const CinematicHubView: React.FC<CinematicHubViewProps> = ({ courseId, on
                 {/* FOOTER PILLARS / CTA (Mobile: Bottom Center, Desktop: Bottom Left) */}
                 <div className={`
                     pointer-events-auto z-40 
-                    absolute bottom-0 left-0 w-full pb-8 flex flex-col items-center text-center 
+                    absolute bottom-0 left-0 w-full pb-4 flex flex-col items-center text-center 
                     md:bottom-16 md:left-16 md:w-auto md:items-start md:text-left md:pb-0
                 `}>
-                    <h2 className="text-white text-sm md:text-lg uppercase tracking-widest mb-2 flex items-center gap-2 md:gap-3 h-8">
+                    <h2 className="text-white text-sm md:text-lg uppercase tracking-widest mb-0 flex items-center gap-2 md:gap-3 h-8">
                         <Sparkles className={`w-4 h-4 md:w-5 md:h-5 ${hoveredNode !== null ? 'text-amber-400 rotate-12 transition-all' : 'text-lux-gold'}`} />
                         <span className="transition-all duration-300">
                             {hoveredNode !== null
@@ -109,7 +109,7 @@ export const CinematicHubView: React.FC<CinematicHubViewProps> = ({ courseId, on
                         </span>
                     </h2>
 
-                    <div className="relative h-32 md:h-28 w-full flex flex-col justify-center items-center md:items-start">
+                    <div className="relative h-20 md:h-28 w-full flex flex-col justify-center items-center md:items-start">
                         {/* Static Description */}
                         <p className={`
                             absolute top-0 transition-opacity duration-300 text-amber-100/80 leading-relaxed border-none md:border-l-2 md:border-lux-gold/30 md:pl-4 text-xs md:text-base max-w-sm md:max-w-none
@@ -137,7 +137,7 @@ export const CinematicHubView: React.FC<CinematicHubViewProps> = ({ courseId, on
                             onSelectWorld(targetId);
                         }}
                         className={`
-                            group relative w-auto px-8 py-3 font-bold uppercase tracking-[0.2em] text-xs md:text-sm transition-all duration-300 shadow-[0_0_20px_rgba(251,191,36,0.3)] rounded-full flex items-center gap-3 mt-4 overflow-hidden
+                            group relative w-auto px-8 py-3 font-bold uppercase tracking-[0.2em] text-xs md:text-sm transition-all duration-300 shadow-[0_0_20px_rgba(251,191,36,0.3)] rounded-full flex items-center gap-3 mt-1 overflow-hidden
                             ${hoveredNode !== null
                                 ? 'bg-amber-500 text-black hover:bg-white hover:shadow-[0_0_40px_rgba(251,191,36,0.8)]'
                                 : 'bg-lux-gold text-black hover:bg-white hover:shadow-[0_0_40px_rgba(255,255,255,0.6)]'
