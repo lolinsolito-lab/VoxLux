@@ -28,6 +28,7 @@ interface Course {
         required_lessons: 'all' | string[];
         diploma_template_id: string;
     };
+    diploma_background_url?: string | null; // Added for custom backgrounds
 }
 
 interface CourseModule {
@@ -41,16 +42,17 @@ interface CourseModule {
     is_locked: boolean;
 }
 
-// Diploma Preview Modal - Moved here to fix hoisting
+// Diploma Preview Modal
 const DiplomaPreviewModal = ({
     course,
-    onClose
+    onClose,
+    onUpdate // NEW PROP: Callback to refresh parent state
 }: {
     course: Course;
     onClose: () => void;
+    onUpdate: () => void;
 }) => {
     // Determine course ID for theme (matrice-1 or matrice-2)
-    // Fallback based on slug or title if ID doesn't match expected pattern
     const getCourseId = () => {
         const slug = course.slug.toLowerCase();
         const title = course.title.toLowerCase();
@@ -59,20 +61,8 @@ const DiplomaPreviewModal = ({
     };
 
     const courseId = getCourseId();
-
-    // DEFAULT TO LUXURY MODE to showcase the new templates immediately
-    const [variant, setVariant] = useState<'standard' | 'luxury'>('luxury');
     // Initialize customBg from DB if available
     const [customBg, setCustomBg] = useState<string | null>(course.diploma_background_url || null);
-
-    const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0];
-        if (file) {
-            const url = URL.createObjectURL(file);
-            setCustomBg(url);
-            setVariant('luxury'); // Switch to luxury to show it
-        }
-    };
 
     return (
         <motion.div
@@ -90,7 +80,6 @@ const DiplomaPreviewModal = ({
                         Anteprima Diploma: {course.title}
                     </h2>
                     <div className="flex items-center gap-4">
-
 
                         {/* CUSTOM UPLOAD BUTTON (PERSISTENT) */}
                         <div className="relative">
@@ -133,10 +122,10 @@ const DiplomaPreviewModal = ({
                                         return;
                                     }
 
-                                    // 4. Update Local State
+                                    // 4. Update Local State & Notify Parent
                                     setCustomBg(publicUrl);
-                                    setVariant('luxury');
                                     alert('Sfondo caricato e salvato con successo!');
+                                    onUpdate(); // REFRESH PARENT STATE
                                 }}
                                 className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                             />
@@ -145,15 +134,11 @@ const DiplomaPreviewModal = ({
                             </button>
                         </div>
 
-                        <button
-                            onClick={() => {
-                                setVariant(v => v === 'standard' ? 'luxury' : 'standard');
-                                // If switching to standard, maybe clear custom BG? No, let user keep it.
-                            }}
-                            className={`px-6 py-2 rounded-full text-xs font-bold uppercase tracking-wider transition-all border ${variant === 'luxury' ? 'bg-amber-500 text-black border-amber-500 shadow-[0_0_15px_rgba(245,158,11,0.5)]' : 'bg-gray-800 text-gray-400 border-gray-600 hover:border-white hover:text-white'}`}
-                        >
-                            {variant === 'luxury' ? '✨ Mode: LUXURY' : '⚪ Mode: STANDARD'}
-                        </button>
+                        {/* LUXURY BADGE */}
+                        <div className="px-3 py-1 bg-amber-500/10 border border-amber-500/30 rounded text-xs text-amber-500 uppercase tracking-widest font-bold">
+                            ✨ Luxury Mode Active
+                        </div>
+
                         <button
                             onClick={onClose}
                             className="p-2 bg-white/10 hover:bg-white/20 rounded-full text-white transition-all"
@@ -168,8 +153,8 @@ const DiplomaPreviewModal = ({
                         userName="Mario Rossi (Preview)"
                         courseId={courseId}
                         date={new Date().toLocaleDateString('it-IT')}
-                        variant={variant}
-                        customBackgroundImage={customBg} // NEW PROP
+                        variant="luxury"
+                        customBackgroundImage={customBg}
                     />
                 </div>
 
@@ -556,6 +541,7 @@ export const AdminCourses: React.FC = () => {
                     <DiplomaPreviewModal
                         course={editingCourse}
                         onClose={() => setShowPreviewModal(false)}
+                        onUpdate={fetchCourses}
                     />
                 )}
             </AnimatePresence>

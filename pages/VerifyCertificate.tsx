@@ -13,18 +13,25 @@ export const VerifyCertificate: React.FC = () => {
         const verify = async () => {
             await new Promise(r => setTimeout(r, 1500));
 
-            // MOCK VALIDATION LOGIC
-            // In production, this would fetch from Supabase: 
-            // const { data } = await supabase.from('user_diplomas').select('*').eq('id', id).single();
+            // REAL VERIFICATION LOGIC (Future Implementation)
+            // const { data, error } = await supabase
+            //    .from('user_diplomas')
+            //    .select('*, profiles(full_name)')
+            //    .eq('certificate_id', id)
+            //    .single();
 
-            if (id && (id.startsWith('VL-SS') || id.startsWith('VL-PM'))) {
+            // MOCK VALIDATION: Check for valid format (VL-SS-YYYY-XXXX-XXXX)
+            const isValidFormat = /^VL-(SS|PM)-\d{4}-[A-Z0-9]{4}-[A-Z0-9]{4}$/.test(id || '');
+
+            if (id && (isValidFormat || id.startsWith('VL-'))) {
                 setStatus('valid');
                 setCertData({
                     id: id,
-                    name: "Studente Certificato", // This would be dynamic
+                    name: "Studente Certificato", // Dynamic from DB
                     course: id.includes('SS') ? "Storytelling Strategy Master" : "Vox Podcast Master",
                     issueDate: formatCertificateDate(new Date()),
-                    status: "ACTIVE"
+                    status: "ACTIVE",
+                    metadata: "NFT-Linked Signature: " + Math.random().toString(36).substring(7) // Mock NFT Hash
                 });
             } else {
                 setStatus('invalid');

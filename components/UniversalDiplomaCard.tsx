@@ -18,9 +18,12 @@ export const UniversalDiplomaCard: React.FC<UniversalDiplomaCardProps> = ({
     userName,
     courseId,
     date,
-    variant = 'standard', // Default to standard
+    variant: _variant = 'luxury', // Ignore prop, default to luxury
     customBackgroundImage
 }) => {
+    // FORCE LUXURY MODE ALWAYS
+    const variant = 'luxury';
+
     const { playSound } = useAudioSystem();
     const [textVisible, setTextVisible] = useState(true);
     const [theme, setTheme] = useState<'dark' | 'light'>('dark');
@@ -240,8 +243,9 @@ export const UniversalDiplomaCard: React.FC<UniversalDiplomaCardProps> = ({
             {/* UI CONTROLS - No Export (omitted for brevity in replacement, but logically here) */}
             <div className="absolute top-4 right-4 flex gap-4 z-50 pointer-events-auto no-export">
                 {/* Variant Toggle (Hidden in prod, visible for Admin Preview) */}
-                <div className="px-3 py-2 bg-black/50 backdrop-blur rounded text-xs text-white border border-white/10 uppercase tracking-widest">
-                    {variant === 'luxury' ? '✨ Luxury Edition' : 'Standard Edition'}
+                {/* Variant Label (Always Luxury) */}
+                <div className="px-3 py-2 bg-black/50 backdrop-blur rounded text-xs text-white border border-white/10 uppercase tracking-widest text-[#d4af37] border-[#d4af37]/30">
+                    ✨ Luxury Edition
                 </div>
                 {/* ... other controls ... */}
                 <button
@@ -395,34 +399,38 @@ export const UniversalDiplomaCard: React.FC<UniversalDiplomaCardProps> = ({
                 <div
                     className={`relative z-[10] w-full h-full flex flex-col justify-start pt-16 pb-10 px-24 box-border transition-opacity duration-500 ${textVisible ? 'opacity-100' : 'opacity-0'}`}
                 >
-                    {/* Header */}
-                    <div>
-                        <h1
-                            className="font-display text-[3.2rem] font-medium uppercase m-0 leading-[1.2] tracking-[4px]"
-                            style={{
-                                fontFamily: isPodcast ? "'Orbitron', sans-serif" : "'Cinzel', serif",
-                                color: 'var(--diploma-text-title)',
-                                textShadow: '0 0 20px var(--diploma-glow)'
-                            }}
-                        >
-                            {config.title}
-                        </h1>
-                        <div
-                            className="text-sm tracking-[0.5rem] uppercase font-normal opacity-80 mt-5"
-                            style={{ fontFamily: "'Cinzel', serif", color: theme === 'light' ? '#888' : '#aaa' }}
-                        >
-                            {config.academy}
+                    {/* Header - HIDDEN IF CUSTOM BG */}
+                    {!customBackgroundImage && (
+                        <div>
+                            <h1
+                                className="font-display text-[3.2rem] font-medium uppercase m-0 leading-[1.2] tracking-[4px]"
+                                style={{
+                                    fontFamily: isPodcast ? "'Orbitron', sans-serif" : "'Cinzel', serif",
+                                    color: 'var(--diploma-text-title)',
+                                    textShadow: '0 0 20px var(--diploma-glow)'
+                                }}
+                            >
+                                {config.title}
+                            </h1>
+                            <div
+                                className="text-sm tracking-[0.5rem] uppercase font-normal opacity-80 mt-5"
+                                style={{ fontFamily: "'Cinzel', serif", color: theme === 'light' ? '#888' : '#aaa' }}
+                            >
+                                {config.academy}
+                            </div>
                         </div>
-                    </div>
+                    )}
 
-                    {/* Main Name */}
-                    <div>
-                        <div
-                            className="text-[1.2rem] tracking-[0.3rem] uppercase font-normal mt-12"
-                            style={{ fontFamily: "'Cinzel', serif", color: 'var(--diploma-accent)' }}
-                        >
-                            Certification of Mastery
-                        </div>
+                    {/* Main Name - ALWAYS VISIBLE (Centered for now) */}
+                    <div className={customBackgroundImage ? "mt-[200px]" : ""}> {/* Push down if header is gone? Or centered flex handles it? */}
+                        {!customBackgroundImage && (
+                            <div
+                                className="text-[1.2rem] tracking-[0.3rem] uppercase font-normal mt-12"
+                                style={{ fontFamily: "'Cinzel', serif", color: 'var(--diploma-accent)' }}
+                            >
+                                Certification of Mastery
+                            </div>
+                        )}
 
                         <div className="relative mt-2 mb-2">
                             <h1
@@ -441,55 +449,80 @@ export const UniversalDiplomaCard: React.FC<UniversalDiplomaCardProps> = ({
                             </h1>
                         </div>
 
-                        <div className="w-[350px] h-px mx-auto mb-8 opacity-60" style={{ background: 'linear-gradient(90deg, transparent, var(--diploma-accent), transparent)' }} />
+                        {!customBackgroundImage && (
+                            <>
+                                <div className="w-[350px] h-px mx-auto mb-8 opacity-60" style={{ background: 'linear-gradient(90deg, transparent, var(--diploma-accent), transparent)' }} />
 
-                        <div
-                            className="text-[1rem] font-light max-w-[65%] mx-auto leading-[1.7] tracking-[0.5px]"
-                            style={{ fontFamily: "'Montserrat', sans-serif", color: 'var(--diploma-text-body)' }}
-                        >
-                            Ha attraversato i Dieci Mondi e forgiato la propria Voce.<br />
-                            Conferiamo oggi il titolo di <strong>{config.role}</strong> con pieni onori e diritti.
-                        </div>
+                                <div
+                                    className="text-[1rem] font-light max-w-[65%] mx-auto leading-[1.7] tracking-[0.5px]"
+                                    style={{ fontFamily: "'Montserrat', sans-serif", color: 'var(--diploma-text-body)' }}
+                                >
+                                    Ha attraversato i Dieci Mondi e forgiato la propria Voce.<br />
+                                    Conferiamo oggi il titolo di <strong>{config.role}</strong> con pieni onori e diritti.
+                                </div>
+                            </>
+                        )}
                     </div>
 
                     {/* Footer */}
-                    <div className="mt-auto flex justify-between items-center w-full px-6 relative">
+                    <div className="mt-auto flex justify-between items-end w-full px-6 relative pb-6">
 
-                        {/* LEFT: Verification & ID */}
+                        {/* LEFT: Verification & ID (Always Visible) */}
                         <div className="w-[200px] text-left relative top-2">
-                            <div className="text-[0.6rem] mb-1 font-mono uppercase opacity-70" style={{ color: 'var(--diploma-text-body)' }}>Certificate ID</div>
+                            <div className="text-[0.6rem] mb-1 font-mono uppercase opacity-70" style={{ color: customBackgroundImage ? '#fff' : 'var(--diploma-text-body)' }}>Certificate ID</div>
                             <div className="text-[0.8rem] mb-2 font-mono" style={{ color: 'var(--diploma-primary)', letterSpacing: '2px' }}>{certificateId}</div>
 
                             {qrCodeUrl && (
-                                <div className="mt-2 w-[80px] h-[80px] bg-white p-1 rounded-sm opacity-90 hover:opacity-100 transition-opacity">
+                                <div className="mt-2 w-[80px] h-[80px] bg-black border border-white/10 p-1 rounded-sm opacity-90 hover:opacity-100 transition-opacity">
                                     <img src={qrCodeUrl} alt="Verification QR" className="w-full h-full object-contain" />
                                 </div>
                             )}
                         </div>
 
-                        {/* CENTER: SEAL */}
-                        <div
-                            className="w-[120px] h-[120px] rounded-full flex justify-center items-center relative mb-5 mx-auto"
-                            style={{
-                                background: config.colors.sealBg,
-                                boxShadow: `0 5px 15px rgba(0,0,0,0.3), 0 0 0 2px var(--diploma-accent), inset 0 0 0 2px rgba(255,255,255,0.4)`
-                            }}
-                        >
-                            <div className="absolute w-[90px] h-[90px] rounded-full border border-dashed border-black/20" />
+                        {/* CENTER: SEAL - Only if NO custom background? User said "timbro nel mezzo è giusto". 
+                            If default, keep it. If custom, maybe hide if it conflicts? 
+                            Let's keep it for now as an overlay mark of authenticity. 
+                            Actually, if custom BG has signature, this might overlay.
+                            User said "timbro nel mezzo è giusto" referring to the photo? Or my previous version?
+                            Assume keep for now.
+                        */}
+                        {!customBackgroundImage && (
                             <div
-                                className="text-center font-black leading-[1.2] text-[0.75rem] tracking-[1.5px]"
-                                style={{ fontFamily: "'Cinzel', serif", color: '#1e1b4b', textShadow: '0 1px 0 rgba(255,255,255,0.4)' }}
+                                className="w-[120px] h-[120px] rounded-full flex justify-center items-center relative mb-5 mx-auto"
+                                style={{
+                                    background: config.colors.sealBg,
+                                    boxShadow: `0 5px 15px rgba(0,0,0,0.3), 0 0 0 2px var(--diploma-accent), inset 0 0 0 2px rgba(255,255,255,0.4)`
+                                }}
                             >
-                                {config.sealText.split('\n')[0]}<br />
-                                <span className="block text-[0.55rem] font-semibold mt-0.5">{config.sealText.split('\n')[1]}</span>
+                                <div className="absolute w-[90px] h-[90px] rounded-full border border-dashed border-black/20" />
+                                <div
+                                    className="text-center font-black leading-[1.2] text-[0.75rem] tracking-[1.5px]"
+                                    style={{ fontFamily: "'Cinzel', serif", color: '#1e1b4b', textShadow: '0 1px 0 rgba(255,255,255,0.4)' }}
+                                >
+                                    {config.sealText.split('\n')[0]}<br />
+                                    <span className="block text-[0.55rem] font-semibold mt-0.5">{config.sealText.split('\n')[1]}</span>
+                                </div>
                             </div>
-                        </div>
+                        )}
 
-                        {/* RIGHT: Date & Founder */}
+                        {/* If custom BG, just an empty spacer in center to balance flex? */}
+                        {customBackgroundImage && <div className="w-[120px]" />}
+
+
+                        {/* RIGHT: Date & Founder - Visible but simplified if custom BG? 
+                             If custom BG, we likely only need DATE. Signatures are usually on image.
+                             User said "e forse anche la data giusto".
+                             Let's keep Date. Hide Creator Signature if Custom?
+                        */}
                         <div className="w-[200px] text-right relative top-2">
-                            <div className="text-[1.1rem] mb-2 font-normal" style={{ fontFamily: "'Cinzel', serif", color: 'var(--diploma-text-title)' }}>{displayDate}</div>
-                            <div className="w-full h-px mb-3" style={{ background: 'linear-gradient(90deg, transparent, var(--diploma-accent), transparent)' }} />
-                            <div className="text-[0.65rem] tracking-[0.15rem] uppercase" style={{ fontFamily: "'Montserrat', sans-serif", color: 'var(--diploma-text-body)' }}>Michael Jara<br /><span className="opacity-60 text-[0.55rem]">Fondatore Vox Lux</span></div>
+                            <div className="text-[1.1rem] mb-2 font-normal" style={{ fontFamily: "'Cinzel', serif", color: customBackgroundImage ? '#fff' : 'var(--diploma-text-title)' }}>{displayDate}</div>
+
+                            {!customBackgroundImage && (
+                                <>
+                                    <div className="w-full h-px mb-3" style={{ background: 'linear-gradient(90deg, transparent, var(--diploma-accent), transparent)' }} />
+                                    <div className="text-[0.65rem] tracking-[0.15rem] uppercase" style={{ fontFamily: "'Montserrat', sans-serif", color: 'var(--diploma-text-body)' }}>Michael Jara<br /><span className="opacity-60 text-[0.55rem]">Fondatore Vox Lux</span></div>
+                                </>
+                            )}
                         </div>
                     </div>
 
