@@ -62,7 +62,8 @@ const DiplomaPreviewModal = ({
 
     // DEFAULT TO LUXURY MODE to showcase the new templates immediately
     const [variant, setVariant] = useState<'standard' | 'luxury'>('luxury');
-    const [customBg, setCustomBg] = useState<string | null>(null);
+    // Initialize customBg from DB if available
+    const [customBg, setCustomBg] = useState<string | null>(course.diploma_background_url || null);
 
     const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
@@ -90,16 +91,57 @@ const DiplomaPreviewModal = ({
                     </h2>
                     <div className="flex items-center gap-4">
 
-                        {/* CUSTOM UPLOAD BUTTON */}
+
+                        {/* CUSTOM UPLOAD BUTTON (PERSISTENT) */}
                         <div className="relative">
                             <input
                                 type="file"
                                 accept="image/*"
-                                onChange={handleFileUpload}
+                                onChange={async (e) => {
+                                    const file = e.target.files?.[0];
+                                    if (!file) return;
+
+                                    // 1. Upload to Supabase Storage
+                                    const fileExt = file.name.split('.').pop();
+                                    const fileName = `${course.slug}_${Date.now()}.${fileExt}`;
+                                    const filePath = `${fileName}`;
+
+                                    const { data: uploadData, error: uploadError } = await supabase.storage
+                                        .from('diplomas')
+                                        .upload(filePath, file);
+
+                                    if (uploadError) {
+                                        console.error('Upload Error:', uploadError);
+                                        alert('Errore caricamento immagine: ' + uploadError.message);
+                                        return;
+                                    }
+
+                                    // 2. Get Public URL
+                                    const { data: { publicUrl } } = supabase.storage
+                                        .from('diplomas')
+                                        .getPublicUrl(filePath);
+
+                                    // 3. Update Course in DB
+                                    const { error: updateError } = await supabase
+                                        .from('courses')
+                                        .update({ diploma_background_url: publicUrl })
+                                        .eq('id', course.id);
+
+                                    if (updateError) {
+                                        console.error('DB Update Error:', updateError);
+                                        alert('Errore salvataggio URL: ' + updateError.message);
+                                        return;
+                                    }
+
+                                    // 4. Update Local State
+                                    setCustomBg(publicUrl);
+                                    setVariant('luxury');
+                                    alert('Sfondo caricato e salvato con successo!');
+                                }}
                                 className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                             />
-                            <button className="px-4 py-2 bg-white/10 hover:bg-white/20 rounded-lg text-xs font-bold uppercase tracking-wider text-white border border-white/20 flex items-center gap-2 transition-all">
-                                📤 Carica Sfondo
+                            <button className="px-4 py-2 bg-gradient-to-r from-amber-600 to-yellow-600 hover:from-amber-500 hover:to-yellow-500 rounded-lg text-xs font-bold uppercase tracking-wider text-white border border-white/20 flex items-center gap-2 transition-all shadow-lg">
+                                📤 Salva Sfondo
                             </button>
                         </div>
 

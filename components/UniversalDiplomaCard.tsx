@@ -272,11 +272,15 @@ export const UniversalDiplomaCard: React.FC<UniversalDiplomaCardProps> = ({
                     height: '100%',
                     zIndex: -1,
                     // DYNAMIC STYLES BASED ON VARIANT
-                    ...(variant === 'luxury' || customBackgroundImage ? {
-                        // LUXURY MODE or CUSTOM BG
-                        backgroundColor: '#000000', // Reset debug color to black
-                        backgroundImage: getBackgroundImage(),
-                        backgroundSize: '100% 100%',
+                    ...(variant === 'luxury' ? {
+                        // LUXURY MODE
+                        backgroundColor: '#000',
+                        backgroundImage: customBackgroundImage
+                            ? `url("${customBackgroundImage}")`
+                            : (isPodcast
+                                ? 'url("/diplomas/diploma_podcast_luxury.png")'
+                                : 'url("/diplomas/diploma_storytelling_luxury.png")'),
+                        backgroundSize: '100% 100%', // Force full stretch to match card size
                         backgroundPosition: 'center',
                         backgroundRepeat: 'no-repeat',
                         border: 'none',
