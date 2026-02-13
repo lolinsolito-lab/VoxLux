@@ -285,26 +285,29 @@ export const UniversalDiplomaCard: React.FC<UniversalDiplomaCardProps> = ({
                     width: '100%',
                     height: '100%',
                     zIndex: -1,
-                    // LUXURY BACKGROUNDS (USER ASSETS)
-                    backgroundImage: variant === 'luxury'
-                        ? (isPodcast
-                            ? 'url("/diplomas/diploma_podcast_luxury.png")'
-                            : 'url("/diplomas/diploma_storytelling_luxury.png")')
-                        : 'none',
-                    background: variant !== 'luxury'
-                        ? (theme === 'dark'
+                    // DYNAMIC STYLES BASED ON VARIANT
+                    ...(variant === 'luxury' ? {
+                        // LUXURY MODE
+                        backgroundImage: isPodcast
+                            ? 'url("/diplomas/diploma_podcast_luxury.png?v=2")'
+                            : 'url("/diplomas/diploma_storytelling_luxury.png?v=2")',
+                        backgroundSize: '100% 100%', // Force full stretch to match card size
+                        backgroundPosition: 'center',
+                        backgroundRepeat: 'no-repeat',
+                        border: '0px none', // Explicitly remove border
+                        boxShadow: isPodcast
+                            ? '0 0 30px rgba(0, 240, 255, 0.2)'
+                            : '0 0 30px rgba(255, 215, 0, 0.2)'
+                    } : {
+                        // STANDARD MODE
+                        background: theme === 'dark'
                             ? 'radial-gradient(ellipse at bottom, var(--bg-gradient-inner) 0%, var(--bg-gradient-outer) 100%)'
-                            : '#f9f9f9')
-                        : undefined,
-                    backgroundSize: 'cover',
-                    backgroundPosition: 'center',
-                    backgroundRepeat: 'no-repeat',
-                    border: variant === 'luxury'
-                        ? 'none' // Border is usually part of the image, or we add a simple one if needed. Let's keep it clean.
-                        : '1px solid var(--diploma-border)',
-                    boxShadow: variant === 'luxury'
-                        ? (isPodcast ? '0 0 30px rgba(0, 240, 255, 0.2)' : '0 0 30px rgba(255, 215, 0, 0.2)')
-                        : (theme === 'dark' ? '0 20px 80px rgba(0,0,0,0.8)' : '0 20px 80px rgba(0,0,0,0.1)')
+                            : '#f9f9f9',
+                        border: '1px solid var(--diploma-border)',
+                        boxShadow: theme === 'dark'
+                            ? '0 20px 80px rgba(0,0,0,0.8)'
+                            : '0 20px 80px rgba(0,0,0,0.1)'
+                    })
                 }}
             >
                 {/* --- LUXURY OVERLAYS (Golden Glow - Subtle) --- */}
