@@ -371,10 +371,6 @@ export const PodcastCinematicHub: React.FC<PodcastCinematicHubProps> = ({ course
                                 <span className="relative z-10">Ascolta Frequenza</span>
                                 <div className="absolute inset-0 bg-white opacity-0 group-hover:opacity-100 transition-opacity blur-md rounded-full"></div>
                             </button>
-
-                            <div className="h-1 w-full bg-stone-900/50 rounded-full overflow-hidden border border-white/10 hidden md:block">
-                                <div className="h-full bg-amber-200 animate-[loading_1s_infinite] shadow-[0_0_15px_rgba(251,191,36,0.8)]"></div>
-                            </div>
                         </div>
                     ) : (
                         // DEFAULT STATE: "Il Viaggio" (Logic of Continuation)
