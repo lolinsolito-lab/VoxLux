@@ -113,7 +113,7 @@ export const CinematicHubView: React.FC<CinematicHubViewProps> = ({ courseId, on
                         </span>
                     </h2>
 
-                    <div className="relative h-24 md:h-24 w-full flex flex-col justify-center items-center md:items-start">
+                    <div className="relative h-32 md:h-28 w-full flex flex-col justify-center items-center md:items-start">
                         {/* Static Description */}
                         <p className={`
                             absolute top-0 transition-opacity duration-300 text-amber-100/80 leading-relaxed border-none md:border-l-2 md:border-lux-gold/30 md:pl-4 text-xs md:text-base max-w-sm md:max-w-none
