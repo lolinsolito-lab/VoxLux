@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Users, DollarSign, Activity, TrendingUp, ShoppingCart, Clock, RefreshCw, Zap, Eye, Calendar, ArrowUp, ArrowDown } from 'lucide-react';
+import { Users, DollarSign, Activity, TrendingUp, ShoppingCart, Clock, RefreshCw, Zap, Eye, Calendar, ArrowUp, ArrowDown, Lock, LockOpen } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { supabase } from '../../services/supabase';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Area, AreaChart } from 'recharts';
+import { useGodMode } from '../../hooks/useGodMode';
 
 interface KPIData {
     totalUsers: number;
@@ -24,6 +25,7 @@ export const AdminOverview: React.FC = () => {
     });
     const [loading, setLoading] = useState(true);
     const [prevRevenue, setPrevRevenue] = useState(0);
+    const { enabled: godMode, toggle: toggleGodMode } = useGodMode();
 
     useEffect(() => {
         fetchDashboardData();
@@ -152,13 +154,22 @@ export const AdminOverview: React.FC = () => {
                     <h1 className="text-3xl md:text-5xl font-black tracking-tight">
                         VISTA ELICOTTERO <span className="bg-gradient-to-r from-red-500 via-orange-500 to-amber-500 bg-clip-text text-transparent block md:inline">GOD MODE</span>
                     </h1>
-                    <button
-                        onClick={fetchDashboardData}
-                        className="flex items-center gap-2 px-6 py-3 bg-white/5 hover:bg-white/10 text-gray-300 rounded-xl transition-all duration-300 hover:scale-105 font-semibold"
-                    >
-                        <RefreshCw size={20} />
-                        Aggiorna
-                    </button>
+                    <div className="flex gap-4">
+                        <button
+                            onClick={toggleGodMode}
+                            className={`flex items-center gap-2 px-6 py-3 rounded-xl transition-all duration-300 hover:scale-105 font-bold border ${godMode ? 'bg-amber-500 text-black border-amber-400 shadow-[0_0_15px_rgba(245,158,11,0.5)]' : 'bg-white/5 text-gray-400 border-white/10 hover:text-white'}`}
+                        >
+                            {godMode ? <LockOpen size={20} /> : <Lock size={20} />}
+                            <span className="hidden md:inline">{godMode ? "GOD MODE: ON" : "GOD MODE: OFF"}</span>
+                        </button>
+                        <button
+                            onClick={fetchDashboardData}
+                            className="flex items-center gap-2 px-6 py-3 bg-white/5 hover:bg-white/10 text-gray-300 rounded-xl transition-all duration-300 hover:scale-105 font-semibold"
+                        >
+                            <RefreshCw size={20} />
+                            <span className="hidden md:inline">Aggiorna</span>
+                        </button>
+                    </div>
                 </div>
                 <p className="text-gray-400 text-lg">Comanda il tuo impero in tempo reale</p>
             </motion.div>

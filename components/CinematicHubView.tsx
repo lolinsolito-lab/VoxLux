@@ -6,6 +6,7 @@ import { useAudioSystem } from '../hooks/useAudioSystem';
 import { Play, Sparkles, Star, ArrowLeft, Check } from 'lucide-react';
 import { StorytellingLivingTree } from './StorytellingLivingTree';
 import { CosmicAtmosphere } from './CosmicAtmosphere';
+import { useGodMode } from '../hooks/useGodMode';
 
 interface CinematicHubViewProps {
     courseId: string;
@@ -16,9 +17,17 @@ interface CinematicHubViewProps {
 
 export const CinematicHubView: React.FC<CinematicHubViewProps> = ({ courseId, onSelectWorld, onBack, completedModules }) => {
     const { playSound } = useAudioSystem();
+    const { enabled: godMode } = useGodMode();
     // HYBRID INTEGRATION: Use hook for data
     const { course, loading } = useCourseData(courseId);
     const [hoveredNode, setHoveredNode] = useState<number | null>(null);
+    const [selectedNode, setSelectedNode] = useState<number | null>(null);
+
+    // DISPLAY LOGIC: Hover takes precedence for "Looking around", but Selection persists when moving to button.
+    // Actually, if I am selecting Node 5, and I hover Node 2, I should probably see Node 2?
+    // Standard UI: Hover overrides Selection for preview.
+    // BUT: If I move mouse OUT of Node 2, I should return to Node 5 (Selection), not null.
+    const displayNode = hoveredNode ?? selectedNode;
 
     // Background (Stars/Atmosphere) moved to <CosmicAtmosphere /> to prevent re-renders
 
@@ -43,7 +52,10 @@ export const CinematicHubView: React.FC<CinematicHubViewProps> = ({ courseId, on
     };
 
     return (
-        <div className="fixed inset-0 bg-black overflow-hidden font-sans select-none">
+        <div
+            className="fixed inset-0 bg-black overflow-hidden font-sans select-none"
+            onClick={() => setSelectedNode(null)} // Background click clears selection
+        >
 
             {/* 1. ATMOSPHERE BACKGROUND - Memoized Component */}
             <CosmicAtmosphere />
@@ -55,7 +67,10 @@ export const CinematicHubView: React.FC<CinematicHubViewProps> = ({ courseId, on
                 <div className="absolute top-6 left-6 z-50 flex flex-col items-start gap-4">
                     {/* BACK BUTTON */}
                     <button
-                        onClick={onBack}
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            onBack();
+                        }}
                         className="pointer-events-auto text-white/50 hover:text-white flex items-center gap-2 group transition-colors"
                         onMouseEnter={() => playSound('hover')}
                     >
@@ -100,10 +115,10 @@ export const CinematicHubView: React.FC<CinematicHubViewProps> = ({ courseId, on
                     md:bottom-16 md:left-16 md:w-auto md:items-start md:text-left md:pb-0
                 `}>
                     <h2 className="text-white text-sm md:text-lg uppercase tracking-widest mb-0 flex items-center gap-2 md:gap-3 h-8">
-                        <Sparkles className={`w-4 h-4 md:w-5 md:h-5 ${hoveredNode !== null ? 'text-amber-400 rotate-12 transition-all' : 'text-lux-gold'}`} />
+                        <Sparkles className={`w-4 h-4 md:w-5 md:h-5 ${displayNode !== null ? 'text-amber-400 rotate-12 transition-all' : 'text-lux-gold'}`} />
                         <span className="transition-all duration-300">
-                            {hoveredNode !== null
-                                ? (course.masterminds[hoveredNode]?.title || WORLD_THEMES[hoveredNode]?.name || "MONDO SCONOSCIUTO")
+                            {displayNode !== null
+                                ? (course.masterminds[displayNode]?.title || WORLD_THEMES[displayNode]?.name || "MONDO SCONOSCIUTO")
                                 : "Il Viaggio dei 10 Mondi"
                             }
                         </span>
@@ -113,7 +128,7 @@ export const CinematicHubView: React.FC<CinematicHubViewProps> = ({ courseId, on
                         {/* Static Description */}
                         <p className={`
                             absolute top-0 transition-opacity duration-300 text-amber-100/80 leading-relaxed border-none md:border-l-2 md:border-lux-gold/30 md:pl-4 text-xs md:text-base max-w-sm md:max-w-none
-                            ${hoveredNode === null ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2 pointer-events-none'}
+                            ${displayNode === null ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2 pointer-events-none'}
                         `}>
                             Non è un corso. È un'esplorazione. Attraversa i regni, supera i rituali e conquista la tua voce definitiva.
                         </p>
@@ -121,24 +136,25 @@ export const CinematicHubView: React.FC<CinematicHubViewProps> = ({ courseId, on
                         {/* Dynamic Description (Mastermind Title) */}
                         <p className={`
                             absolute top-0 transition-all duration-300 text-white font-serif italic text-sm md:text-lg tracking-wide
-                            ${hoveredNode !== null ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2 pointer-events-none'}
+                            ${displayNode !== null ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2 pointer-events-none'}
                         `}>
-                            {hoveredNode !== null ? course.masterminds[hoveredNode]?.title : ''}
+                            {displayNode !== null ? course.masterminds[displayNode]?.title : ''}
                         </p>
                     </div>
 
                     <button
-                        onClick={() => {
+                        onClick={(e) => {
+                            e.stopPropagation();
                             playSound('click');
-                            // If hovering, go to that specific world. Else go to the first one/current progress.
-                            const targetId = hoveredNode !== null
-                                ? `${course.masterminds[hoveredNode].id}|${hoveredNode}`
+                            // If hovering/selected, go to that specific world. Else go to the first one/current progress.
+                            const targetId = displayNode !== null
+                                ? `${course.masterminds[displayNode].id}|${displayNode}`
                                 : `${course.masterminds[0].id}|0`;
                             onSelectWorld(targetId);
                         }}
                         className={`
                             group relative w-auto px-8 py-3 font-bold uppercase tracking-[0.2em] text-xs md:text-sm transition-all duration-300 shadow-[0_0_20px_rgba(251,191,36,0.3)] rounded-full flex items-center gap-3 mt-1 overflow-hidden
-                            ${hoveredNode !== null
+                            ${displayNode !== null
                                 ? 'bg-amber-500 text-black hover:bg-white hover:shadow-[0_0_40px_rgba(251,191,36,0.8)]'
                                 : 'bg-lux-gold text-black hover:bg-white hover:shadow-[0_0_40px_rgba(255,255,255,0.6)]'
                             }
@@ -146,7 +162,7 @@ export const CinematicHubView: React.FC<CinematicHubViewProps> = ({ courseId, on
                     >
                         <Play className="w-4 h-4 fill-current relative z-10 transition-transform group-hover:scale-110" />
                         <span className="relative z-10">
-                            {hoveredNode !== null ? "Entra nel Mondo" : "Inizia il Viaggio"}
+                            {displayNode !== null ? "Entra nel Mondo" : "Inizia il Viaggio"}
                         </span>
 
                         {/* Hover Flush Effect */}
@@ -154,7 +170,7 @@ export const CinematicHubView: React.FC<CinematicHubViewProps> = ({ courseId, on
                     </button>
 
                     <div className="mt-4 text-[10px] text-gray-500 uppercase tracking-widest animate-pulse hidden md:block">
-                        {hoveredNode !== null ? `Mondo ${hoveredNode + 1} di 10` : "Clicca su un nodo per teletrasportarti"}
+                        {displayNode !== null ? `Mondo ${displayNode + 1} di 10` : "Clicca su un nodo per teletrasportarti"}
                     </div>
                 </div>
             </div>
@@ -164,10 +180,14 @@ export const CinematicHubView: React.FC<CinematicHubViewProps> = ({ courseId, on
                 masterminds={course.masterminds}
                 completedModules={completedModules}
                 onSelectWorld={(id) => {
+                    // LEGACY: The tree might still call this, but we'll intercept in the tree itself
                     playSound('click');
                     onSelectWorld(id);
                 }}
                 onHoverNode={setHoveredNode}
+                selectedNode={selectedNode}
+                onNodeClick={setSelectedNode}
+                isGodMode={godMode}
             />
 
         </div>

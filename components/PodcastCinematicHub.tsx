@@ -5,6 +5,7 @@ import { PODCAST_THEMES } from '../services/themeRegistry';
 import { useAudioSystem } from '../hooks/useAudioSystem';
 import { Mic, Play, ArrowLeft, Waves, Check, Sparkles } from 'lucide-react';
 import { PodcastAtmosphere } from './PodcastAtmosphere';
+import { useGodMode } from '../hooks/useGodMode';
 
 // Mobile detection hook
 function useIsMobile() {
@@ -43,9 +44,14 @@ const ECLIPSE_STYLE = `
 export const PodcastCinematicHub: React.FC<PodcastCinematicHubProps> = ({ courseId, onSelectWorld, onBack, completedModules }) => {
     const { playSound } = useAudioSystem();
     const isMobile = useIsMobile();
+    const { enabled: godMode } = useGodMode();
     // HYBRID INTEGRATION: Hook
     const { course, loading } = useCourseData(courseId);
     const [hoveredNode, setHoveredNode] = useState<number | null>(null);
+    const [selectedNode, setSelectedNode] = useState<number | null>(null);
+
+    // DISPLAY LOGIC: Hover for transient preview, Click for persistent selection
+    const displayNode = hoveredNode ?? selectedNode;
 
     useEffect(() => {
         if (!loading) {
@@ -56,6 +62,15 @@ export const PodcastCinematicHub: React.FC<PodcastCinematicHubProps> = ({ course
     // ORBIT CONFIGURATION
     // 10 distinct concentric orbits. 
     // We memoize the orbit visuals so they don't reset on hover rerenders
+    const isNodeUnlocked = (index: number) => {
+        if (godMode) return true; // GOD MODE: All Frequencies Open
+        if (index === 0) return true; // The first node is always unlocked
+        // Check if the previous node is completed
+        if (index > 0 && course?.masterminds[index - 1] && isWorldComplete(course.masterminds[index - 1])) {
+            return true;
+        }
+        return false;
+    };
     const orbitVisuals = useMemo(() => {
         return Array.from({ length: 10 }, (_, i) => {
             // Direction: Unified "Vortex" Flow (Real Solar System Physics)
@@ -103,7 +118,10 @@ export const PodcastCinematicHub: React.FC<PodcastCinematicHubProps> = ({ course
     };
 
     return (
-        <div className="fixed inset-0 bg-black overflow-hidden font-sans select-none flex items-center justify-center">
+        <div
+            className="fixed inset-0 bg-black overflow-hidden font-sans select-none flex items-center justify-center"
+            onClick={() => setSelectedNode(null)}
+        >
 
             {/* 0. DEEP SPACE & ATMOSPHERE - Memoized Component */}
             <PodcastAtmosphere />
@@ -223,7 +241,10 @@ export const PodcastCinematicHub: React.FC<PodcastCinematicHubProps> = ({ course
                                             onClick={(e) => {
                                                 e.stopPropagation();
                                                 playSound('click');
-                                                onSelectWorld(`${mastermind.id}|${nodeIndex}`);
+                                                // CLICK TO SELECT (Lock Preview)
+                                                setSelectedNode(nodeIndex);
+                                                // Ensure hover state matches for immediate feedback
+                                                setHoveredNode(nodeIndex);
                                             }}
                                         >
                                             {/* Counter-Rotating Container */}
@@ -319,29 +340,30 @@ export const PodcastCinematicHub: React.FC<PodcastCinematicHubProps> = ({ course
                 {/* 4. FOOTER BOXES - Mobile: Absolute Bottom, Desktop: Bottom Left */}
                 <div className="w-full px-6 md:px-0 absolute bottom-0 left-0 md:bottom-32 md:left-8 z-40 pointer-events-none flex flex-col items-center md:items-start md:text-left transition-all duration-500 pb-4 md:pb-0 text-center md:text-left">
 
-                    {hoveredNode !== null ? (
+                    {displayNode !== null ? (
                         // ACTIVE STATE: Module Info
                         <div className="animate-[slideUp_0.3s_ease-out] w-full md:w-auto pointer-events-auto">
                             <div className="flex items-center justify-center md:justify-start gap-3 mb-2 opacity-80">
                                 <Waves className="w-4 h-4 text-amber-400 animate-pulse" />
                                 <span className="text-amber-200 font-mono text-xs uppercase tracking-[0.2em]">
-                                    Frequenza {hoveredNode + 1}.0 Hz
+                                    Frequenza {displayNode + 1}.0 Hz
                                 </span>
                             </div>
 
                             <h2 className="text-2xl md:text-3xl font-display font-bold text-white mb-2 leading-tight drop-shadow-[0_0_20px_rgba(251,191,36,0.3)]">
-                                {course.masterminds[hoveredNode]?.title || PODCAST_THEMES[hoveredNode % PODCAST_THEMES.length]?.name || "FREQUENZA IGNOTA"}
+                                {course.masterminds[displayNode]?.title || PODCAST_THEMES[displayNode % PODCAST_THEMES.length]?.name || "FREQUENZA IGNOTA"}
                             </h2>
 
                             <p className="text-amber-100/60 font-serif italic text-sm md:text-base mb-6 max-w-sm md:max-w-lg mx-auto md:mx-0">
-                                "{course.masterminds[hoveredNode]?.description || PODCAST_THEMES[hoveredNode % PODCAST_THEMES.length]?.subname || "Sintonizzazione in corso..."}"
+                                "{course.masterminds[displayNode]?.description || PODCAST_THEMES[displayNode % PODCAST_THEMES.length]?.subname || "Sintonizzazione in corso..."}"
                             </p>
 
                             {/* START BUTTON (Active State) */}
                             <button
                                 onClick={() => {
                                     playSound('click');
-                                    onSelectWorld(`${course.masterminds[hoveredNode].id}|${hoveredNode}`);
+                                    playSound('click');
+                                    onSelectWorld(`${course.masterminds[displayNode].id}|${displayNode}`);
                                 }}
                                 className="md:hidden group relative w-auto px-8 py-3 bg-lux-gold text-black font-bold uppercase tracking-[0.2em] text-xs hover:bg-white transition-all duration-300 shadow-[0_0_20px_rgba(251,191,36,0.3)] hover:shadow-[0_0_40px_rgba(255,255,255,0.6)] rounded-full flex items-center justify-center gap-3 mx-auto"
                             >

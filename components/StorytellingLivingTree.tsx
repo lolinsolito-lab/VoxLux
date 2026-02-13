@@ -9,6 +9,9 @@ interface StorytellingLivingTreeProps {
     completedModules: Set<string>;
     onSelectWorld: (id: string) => void;
     onHoverNode?: (index: number | null) => void; // Optional for backward compatibility, but we'll use it.
+    selectedNode?: number | null;
+    onNodeClick?: (index: number) => void;
+    isGodMode?: boolean;
 }
 
 // THE TREE OF LIFE LAYOUT (Percentages relative to CONTAINER)
@@ -80,7 +83,10 @@ export const StorytellingLivingTree: React.FC<StorytellingLivingTreeProps> = ({
     masterminds,
     completedModules,
     onSelectWorld,
-    onHoverNode
+    onHoverNode,
+    selectedNode,
+    onNodeClick,
+    isGodMode = false
 }) => {
     const { playSound } = useAudioSystem();
     const [hoveredNode, setHoveredNode] = useState<number | null>(null);
@@ -277,15 +283,11 @@ export const StorytellingLivingTree: React.FC<StorytellingLivingTreeProps> = ({
                             onClick={(e) => {
                                 e.stopPropagation();
                                 playSound('click');
-                                if (isMobile) {
-                                    // Mobile: Tap to SELECT (Preview) only. 
-                                    // Navigation happens via the big Footer Button.
-                                    setHoveredNode(index);
-                                    if (onHoverNode) onHoverNode(index);
-                                } else {
-                                    // Desktop: Click to ENTER immediately
-                                    onSelectWorld(`${mm.id}|${index}`);
-                                }
+                                // UNIVERSAL: Click/Tap selects the node (persistent preview).
+                                // Navigation is handled by the Footer Button.
+                                if (onNodeClick) onNodeClick(index);
+                                setHoveredNode(index); // Ensure local hover state matches for immediate feedback
+                                if (onHoverNode) onHoverNode(index);
                             }}
                         >
                             {/* A. COSMIC ORBITS - Desktop Only */}
