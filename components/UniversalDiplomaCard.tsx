@@ -288,13 +288,14 @@ export const UniversalDiplomaCard: React.FC<UniversalDiplomaCardProps> = ({
                     // DYNAMIC STYLES BASED ON VARIANT
                     ...(variant === 'luxury' ? {
                         // LUXURY MODE
+                        backgroundColor: '#4b0082', // INDIGO DEBUG COLOR - If you see this, image failed to load.
                         backgroundImage: isPodcast
-                            ? 'url("/diplomas/diploma_podcast_luxury.png?v=2")'
-                            : 'url("/diplomas/diploma_storytelling_luxury.png?v=2")',
-                        backgroundSize: '100% 100%', // Force full stretch to match card size
+                            ? 'url("/diplomas/diploma_podcast_luxury.png")'
+                            : 'url("/diplomas/diploma_storytelling_luxury.png")',
+                        backgroundSize: '100% 100%',
                         backgroundPosition: 'center',
                         backgroundRepeat: 'no-repeat',
-                        border: '0px none', // Explicitly remove border
+                        border: 'none',
                         boxShadow: isPodcast
                             ? '0 0 30px rgba(0, 240, 255, 0.2)'
                             : '0 0 30px rgba(255, 215, 0, 0.2)'
