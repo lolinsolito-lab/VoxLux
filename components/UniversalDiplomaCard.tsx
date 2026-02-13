@@ -282,31 +282,64 @@ export const UniversalDiplomaCard: React.FC<UniversalDiplomaCardProps> = ({
                     ${theme === 'light' ? 'bg-white text-black' : 'bg-black text-white'}
                 `}
                 style={{
-                    backgroundImage: variant === 'luxury'
-                        // LUXURY BACKGROUNDS (STATIC IMAGES)
+                    width: '100%',
+                    height: '100%',
+                    zIndex: -1,
+                    // LUXURY BACKGROUNDS (CSS GENERATED)
+                    background: variant === 'luxury'
                         ? (isPodcast
-                            ? 'url("/diplomas/diploma_podcast_luxury.jpg")'
-                            : 'url("/diplomas/diploma_storytelling_luxury.jpg")')
-                        : 'none',
-                    background: variant !== 'luxury'
-                        ? (theme === 'dark'
+                            ? 'radial-gradient(circle at center, #0B0014 0%, #000000 100%)' // Podcast Luxury (Void)
+                            : 'radial-gradient(circle at center, #141414 0%, #000000 100%)') // Storytelling Luxury (Matte Black)
+                        : (theme === 'dark'
                             ? 'radial-gradient(ellipse at bottom, var(--bg-gradient-inner) 0%, var(--bg-gradient-outer) 100%)'
-                            : '#f9f9f9')
-                        : undefined,
-                    backgroundSize: 'cover',
-                    backgroundPosition: 'center',
-                    backgroundRepeat: 'no-repeat',
+                            : '#f9f9f9'),
                     border: variant === 'luxury'
-                        ? 'none' // Border is in the image
+                        ? (isPodcast ? '4px solid #00f0ff' : '4px double #FFD700') // Neon Cyan vs Gold Double
                         : '1px solid var(--diploma-border)',
-                    boxShadow: theme === 'dark' ? '0 20px 80px rgba(0,0,0,0.8)' : '0 20px 80px rgba(0,0,0,0.1)'
+                    boxShadow: variant === 'luxury'
+                        ? (isPodcast ? '0 0 30px rgba(0, 240, 255, 0.4)' : '0 0 30px rgba(255, 215, 0, 0.3)')
+                        : (theme === 'dark' ? '0 20px 80px rgba(0,0,0,0.8)' : '0 20px 80px rgba(0,0,0,0.1)')
                 }}
             >
-                {/* --- LUXURY OVERLAY (Golden Glow) --- */}
-                {variant === 'luxury' && (
-                    <div className="absolute inset-0 z-0 pointer-events-none mix-blend-overlay opacity-30"
+                {/* --- LUXURY OVERLAYS --- */}
+
+                {/* 1. MARBLE VEINS (Storytelling Only) */}
+                {variant === 'luxury' && !isPodcast && (
+                    <div className="absolute inset-0 z-0 pointer-events-none opacity-20"
                         style={{
-                            background: 'radial-gradient(circle at center, transparent 40%, rgba(0,0,0,0.6) 100%)'
+                            backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.6' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.5'/%3E%3C/svg%3E"), 
+                                              linear-gradient(45deg, transparent 40%, rgba(255, 215, 0, 0.2) 45%, transparent 50%)`,
+                            backgroundSize: 'cover, 200% 200%',
+                            mixBlendMode: 'overlay'
+                        }}
+                    />
+                )}
+
+                {/* 2. CYBER GRID (Podcast Only) */}
+                {variant === 'luxury' && isPodcast && (
+                    <div className="absolute inset-0 z-0 pointer-events-none opacity-30"
+                        style={{
+                            backgroundImage: 'linear-gradient(rgba(0, 240, 255, 0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 240, 255, 0.1) 1px, transparent 1px)',
+                            backgroundSize: '40px 40px',
+                            maskImage: 'radial-gradient(circle, black 40%, transparent 100%)'
+                        }}
+                    />
+                )}
+
+                {/* 3. GOLD FOIL BORDER (Storytelling Only) */}
+                {variant === 'luxury' && !isPodcast && (
+                    <div className="absolute inset-4 z-10 pointer-events-none border-[2px] border-[#FFD700] opacity-80"
+                        style={{
+                            boxShadow: 'inset 0 0 15px rgba(255, 215, 0, 0.3)'
+                        }}
+                    />
+                )}
+
+                {/* 4. NEON BORDER (Podcast Only) */}
+                {variant === 'luxury' && isPodcast && (
+                    <div className="absolute inset-4 z-10 pointer-events-none border-[1px] border-[#00f0ff] opacity-80"
+                        style={{
+                            boxShadow: '0 0 10px #00f0ff, inset 0 0 10px #00f0ff'
                         }}
                     />
                 )}
