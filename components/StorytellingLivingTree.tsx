@@ -166,9 +166,9 @@ export const StorytellingLivingTree: React.FC<StorytellingLivingTreeProps> = ({
             {/* Desktop: lg:max-w-[550px] xl:max-w-[600px] */}
             <div className={`
                 relative 
-                w-full max-h-[85vh] aspect-[3/5] px-4 md:px-0
-                md:w-full md:max-w-[480px] md:max-h-[80vh] md:aspect-[3/4]
-                lg:max-w-[550px] xl:max-w-[600px] lg:max-h-[85vh] lg:aspect-[5/8]
+                w-full max-h-[85vh] aspect-[3/5] px-4 
+                md:px-0 md:w-auto md:h-[65vh] md:max-h-[650px] md:aspect-[3/4]
+                lg:h-[75vh] lg:max-h-[700px] lg:max-w-[550px]
                 flex-shrink-0 transition-all duration-1000 ease-out
                 ${!isMobile && globalPulse ? 'scale-105 filter drop-shadow-[0_0_50px_rgba(251,191,36,0.3)]' : ''}
             `}>
