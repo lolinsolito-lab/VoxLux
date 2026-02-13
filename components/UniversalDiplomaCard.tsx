@@ -10,12 +10,14 @@ interface UniversalDiplomaCardProps {
     userName: string;
     courseId: string; // 'matrice-1' (Storytelling) or 'matrice-2' (Podcast)
     date?: string;
+    variant?: 'standard' | 'luxury'; // NEW PROP
 }
 
 export const UniversalDiplomaCard: React.FC<UniversalDiplomaCardProps> = ({
     userName,
     courseId,
-    date
+    date,
+    variant = 'standard' // Default to standard
 }) => {
     const { playSound } = useAudioSystem();
     const [textVisible, setTextVisible] = useState(true);
@@ -77,14 +79,14 @@ export const UniversalDiplomaCard: React.FC<UniversalDiplomaCardProps> = ({
         role: "Stratega della Narrazione",
         sealText: "OFFICIAL\nMASTER",
         colors: {
-            bgDeep: '#000000',
-            bgInner: '#110d08',
-            bgOuter: '#000000',
+            bgDeep: variant === 'luxury' ? '#080808' : '#000000',
+            bgInner: variant === 'luxury' ? '#1a1a1a' : '#110d08',
+            bgOuter: variant === 'luxury' ? '#000000' : '#000000',
             primary: '#ffeb3b', // Bright Gold
             accent: '#d4af37', // Metallic Gold
             textTitle: '#f7e7ce',
             textBody: '#b0b0b0',
-            border: 'rgba(212, 175, 55, 0.3)',
+            border: variant === 'luxury' ? '#ffd700' : 'rgba(212, 175, 55, 0.3)',
             glow: 'rgba(255, 200, 50, 0.4)',
             sealBg: 'radial-gradient(circle at 35% 35%, #fceabb 0%, #fccd4d 40%, #fbdf93 60%, #c49942 100%)'
         }
@@ -252,6 +254,10 @@ export const UniversalDiplomaCard: React.FC<UniversalDiplomaCardProps> = ({
 
             {/* UI CONTROLS - No Export */}
             <div className="absolute top-4 right-4 flex gap-4 z-50 pointer-events-auto no-export">
+                {/* Variant Toggle (Hidden in prod, visible for Admin Preview) */}
+                <div className="px-3 py-2 bg-black/50 backdrop-blur rounded text-xs text-white border border-white/10 uppercase tracking-widest">
+                    {variant === 'luxury' ? '✨ Luxury Edition' : 'Standard Edition'}
+                </div>
                 <button
                     onClick={() => { playSound('click'); setTheme(prev => prev === 'dark' ? 'light' : 'dark'); }}
                     className="flex items-center gap-2 bg-black/50 backdrop-blur border border-white/10 text-[var(--diploma-accent)] px-4 py-2 rounded text-xs uppercase tracking-widest hover:bg-white/10 transition-all"
@@ -276,13 +282,38 @@ export const UniversalDiplomaCard: React.FC<UniversalDiplomaCardProps> = ({
                     ${theme === 'light' ? 'bg-white text-black' : 'bg-black text-white'}
                 `}
                 style={{
-                    background: theme === 'dark'
-                        ? 'radial-gradient(ellipse at bottom, var(--bg-gradient-inner) 0%, var(--bg-gradient-outer) 100%)'
-                        : '#f9f9f9',
-                    border: '1px solid var(--diploma-border)',
+                    background: variant === 'luxury'
+                        // LUXURY BACKGROUNDS
+                        ? (isPodcast
+                            ? 'radial-gradient(circle at center, #1e1b4b 0%, #000000 100%)' // Podcast Luxury
+                            : 'radial-gradient(circle at center, #1c1917 0%, #000000 100%)') // Storytelling Luxury
+                        : (theme === 'dark'
+                            ? 'radial-gradient(ellipse at bottom, var(--bg-gradient-inner) 0%, var(--bg-gradient-outer) 100%)'
+                            : '#f9f9f9'),
+                    border: variant === 'luxury'
+                        ? '4px double var(--diploma-border)'
+                        : '1px solid var(--diploma-border)',
                     boxShadow: theme === 'dark' ? '0 20px 80px rgba(0,0,0,0.8)' : '0 20px 80px rgba(0,0,0,0.1)'
                 }}
             >
+                {/* --- LUXURY OVERLAY (Marble/Noise) --- */}
+                {variant === 'luxury' && (
+                    <div className="absolute inset-0 z-0 pointer-events-none opacity-20 mix-blend-overlay"
+                        style={{
+                            backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='1'/%3E%3C/svg%3E")`
+                        }}
+                    />
+                )}
+
+                {variant === 'luxury' && !isPodcast && (
+                    // MARBLE VEINS FOR STORYTELLING
+                    <div className="absolute inset-0 z-0 pointer-events-none opacity-10"
+                        style={{
+                            backgroundImage: 'linear-gradient(45deg, transparent 40%, rgba(255,215,0,0.3) 45%, transparent 50%)',
+                            backgroundSize: '300% 300%'
+                        }}
+                    />
+                )}
                 {/* --- BACKGROUND ART (SVG) --- */}
 
                 {/* STORYTELLING: COSMIC TREE */}

@@ -52,6 +52,7 @@ const DiplomaPreviewModal = ({
     // Determine course ID for theme (matrice-1 or matrice-2)
     // Fallback based on slug if ID doesn't match expected pattern
     const courseId = course.slug.includes('podcast') ? 'matrice-2' : 'matrice-1';
+    const [variant, setVariant] = useState<'standard' | 'luxury'>('standard');
 
     return (
         <motion.div
@@ -68,12 +69,20 @@ const DiplomaPreviewModal = ({
                         <Eye className="text-amber-500" />
                         Anteprima Diploma: {course.title}
                     </h2>
-                    <button
-                        onClick={onClose}
-                        className="p-2 bg-white/10 hover:bg-white/20 rounded-full text-white transition-all"
-                    >
-                        ✕
-                    </button>
+                    <div className="flex items-center gap-4">
+                        <button
+                            onClick={() => setVariant(v => v === 'standard' ? 'luxury' : 'standard')}
+                            className={`px-4 py-2 rounded-full text-xs font-bold uppercase tracking-wider transition-all border ${variant === 'luxury' ? 'bg-amber-500 text-black border-amber-500 shadow-[0_0_15px_rgba(245,158,11,0.5)]' : 'bg-transparent text-gray-400 border-gray-600 hover:border-white hover:text-white'}`}
+                        >
+                            {variant === 'luxury' ? '✨ Luxury Mode' : 'Standard Mode'}
+                        </button>
+                        <button
+                            onClick={onClose}
+                            className="p-2 bg-white/10 hover:bg-white/20 rounded-full text-white transition-all"
+                        >
+                            ✕
+                        </button>
+                    </div>
                 </div>
 
                 <div className="transform scale-[0.6] md:scale-75 origin-top transition-transform">
@@ -81,6 +90,7 @@ const DiplomaPreviewModal = ({
                         userName="Mario Rossi (Preview)"
                         courseId={courseId}
                         date={new Date().toLocaleDateString('it-IT')}
+                        variant={variant}
                     />
                 </div>
 
