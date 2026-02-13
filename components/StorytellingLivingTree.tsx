@@ -12,52 +12,62 @@ interface StorytellingLivingTreeProps {
 }
 
 // THE TREE OF LIFE LAYOUT (Percentages relative to CONTAINER)
-// 1-3-3-2-1 Configuration (Bottom to Top)
-const MAP_NODES = [
-    // ROW 1: BASE (1)
-    { x: 50, y: 74, scale: 1.2 },  // 1. Origine (Lifted to 74% for better clearance)
 
-    // ROW 2: LOWER TRIAD (3)
-    { x: 20, y: 62, scale: 1.0 },  // 2. Library (Lifted to 62%)
-    { x: 50, y: 62, scale: 1.0 },  // 3. Workshop
-    { x: 80, y: 62, scale: 1.0 },  // 4. Echo
-
-    // ROW 3: MIDDLE TRIAD (3)
-    { x: 20, y: 48, scale: 1.1 },  // 5. Fortress (Centered)
+// DESKTOP: Expanded, Majestic, "As Above, So Below"
+const DESKTOP_NODES = [
+    // ROW 1: BASE (1) - Pushed down for grounding
+    { x: 50, y: 82, scale: 1.2 },  // 1. Origine
+    // ROW 2: LOWER TRIAD (3) - Spaced vertically from base
+    { x: 20, y: 68, scale: 1.0 },  // 2. Library
+    { x: 50, y: 68, scale: 1.0 },  // 3. Workshop
+    { x: 80, y: 68, scale: 1.0 },  // 4. Echo
+    // ROW 3: MIDDLE TRIAD (3) - Central Heart
+    { x: 20, y: 48, scale: 1.1 },  // 5. Fortress
     { x: 50, y: 48, scale: 1.1 },  // 6. Sanctuary
     { x: 80, y: 48, scale: 1.1 },  // 7. Value
-
     // ROW 4: UPPER PAIR (2)
-    { x: 35, y: 32, scale: 1.1 },  // 8. Time (Moved DOWN from 30)
-    { x: 65, y: 32, scale: 1.1 },  // 9. Loyalty
+    { x: 35, y: 28, scale: 1.1 },  // 8. Time
+    { x: 65, y: 28, scale: 1.1 },  // 9. Loyalty
+    // ROW 5: CROWN (1) - High but reachable
+    { x: 50, y: 12, scale: 1.3 }   // 10. Mastery
+];
 
+// MOBILE: Compact, Safe Margins, "Fit to Screen"
+const MOBILE_NODES = [
+    // ROW 1: BASE (1)
+    { x: 50, y: 78, scale: 1.2 },
+    // ROW 2: LOWER TRIAD (3)
+    { x: 15, y: 64, scale: 1.0 }, // Slightly wider spread for mobile touch
+    { x: 50, y: 64, scale: 1.0 },
+    { x: 85, y: 64, scale: 1.0 },
+    // ROW 3: MIDDLE TRIAD (3)
+    { x: 15, y: 50, scale: 1.1 },
+    { x: 50, y: 50, scale: 1.1 },
+    { x: 85, y: 50, scale: 1.1 },
+    // ROW 4: UPPER PAIR (2)
+    { x: 35, y: 36, scale: 1.1 }, // Lowered significantly
+    { x: 65, y: 36, scale: 1.1 },
     // ROW 5: CROWN (1)
-    { x: 50, y: 18, scale: 1.3 }    // 10. Mastery (Moved DOWN from 15)
+    { x: 50, y: 22, scale: 1.3 }  // Lowered to ensure visibility (was 15/18)
 ];
 
 // CONNECTIONS (Graph Edges - Flowing Upwards)
 const CONNECTIONS = [
     // Base to Lower Row
     [0, 1], [0, 2], [0, 3],
-
     // Lower Row Horizontal
     [1, 2], [2, 3],
-
     // Lower to Middle (Vertical Flow)
     [1, 4], [2, 5], [3, 6],
     // Lower to Middle (Cross Flow)
     [1, 5], [3, 5],
-
     // Middle Row Horizontal
     [4, 5], [5, 6],
-
     // Middle to Upper (Vertical/Cross)
     [4, 7], [6, 8],
     [5, 7], [5, 8], // Center Middle feeds both Upper
-
     // Upper Row Horizontal
     [7, 8],
-
     // Upper to Crown
     [7, 9], [8, 9]
 ];
@@ -83,6 +93,9 @@ export const StorytellingLivingTree: React.FC<StorytellingLivingTreeProps> = ({
         window.addEventListener('resize', check);
         return () => window.removeEventListener('resize', check);
     }, []);
+
+    // Select Active Configuration
+    const activeNodes = isMobile ? MOBILE_NODES : DESKTOP_NODES;
 
     // Sacred Math: Prime Number Chronobiology
     // We assign unique PRIME NUMBER durations to each node to ensure cycles never align perfectly.
@@ -184,8 +197,8 @@ export const StorytellingLivingTree: React.FC<StorytellingLivingTreeProps> = ({
                     </defs>
 
                     {CONNECTIONS.map(([start, end], i) => {
-                        const startNode = MAP_NODES[start];
-                        const endNode = MAP_NODES[end];
+                        const startNode = activeNodes[start];
+                        const endNode = activeNodes[end];
                         // Link Connection Pulse to the Rhythm of the Start Node
                         const rhythm = nodeExhales[start];
 
@@ -233,7 +246,7 @@ export const StorytellingLivingTree: React.FC<StorytellingLivingTreeProps> = ({
 
                 {/* 2. NODES LAYER */}
                 {masterminds.map((mm, index) => {
-                    const pos = MAP_NODES[index];
+                    const pos = activeNodes[index];
                     const isHovered = hoveredNode === index;
                     const isComplete = isWorldComplete(mm);
                     const theme = getTheme(index);
