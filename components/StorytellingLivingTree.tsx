@@ -134,7 +134,7 @@ export const StorytellingLivingTree: React.FC<StorytellingLivingTreeProps> = ({
     };
 
     return (
-        <div className="absolute inset-0 z-10 w-full h-full pointer-events-none flex items-center justify-center pb-64 md:pb-0">
+        <div className="absolute inset-0 z-10 w-full h-full pointer-events-none flex items-center justify-center pb-16 md:pb-0">
 
             {/* Global CSS Styles for Custom Keyframes */}
             <style>{`
