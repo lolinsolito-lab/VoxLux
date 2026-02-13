@@ -95,9 +95,9 @@ export const CinematicHubView: React.FC<CinematicHubViewProps> = ({ courseId, on
 
                 {/* FOOTER PILLARS / CTA (Mobile: Bottom Center, Desktop: Bottom Left) */}
                 <div className={`
-                    pointer-events-auto relative z-40 p-0 md:p-0 
-                    absolute bottom-8 left-0 w-full flex flex-col items-center text-center 
-                    md:bottom-16 md:left-16 md:w-auto md:items-start md:text-left
+                    pointer-events-auto z-40 
+                    absolute bottom-0 left-0 w-full pb-8 flex flex-col items-center text-center 
+                    md:bottom-16 md:left-16 md:w-auto md:items-start md:text-left md:pb-0
                 `}>
                     <h2 className="text-white text-sm md:text-lg uppercase tracking-widest mb-2 flex items-center gap-2 md:gap-3 h-8">
                         <Sparkles className={`w-4 h-4 md:w-5 md:h-5 ${hoveredNode !== null ? 'text-amber-400 rotate-12 transition-all' : 'text-lux-gold'}`} />
